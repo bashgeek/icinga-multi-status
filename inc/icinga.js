@@ -85,8 +85,6 @@
 				}
 			}
 		}
-
-		console.log(error_counts);
 	}
 
 	function icinga_notification(id, title, message, context) {

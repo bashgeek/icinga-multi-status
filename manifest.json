@@ -1,7 +1,7 @@
 {
   "name": "Icinga Multi Status",
   "version": "0.1",
-  "description": "",
+  "description": "Icinga Multi Status helps you monitoring your (multiple or single) Icinga instances with comfortable alert badges and notifications about problems.",
 
   "background": {
     "page": "background.html",
@@ -25,7 +25,5 @@
   },
 
   "permissions": [ "tabs", "http://*/", "https://*/", "notifications" ],
-
- // "content_security_policy": "script-src 'self' https://api.flattr.com; object-src 'self'",
   "manifest_version": 2
 }
