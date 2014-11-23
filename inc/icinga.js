@@ -1,7 +1,4 @@
 
-	// @todo: acknowledge push function
-	// @todo: recheck push function
-
 	function icinga_check() {
 		// Errors
 		var error_counts = { instance: 0, warnings: 0, downs: 0, unknown: 0 };

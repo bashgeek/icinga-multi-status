@@ -13,7 +13,7 @@ var bg = {
 	// Refresh data for all icinga instances
 	refreshData: function() {
 		if (bg.timer != undefined)
-			clearInterval(bg.timer);
+			clearTimeout(bg.timer);
 
 		icinga_badge('...', 'reload');
 

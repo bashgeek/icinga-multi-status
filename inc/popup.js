@@ -47,8 +47,7 @@
 									var host = e.hosts[h];
 									if (host.instance == i) {
 										// Host HTML Line
-										// @todo refresh + acknoledge push
-										host_line = '<tr><td>'+host.name+'</td><td></td><td class="'+table_classes[host.status]+'">'+host.status+'</td><td></td></tr>';
+										host_line = '<tr><td><a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=1&host='+host.name+'" target="_blank">'+host.name+'</a></td><td></td><td class="'+table_classes[host.status]+'">'+host.status+'</td></tr>';
 										service_line = '';
 
 										// Go through all services
@@ -67,7 +66,7 @@
 											// Service HTML Line
 											if (add_service) {
 												// @todo refresh + acknoledge push
-												service_line += '<tr><td></td><td>'+service.name+'</td><td class="'+table_classes[service.status]+'">'+service.status+'</td><td></td></tr>';
+												service_line += '<tr><td></td><td><a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=2&host='+host.name+'&service='+service.name+'" target="_blank">'+service.name+'</a></td><td class="'+table_classes[service.status]+'">'+service.status+'</td></tr>';
 											}
 										});
 
@@ -91,7 +90,7 @@
 													+ '<th>Host</th>'
 													+ '<th>Service</th>'
 													+ '<th>Status</th>'
-													+ '<th></th>'
+													//+ '<th></th>'
 												+ '</tr>'
 											+ '</thead>'
 											+ '<tbody>'
@@ -139,8 +138,7 @@
 
 										if (add_host) {
 											// Host HTML Line
-											// @todo refresh + acknoledge push
-											host_line = '<tr><td>'+host.name+'</td><td class="'+table_classes[host.status]+'">'+host.status+'</td><td></td></tr>';
+											host_line = '<tr><td><a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=1&host='+host.name+'" target="_blank">'+host.name+'</a></td><td class="'+table_classes[host.status]+'">'+host.status+'</td></tr>';
 											instance_line += host_line;
 										}
 
@@ -157,7 +155,7 @@
 												+ '<tr>'
 													+ '<th>Host</th>'
 													+ '<th>Status</th>'
-													+ '<th></th>'
+													//+ '<th></th>'
 												+ '</tr>'
 											+ '</thead>'
 											+ '<tbody>'
@@ -212,8 +210,7 @@
 										}
 
 										// Host HTML Line
-										// @todo refresh + acknoledge push
-										host_line = '<tr><td>'+host.name+'</td><td></td><td class="'+table_classes[host.status]+'">'+host.status+'</td><td></td></tr>';
+										host_line = '<tr><td><a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=1&host='+host.name+'" target="_blank">'+host.name+'</a></td><td></td><td class="'+table_classes[host.status]+'">'+host.status+'</td></tr>';
 										service_line = '';
 
 										// Go through all services
@@ -230,8 +227,7 @@
 											}
 
 											// Service HTML Line
-											// @todo refresh + acknoledge push
-											if (service.status == 'WARNING' || service.status == 'CRITICAL') service_line += '<tr><td></td><td>'+service.name+'</td><td class="'+table_classes[service.status]+'">'+service.status+'</td><td></td></tr>';
+											if (service.status == 'WARNING' || service.status == 'CRITICAL') service_line += '<tr><td></td><td>'+service.name+'</td><td class="'+table_classes[service.status]+'">'+service.status+'</td></tr>';
 										});
 
 										// If there is a service line OR host status down, add host line and append service lines
@@ -281,7 +277,7 @@
 													+ '<th>Host</th>'
 													+ '<th>Service</th>'
 													+ '<th>Status</th>'
-													+ '<th></th>'
+													//+ '<th></th>'
 												+ '</tr>'
 											+ '</thead>'
 											+ '<tbody>'
