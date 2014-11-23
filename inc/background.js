@@ -15,10 +15,10 @@ var bg = {
 		if (bg.timer != undefined)
 			clearTimeout(bg.timer);
 
-		icinga_badge('...', 'reload');
-
 		var instances = icinga_get_instances();
 		if (instances.length) {
+			icinga_badge('...', 'reload');
+
 			bg.checks=[];
 			bg.data_raw=[];
 
@@ -31,7 +31,11 @@ var bg = {
 			}
 
 			setTimeout(function(){ bg.refreshData_done(); }, 1000);
+		} else {
+			icinga_badge('', 'reload');
 		}
+
+		bg.restartTimer();
 	},
 
 	refreshData_return: function(e) {
@@ -55,77 +59,79 @@ var bg = {
 			for(i=0; i<bg.data_raw.length; i++) {
 				var e = bg.data_raw[i];
 
-				if (!e.error) {
-					// RegExp for hiding
-					if (instances[i].hide_hosts) {
-						regexp_hosts = new RegExp(instances[i].hide_hosts, 'i');
-					}
-					if (instances[i].hide_services) {
-						regexp_services = new RegExp(instances[i].hide_services, 'i');
-					}
-
-					// Go through all hosts and services and build object
-					// If set hide hosts or hide services, ignore then
-					for (i_h=0; i_h<e.hosts.length; i_h++) {
-						var host = e.hosts[i_h];
-
-						// Check host if regexp
-						var add_host = false;
+				if (typeof e != 'undefined') {
+					if (!e.error) {
+						// RegExp for hiding
 						if (instances[i].hide_hosts) {
-							if (!regexp_hosts.test(host.host_name))
-								add_host = true;
-						} else {
-							add_host = true;
+							regexp_hosts = new RegExp(instances[i].hide_hosts, 'i');
+						}
+						if (instances[i].hide_services) {
+							regexp_services = new RegExp(instances[i].hide_services, 'i');
 						}
 
-						if (add_host) {
-							bg.data_hosts[host.host_name] = {
-								'instance': i,
-								'name': host.host_name,
-								'status': host.status,
-								'down': host.in_scheduled_downtime,
-								'ack': host.has_been_acknowledged,
-								'notify': host.notifications_enabled,
-								'services': {}
-							};
-						}
+						// Go through all hosts and services and build object
+						// If set hide hosts or hide services, ignore then
+						for (i_h=0; i_h<e.hosts.length; i_h++) {
+							var host = e.hosts[i_h];
 
-						delete add_host;
-						delete host;
-					}
-
-					for (i_s=0; i_s<e.services.length; i_s++) {
-						var service = e.services[i_s];
-
-						if (bg.data_hosts[service.host_name]) {
-							// Check service if regexp
-							var add_service = false;
-							if (instances[i].hide_services) {
-								if (!regexp_services.test(service.service_description))
-									add_service = true;
+							// Check host if regexp
+							var add_host = false;
+							if (instances[i].hide_hosts) {
+								if (!regexp_hosts.test(host.host_name))
+									add_host = true;
 							} else {
-								add_service = true;
+								add_host = true;
 							}
 
-							if (add_service) {
-								bg.data_hosts[service.host_name].services[service.service_description] = {
-									'name': service.service_description,
-									'status': service.status,
-									'down': service.in_scheduled_downtime,
-									'ack': service.has_been_acknowledged,
-									'notify': host.notifications_enabled
+							if (add_host) {
+								bg.data_hosts[host.host_name] = {
+									'instance': i,
+									'name': host.host_name,
+									'status': host.status,
+									'down': host.in_scheduled_downtime,
+									'ack': host.has_been_acknowledged,
+									'notify': host.notifications_enabled,
+									'services': {}
 								};
 							}
+
+							delete add_host;
+							delete host;
 						}
 
-						delete service;
-						delete add_service;
-					}
-				}
+						for (i_s=0; i_s<e.services.length; i_s++) {
+							var service = e.services[i_s];
 
-				// Update last status + error
-				instances[i].error = e.error;
-				instances[i].status_last = e.text;
+							if (bg.data_hosts[service.host_name]) {
+								// Check service if regexp
+								var add_service = false;
+								if (instances[i].hide_services) {
+									if (!regexp_services.test(service.service_description))
+										add_service = true;
+								} else {
+									add_service = true;
+								}
+
+								if (add_service) {
+									bg.data_hosts[service.host_name].services[service.service_description] = {
+										'name': service.service_description,
+										'status': service.status,
+										'down': service.in_scheduled_downtime,
+										'ack': service.has_been_acknowledged,
+										'notify': host.notifications_enabled
+									};
+								}
+							}
+
+							delete service;
+							delete add_service;
+						}
+					}
+
+					// Update last status + error
+					instances[i].error = e.error;
+					instances[i].status_last = e.text;
+				}
 
 				delete regexp_hosts;
 				delete regexp_services;

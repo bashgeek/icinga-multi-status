@@ -7,6 +7,7 @@ Icinga Multi Status helps you monitoring your (multiple or single) Icinga instan
 - Monitoring of multiple Icinga Instances (Version 1 and 2) using it's JSON data interface
 - Ability to hide/ignore certain host or service patterns and hosts/services with downtimes
 - Configurable refresh time
+- Ability to temporarily disable instances without deleting them
 - Status-Icon in Toolbar, showing indicator for problems or number of hosts if everything is okay
 - Overview Tab showing status of your Icinga instances as well as it's current host or service problems
 - Hosts Tab showing you all hosts of all Instances with a quick filter to search for a host

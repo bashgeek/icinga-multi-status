@@ -1,7 +1,7 @@
 {
   "name": "Icinga Multi Status",
   "version": "0.1",
-  "description": "Icinga Multi Status helps you monitoring your (multiple or single) Icinga instances with comfortable alert badges and notifications about problems.",
+  "description": "Icinga Multi Status helps you monitoring your (multiple) Icinga instances with comfortable alert badges and notifications.",
 
   "background": {
     "page": "background.html",
