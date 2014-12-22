@@ -2,6 +2,8 @@
 
 Icinga Multi Status helps you monitoring your (multiple or single) Icinga instances with comfortable alert badges and notifications about problems right within Google Chrome&trade;.
 
+Get it from the [Chrome Web Store](https://chrome.google.com/webstore/detail/icinga-multi-status/khabbhcojgkibdeipanmiphceeoiijal)
+
 ## Features
 
 - Monitoring of multiple Icinga Instances (Version 1 and 2) using it's JSON data interface
