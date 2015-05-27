@@ -84,6 +84,10 @@
 									<input type="text" class="form-control" id="instance-title" placeholder="example: My Icinga Instance">
 								</div>
 								<div class="form-group">
+									<label for="instance-icinga-type" class="control-label">Icinga Type:</label>
+									<select class="form-control" id="instance-icinga-type"><option value="">Icinga Classic UI</option></select>
+								</div>
+								<div class="form-group">
 									<label for="instance-user" class="control-label">HTAccess Username (optional):</label>
 									<input type="text" class="form-control" id="instance-user" placeholder="example: icinga">
 								</div>
@@ -91,6 +95,14 @@
 									<label for="instance-pass" class="control-label">HTAccess Password (optional):</label>
 									<input type="password" class="form-control" id="instance-pass">
 								</div>
+								<!--<div class="form-group">
+									<label for="instance-icinga-user" class="control-label">Icinga Username (optional):</label>
+									<input type="text" class="form-control" id="instance-icinga-user" placeholder="example: icingaadmin">
+								</div>
+								<div class="form-group">
+									<label for="instance-icinga-pass" class="control-label">Icinga Password (optional):</label>
+									<input type="password" class="form-control" id="instance-icinga-pass">
+								</div>-->
 								<div class="form-group">
 									<label for="instance-hide-hosts" class="control-label">Hide and ignore hosts (regexp):</label>
 									<input type="text" class="form-control" id="instance-hide-hosts" placeholder="example: web[0-9]+">

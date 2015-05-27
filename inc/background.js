@@ -84,7 +84,7 @@ var bg = {
 							}
 
 							if (add_host) {
-								bg.data_hosts[host.host_name] = {
+								bg.data_hosts[i+'_'+host.host_name] = {
 									'instance': i,
 									'name': host.host_name,
 									'status': host.status,
@@ -102,7 +102,7 @@ var bg = {
 						for (i_s=0; i_s<e.services.length; i_s++) {
 							var service = e.services[i_s];
 
-							if (bg.data_hosts[service.host_name]) {
+							if (bg.data_hosts[i+'_'+service.host_name]) {
 								// Check service if regexp
 								var add_service = false;
 								if (instances[i].hide_services) {
@@ -113,8 +113,8 @@ var bg = {
 								}
 
 								if (add_service) {
-									bg.data_hosts[service.host_name].services[service.service_description] = {
-										'name': service.service_description,
+									bg.data_hosts[i+'_'+service.host_name].services[service.service_description] = {
+										'name': service.service_display_name,
 										'status': service.status,
 										'down': service.in_scheduled_downtime,
 										'ack': service.has_been_acknowledged,

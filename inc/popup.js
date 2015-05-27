@@ -43,7 +43,7 @@
 
 							if (instance.active) {
 								// Go through all hosts and check instance
-								$.each(Object.keys(e.hosts), function(h_i,h) {
+								$.each(Object.keys(e.hosts).sort(), function(h_i,h) {
 									var host = e.hosts[h];
 									if (host.instance == i) {
 										// Host HTML Line
@@ -51,7 +51,7 @@
 										service_line = '';
 
 										// Go through all services
-										$.each(Object.keys(host.services), function(s_i,s) {
+										$.each(Object.keys(host.services).sort(), function(s_i,s) {
 											var service = host.services[s];
 										
 											var add_service = false;
@@ -123,7 +123,7 @@
 
 							if (instance.active) {
 								// Go through all hosts and check instance
-								$.each(Object.keys(e.hosts), function(h_i,h) {
+								$.each(Object.keys(e.hosts).sort(), function(h_i,h) {
 									var host = e.hosts[h];
 									if (host.instance == i) {
 										// regexp check filter
