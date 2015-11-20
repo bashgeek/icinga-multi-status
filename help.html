@@ -30,19 +30,19 @@
 				<tbody>
 					<tr>
 						<td><b>Icinga URL</b></td>
-						<td>The absolute URL to your Icinga setup. Both HTTPS and HTTP URL's work. Trailing slash is optional.<br><br><i>Example: https://myicingaserver.com/icinga/</i></td>
+						<td>The absolute URL to your Icinga setup or API. Both HTTPS and HTTP URL's work. Trailing slash is optional.<br><br><i>Example: https://myicingaserver.com/icinga/ or https://myicingaserver.com:5665/</i></td>
 					</tr>
 					<tr>
 						<td><b>Instance Title</b></td>
 						<td>A short but recognizable title for your Icinga instance used by this extension.<br><br><i>Example: My Icinga Instance</i></td>
 					</tr>
 					<tr>
-						<td><b>HTAccess Username</b></td>
-						<td>If your Icinga instance requires an authentication, you can place the username here.<br><br><i>Example: icingaadmin</i></td>
+						<td><b>Username</b></td>
+						<td>If your Icinga instance requires an authentication, you can place the username here. If you use the Icinga 2 API type, put your API user here.<br><br><i>Example: icingaadmin</i></td>
 					</tr>
 					<tr>
-						<td><b>HTAccess Password</b></td>
-						<td>If your Icinga instance requires an authentication, you can place the password to the above username here.<br><br><i>Example: icingaadmin</i></td>
+						<td><b>Password</b></td>
+						<td>If your Icinga instance requires an authentication, you can place the password to the above username here. If you use the Icinga 2 API type, put your API password here.<br><br><i>Example: icingaadmin</i></td>
 					</tr>
 					<tr>
 						<td><b>Hide and ignore hosts</b></td>
@@ -111,7 +111,7 @@
 				</li>
 				<li>
 					<b>What Icinga Version is required?</b><br>
-					Currently a Icinga Classic UI is required to obtain the data. As soon as Icingaweb2 has a working API, we will support that too.
+					We support the Icinga Classic UI (Icinga v1 and v2) and the new API of Icinga 2. Please find setup instructions on <a href="https://github.com/bashgeek/icinga-multi-status">Github</a>.
 				</li>
 			</ul>
 		</div>
