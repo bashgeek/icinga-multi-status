@@ -112,15 +112,20 @@
 		chrome.browserAction.setBadgeBackgroundColor({color: color});
 	}
 
-	function icinga_fetch(url, username, password, type, instance) {
+	function icinga_fetch(icinga_type, url, username, password, type, instance) {
 		var url = url.replace(/\/$/, '');
+
+		switch(icinga_type) {
+			default: var gurl = url+'/cgi-bin/status.cgi?style=hostservicedetail&jsonoutput'; break;
+			case 'icinga2_api': var gurl = url+'/v1/status/IcingaApplication'; break;
+		}
 
 		$.ajax({
 			username: username,
 			password: password,
 			global: false,
 			timeout: 10000,
-			url: url+'/cgi-bin/status.cgi?style=hostservicedetail&jsonoutput',
+			url: gurl,
 			error: function(res, status, error) {
 				switch (type) {
 					case 'instance-check':
@@ -133,44 +138,149 @@
 				}
 			},
 			complete: function (res, status) {
-				switch (res.status) {
-					default: var error = 'unknown error'; break;
-					case 403: var error = 'Error 403 - Forbidden'; break;
-					case 404: var error = 'Error 404 - Bad URL'; break;
-					case 401: var error = 'Error 401 - Username/Password wrong'; break;
-					case 200:
-						if ((status === "success" || status === "notmodified")) {
-							// Get Icinga Version
-							var json = jQuery.parseJSON(res.responseText);
-							if (!json.cgi_json_version) {
-								var error = 'Invalid Format from Icinga';
-							} else {
-								var icinga_version = json.icinga_status.program_version;
-								var icinga_data_service = json.status.service_status;
-								var icinga_data_host = json.status.host_status;
-								var text = 'OK - '+icinga_data_host.length+' hosts, '+icinga_data_service.length+' services (Icinga '+icinga_version+')';
+				switch (icinga_type) {
+					default:
+						switch (res.status) {
+							default: var error = 'unknown error'; break;
+							case 403: var error = 'Error 403 - Forbidden'; break;
+							case 404: var error = 'Error 404 - Bad URL'; break;
+							case 401: var error = 'Error 401 - Username/Password wrong'; break;
+							case 200:
+								if ((status === "success" || status === "notmodified")) {
+									var json = jQuery.parseJSON(res.responseText);
+
+									// Get Icinga Version
+									if (!json.cgi_json_version) {
+										var error = 'Invalid Format from Icinga';
+									} else {
+										var icinga_version = json.icinga_status.program_version;
+										var icinga_data_service = json.status.service_status;
+										var icinga_data_host = json.status.host_status;
+										var text = 'OK - '+icinga_data_host.length+' hosts, '+icinga_data_service.length+' services (Icinga '+icinga_version+')';
+									}
+								} else {
+									var error = status;
+								}
+							break;
+						}
+
+						switch (type) {
+							case 'instance-check':
+								instance_save_return((error) ? { error: true, text: error } : { error: false, text: text });
+							break;
+
+							case 'refresh-background':
+								bg.refreshData_return((error) ? { error: true, text: error, instance: instance } : { error: false, text: text, instance: instance, hosts: icinga_data_host, services: icinga_data_service });
+							break;
+						}
+
+						delete icinga_data_service;
+						delete icinga_data_host;
+						delete res;
+						delete text;
+						delete error;
+					break;
+					case 'icinga2_api':
+						switch (res.status) {
+							default: var error = 'unknown error'; break;
+							case 403: var error = 'Error 403 - Forbidden'; break;
+							case 404: var error = 'Error 404 - Bad URL'; break;
+							case 401: var error = 'Error 401 - Username/Password wrong'; break;
+							case 200:
+								if ((status === "success" || status === "notmodified")) {
+									var json = jQuery.parseJSON(res.responseText);
+									var icinga_version = json.results[0].status.icingaapplication.app.version;
+									if (!icinga_version) {
+										var error = 'Invalid Format from Icinga';
+									} else {
+										var no_return = true;
+
+										$.when(
+											$.ajax({
+												username: username,
+												password: password,
+												global: false,
+												timeout: 10000,
+												url: url+'/v1/objects/hosts'
+											}),
+											$.ajax({
+												username: username,
+												password: password,
+												global: false,
+												timeout: 10000,
+												url: url+'/v1/objects/services'
+											})
+										).then(function(hosts,services) {
+											var icinga_data_host = [];
+											$.each(hosts[0].results, function(i,e){
+												icinga_data_host.push({
+													host_name: e.name,
+													status: (e.attrs.state == 1) ? 'DOWN' : 'UP',
+													in_scheduled_downtime: e.attrs.last_in_downtime,
+													has_been_acknowledged: e.attrs.acknowledgement,
+													notifications_enabled: e.attrs.enable_notifications,
+												});
+											});
+
+											var icinga_data_service = [];
+											$.each(services[0].results, function(i,e){
+												switch (e.attrs.state) {
+													case 0: var state = 'OK'; break;
+													case 1: var state = 'WARNING'; break;
+													case 2: var state = 'CRITICAL'; break;
+													case 3: var state = 'UNKNOWN'; break;
+												}
+												icinga_data_service.push({
+													host_name: e.attrs.host_name,
+													service_description: e.attrs.display_name,
+													service_display_name: e.attrs.display_name,
+													status: state,
+													in_scheduled_downtime: e.attrs.last_in_downtime,
+													has_been_acknowledged: e.attrs.acknowledgement,
+													notifications_enabled: e.attrs.enable_notifications,
+												});
+											});
+
+											var text = 'OK - '+icinga_data_host.length+' hosts, '+icinga_data_service.length+' services (Icinga '+icinga_version+')';
+
+											switch (type) {
+												case 'instance-check':
+													instance_save_return((error) ? { error: true, text: error } : { error: false, text: text });
+												break;
+
+												case 'refresh-background':
+													bg.refreshData_return((error) ? { error: true, text: error, instance: instance } : { error: false, text: text, instance: instance, hosts: icinga_data_host, services: icinga_data_service });
+												break;
+											}
+
+											delete icinga_data_service;
+											delete icinga_data_host;
+											delete res;
+											delete text;
+											delete error;
+										});
+									}
+								} else {
+									var error = status;
+								}
+							break;
+						}
+
+						if (!no_return) {
+							switch (type) {
+								case 'instance-check':
+									instance_save_return((error) ? { error: true, text: error } : { error: false, text: text });
+								break;
+
+								case 'refresh-background':
+									bg.refreshData_return((error) ? { error: true, text: error, instance: instance } : { error: false, text: text, instance: instance, hosts: icinga_data_host, services: icinga_data_service });
+								break;
 							}
-						} else {
-							var error = status;
 						}
 					break;
 				}
 
-				switch (type) {
-					case 'instance-check':
-						instance_save_return((error) ? { error: true, text: error } : { error: false, text: text });
-					break;
-
-					case 'refresh-background':
-						bg.refreshData_return((error) ? { error: true, text: error, instance: instance } : { error: false, text: text, instance: instance, hosts: icinga_data_host, services: icinga_data_service });
-					break;
-				}
-
-				delete icinga_data_service;
-				delete icinga_data_host;
-				delete res;
-				delete text;
-				delete error;
+				
 			}
 		});
 	}

@@ -26,7 +26,7 @@ var bg = {
 				var e = instances[i];
 				if (e.active) {
 					bg.checks[i] = false;
-					icinga_fetch(e.url, e.user, e.pass, 'refresh-background', i);
+					icinga_fetch(e.icinga_type, e.url, e.user, e.pass, 'refresh-background', i);
 				}
 			}
 

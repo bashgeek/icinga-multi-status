@@ -76,7 +76,7 @@
 							<form role="form">
 								<input type="hidden" id="instance-id" value="">
 								<div class="form-group">
-									<label for="instance-url" class="control-label">Icinga URL (plain URL to Icinga installation):</label>
+									<label for="instance-url" class="control-label">Icinga URL (plain URL to Icinga installation or API):</label>
 									<input type="text" class="form-control" id="instance-url" placeholder="example: https://myicingaserver.com/icinga/">
 								</div>
 								<div class="form-group">
@@ -85,14 +85,14 @@
 								</div>
 								<div class="form-group">
 									<label for="instance-icinga-type" class="control-label">Icinga Type:</label>
-									<select class="form-control" id="instance-icinga-type"><option value="">Icinga Classic UI</option></select>
+									<select class="form-control" id="instance-icinga-type"><option value="">Icinga Classic UI</option><option value="icinga2_api">Icinga2 API</option></select>
 								</div>
 								<div class="form-group">
-									<label for="instance-user" class="control-label">HTAccess Username (optional):</label>
+									<label for="instance-user" class="control-label">Username:</label>
 									<input type="text" class="form-control" id="instance-user" placeholder="example: icinga">
 								</div>
 								<div class="form-group">
-									<label for="instance-pass" class="control-label">HTAccess Password (optional):</label>
+									<label for="instance-pass" class="control-label">Password:</label>
 									<input type="password" class="form-control" id="instance-pass">
 								</div>
 								<!--<div class="form-group">

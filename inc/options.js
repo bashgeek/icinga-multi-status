@@ -16,8 +16,6 @@
 			$('#instance-user').val('');
 			$('#instance-pass').val('');
 			$('#instance-icinga-type').val('');
-			/*$('#instance-icinga-user').val('');
-			$('#instance-icinga-pass').val('');*/
 			$('#instance-hide-hosts').val('');
 			$('#instance-hide-services').val('');
 			$('#instance-hide-ack').prop('checked',false);
@@ -33,13 +31,10 @@
 			$('#instance-url').val(e.url);
 			$('#instance-title').val(e.title);
 			$('#instance-icinga-type').val(e.icinga_type);
-			/*$('#instance-icinga-user').val(e.icinga_user);
-			$('#instance-icinga-pass').val(e.icinga_pass);*/
 			$('#instance-user').val(e.user);
 			$('#instance-pass').val(e.pass);
 			$('#instance-hide-hosts').val(e.hide_hosts);
 			$('#instance-hide-services').val(e.hide_services);
-			$('#instance-icingaweb2').prop('checked', e.icingaweb2);
 			$('#instance-hide-ack').prop('checked', e.hide_ack);
 			$('#instance-hide-down').prop('checked', e.hide_down);
 			$('#instance-notf-nowarn').prop('checked', e.notf_nowarn);
@@ -121,29 +116,13 @@
 			// Pass missing
 			$('#instance-pass').parent().addClass('has-error');
 			$('#instance-user').parent().removeClass('has-error');
-			errors.push('HTAccess Username given, but password missing');
+			errors.push('Username given, but password missing');
 		} else if (!$('#instance-user').val() && $('#instance-pass').val()) {
 			// User missing
 			$('#instance-user').parent().addClass('has-error');
 			$('#instance-pass').parent().removeClass('has-error');
-			errors.push('HTAccess Password given, but username missing');
+			errors.push('Password given, but username missing');
 		}
-
-		/*if (($('#instance-icinga-user').val() && $('#instance-icinga-pass').val())) {
-			// OK
-			$('#instance-icinga-user').parent().removeClass('has-error');
-			$('#instance-icinga-pass').parent().removeClass('has-error');
-		} else if ($('#instance-icinga-user').val() && !$('#instance-icinga-pass').val()) {
-			// Pass missing
-			$('#instance-icinga-pass').parent().addClass('has-error');
-			$('#instance-icinga-user').parent().removeClass('has-error');
-			errors.push('Icinga Username given, but password missing');
-		} else if (!$('#instance-icinga-user').val() && $('#instance-icinga-pass').val()) {
-			// User missing
-			$('#instance-icinga-user').parent().addClass('has-error');
-			$('#instance-icinga-pass').parent().removeClass('has-error');
-			errors.push('Icinga Password given, but username missing');
-		}*/
 
 		if ($('#instance-hide-hosts').val()) {
 			try {
@@ -180,7 +159,7 @@
 		} else {
 			$('#instance-alert').removeClass().addClass('alert alert-info').html('Checking...').show();
 
-			icinga_fetch($('#instance-url').val(), $('#instance-user').val(), $('#instance-pass').val(), 'instance-check');
+			icinga_fetch($('#instance-icinga-type').val(), $('#instance-url').val(), $('#instance-user').val(), $('#instance-pass').val(), 'instance-check');
 		}
 	}
 
@@ -198,8 +177,6 @@
 					'status_last': instances[$('#instance-id').val()].status_last,
 					'url': $('#instance-url').val(),
 					'icinga_type': $('#instance-icinga-type').val(),
-					//'icinga_user': $('#instance-icinga-user').val(),
-					//'icinga_pass': $('#instance-icinga-pass').val(),
 					'user': $('#instance-user').val(),
 					'pass': $('#instance-pass').val(),
 					'title': $('#instance-title').val(),
@@ -218,8 +195,6 @@
 					'user': $('#instance-user').val(),
 					'pass': $('#instance-pass').val(),
 					'icinga_type': $('#instance-icinga-type').val(),
-					//'icinga_user': $('#instance-icinga-user').val(),
-					//'icinga_pass': $('#instance-icinga-pass').val(),
 					'title': $('#instance-title').val(),
 					'hide_hosts': $('#instance-hide-hosts').val(),
 					'hide_services': $('#instance-hide-services').val(),
