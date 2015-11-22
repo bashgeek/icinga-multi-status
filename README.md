@@ -22,8 +22,8 @@ Get it from the [Chrome Web Store](https://chrome.google.com/webstore/detail/ici
 - Icinga Classic UI (Requires Version >= 1.8.0), reachable via HTTP or HTTPS
 - Icinga 2 API (Requires Version >= 2.4), reachable via HTTPS
 
-## How-to for using the Icinga2 API
-1. Please make sure you enabled and configured the new API in your Icinga 2 installation by either setting it up manually or use the CLI command for the automatic setup, which also creates a root-user for the API with a random password.
+## How-to for using the [Icinga 2 API](http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api)
+- Please make sure you enabled and configured the new API in your Icinga 2 installation by either setting it up manually or use the CLI command for the automatic setup, which also creates a root-user for the API with a random password.
 ```
 # Run the automatic setup
 $ icinga2 api setup
@@ -31,10 +31,10 @@ $ icinga2 api setup
 # Restart the icinga2 service
 $ service icinga2 restart
 ```
-2. You will find the automatically generated API user here: `/etc/icinga2/conf.d/api-users.conf`
-3. The default port of the Icinga 2 API is `5665`, so the URL to go with would be like: `https://myicingaserver.com:5665/`
-4. If you use a self-signed certificate (f.e. the one automatically created in #1) you have to add it to Chromes trusted store before it'll work in the plugin. This can easily be done be visiting the API URL in a browser tab and accept the certificate.
-5. If you run into any problems, please stick to the official [Icinga 2 API documentation](http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api)
+- You will find the automatically generated API user here: `/etc/icinga2/conf.d/api-users.conf`
+- The default port of the Icinga 2 API is `5665`, so the URL to go with would be like: `https://myicingaserver.com:5665/`
+- If you use a self-signed certificate (like the one automatically created in the first step) you have to add it to Chrome's trusted store before it'll work in the plugin. This can easily be done be visiting the API URL in a browser tab and accept the certificate.
+- If you run into any problems, please stick to the official [Icinga 2 API documentation](http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api)
 
 
 ## Credits
