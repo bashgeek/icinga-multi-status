@@ -33,7 +33,8 @@ $ service icinga2 restart
 ```
 2. You will find the automatically generated API user here: `/etc/icinga2/conf.d/api-users.conf`
 3. The default port of the Icinga 2 API is `5665`, so the URL to go with would be like: `https://myicingaserver.com:5665/`
-4. If you run into any problems, please stick to the official [Icinga 2 API documentation](http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api)
+4. If you use a self-signed certificate (f.e. the one automatically created in #1) you have to add it to Chromes trusted store before it'll work in the plugin. This can easily be done be visiting the API URL in a browser tab and accept the certificate.
+5. If you run into any problems, please stick to the official [Icinga 2 API documentation](http://docs.icinga.org/icinga2/latest/doc/module/icinga2/chapter/icinga2-api)
 
 
 ## Credits
