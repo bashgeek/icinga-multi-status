@@ -115,6 +115,7 @@ var bg = {
 								if (add_service) {
 									bg.data_hosts[i+'_'+service.host_name].services[service.service_description] = {
 										'name': service.service_display_name,
+										'sname': (typeof(service.service_name) !== 'undefined') ? service.service_name : service.service_display_name,
 										'status': service.status,
 										'down': service.in_scheduled_downtime,
 										'ack': service.has_been_acknowledged,

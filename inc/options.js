@@ -12,6 +12,7 @@
 			$('#instance-id').val(-1);
 
 			$('#instance-url').val('');
+			$('#instance-url-web').val('');
 			$('#instance-title').val('');
 			$('#instance-user').val('');
 			$('#instance-pass').val('');
@@ -29,6 +30,7 @@
 			$('#instance-id').val(instance);
 
 			$('#instance-url').val(e.url);
+			$('#instance-url-web').val(e.url_web);
 			$('#instance-title').val(e.title);
 			$('#instance-icinga-type').val(e.icinga_type);
 			$('#instance-user').val(e.user);
@@ -98,6 +100,17 @@
 		} else {
 			$('#instance-url').parent().addClass('has-error');
 			errors.push('No URL given');
+		}
+
+		if ($('#instance-url-web').val()) {
+			var url = URI($('#instance-url-web').val());
+			if (!url.hostname() || (url.scheme() != 'http' && url.scheme() != 'https')) {
+				$('#instance-url-web').parent().addClass('has-error');
+				errors.push('Given URL does not seem a valid HTTP/HTTPS URL.');
+			} else {
+				// OK
+				$('#instance-url-web').parent().removeClass('has-error');
+			}
 		}
 
 		if ($('#instance-title').val()) {
@@ -176,6 +189,7 @@
 					'active': instances[$('#instance-id').val()].active,
 					'status_last': instances[$('#instance-id').val()].status_last,
 					'url': $('#instance-url').val(),
+					'url_web': $('#instance-url-web').val(),
 					'icinga_type': $('#instance-icinga-type').val(),
 					'user': $('#instance-user').val(),
 					'pass': $('#instance-pass').val(),
@@ -192,6 +206,7 @@
 					'active': true,
 					'status_last': e.text,
 					'url': $('#instance-url').val(),
+					'url_web': $('#instance-url-web').val(),
 					'user': $('#instance-user').val(),
 					'pass': $('#instance-pass').val(),
 					'icinga_type': $('#instance-icinga-type').val(),

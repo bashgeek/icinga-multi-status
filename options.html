@@ -76,8 +76,12 @@
 							<form role="form">
 								<input type="hidden" id="instance-id" value="">
 								<div class="form-group">
-									<label for="instance-url" class="control-label">Icinga URL (plain URL to Icinga installation or API):</label>
-									<input type="text" class="form-control" id="instance-url" placeholder="example: https://myicingaserver.com/icinga/">
+									<label for="instance-url" class="control-label">Icinga Data URL (API URL for Icinga 2, Icinga Classic UI URL for Icinga 1):</label>
+									<input type="text" class="form-control" id="instance-url" placeholder="example: https://myicingaserver.com/icinga/ or https://myicingaserver.com:5665/">
+								</div>
+								<div class="form-group">
+									<label for="instance-url-web" class="control-label">Icingaweb 2 URL (URL to Icingaweb 2 to use for links), optional:</label>
+									<input type="text" class="form-control" id="instance-url-web" placeholder="example: https://myicingaserver.com/icingaweb2/">
 								</div>
 								<div class="form-group">
 									<label for="instance-title" class="control-label">Instance Title:</label>
@@ -95,14 +99,6 @@
 									<label for="instance-pass" class="control-label">Password:</label>
 									<input type="password" class="form-control" id="instance-pass">
 								</div>
-								<!--<div class="form-group">
-									<label for="instance-icinga-user" class="control-label">Icinga Username (optional):</label>
-									<input type="text" class="form-control" id="instance-icinga-user" placeholder="example: icingaadmin">
-								</div>
-								<div class="form-group">
-									<label for="instance-icinga-pass" class="control-label">Icinga Password (optional):</label>
-									<input type="password" class="form-control" id="instance-icinga-pass">
-								</div>-->
 								<div class="form-group">
 									<label for="instance-hide-hosts" class="control-label">Hide and ignore hosts (regexp):</label>
 									<input type="text" class="form-control" id="instance-hide-hosts" placeholder="example: web[0-9]+">

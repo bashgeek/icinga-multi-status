@@ -65,8 +65,11 @@
 
 											// Service HTML Line
 											if (add_service) {
-												// @todo refresh + acknoledge push
-												service_line += '<tr><td></td><td><a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=2&host='+host.name+'&service='+service.name+'" target="_blank">'+service.name+'</a></td><td class="'+table_classes[service.status]+'">'+service.status+'</td></tr>';
+												switch (instance.icinga_type) {
+													default: var service_name = '<a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=2&host='+host.name+'&service='+service.name+'" target="_blank">'+service.name+'</a>'; break;
+													case 'icinga2_api': if (instance.url_web) { var service_name = '<a href="'+instance.url_web.replace(/\/$/, '')+'/monitoring/service/show?host='+host.name+'&service='+service.sname+'" target="_blank">'+service.name+'</a>'; } else { var service_name = service.name; } break;
+												}
+												service_line += '<tr><td></td><td>'+service_name+'</td><td class="'+table_classes[service.status]+'">'+service.status+'</td></tr>';
 											}
 										});
 
@@ -138,7 +141,11 @@
 
 										if (add_host) {
 											// Host HTML Line
-											host_line = '<tr><td><a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=1&host='+host.name+'" target="_blank">'+host.name+'</a></td><td class="'+table_classes[host.status]+'">'+host.status+'</td></tr>';
+											switch (instance.icinga_type) {
+												default: var host_name = '<a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=1&host='+host.name+'" target="_blank">'+host.name+'</a>'; break;
+												case 'icinga2_api': if (instance.url_web) { var host_name = '<a href="'+instance.url_web.replace(/\/$/, '')+'/monitoring/host/show?host='+host.name+'" target="_blank">'+host.name+'</a>'; } else { var host_name = host.name; } break;
+											}
+											host_line = '<tr><td>'+host_name+'</td><td class="'+table_classes[host.status]+'">'+host.status+'</td></tr>';
 											instance_line += host_line;
 										}
 
@@ -155,7 +162,6 @@
 												+ '<tr>'
 													+ '<th>Host</th>'
 													+ '<th>Status</th>'
-													//+ '<th></th>'
 												+ '</tr>'
 											+ '</thead>'
 											+ '<tbody>'
@@ -210,7 +216,11 @@
 										}
 
 										// Host HTML Line
-										host_line = '<tr><td><a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=1&host='+host.name+'" target="_blank">'+host.name+'</a></td><td></td><td class="'+table_classes[host.status]+'">'+host.status+'</td></tr>';
+										switch (instance.icinga_type) {
+											default: var host_name = '<a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=1&host='+host.name+'" target="_blank">'+host.name+'</a>'; break;
+											case 'icinga2_api': if (instance.url_web) { var host_name = '<a href="'+instance.url_web.replace(/\/$/, '')+'/monitoring/host/show?host='+host.name+'" target="_blank">'+host.name+'</a>'; } else { var host_name = host.name; } break;
+										}
+										host_line = '<tr><td>'+host_name+'</td><td></td><td class="'+table_classes[host.status]+'">'+host.status+'</td></tr>';
 										service_line = '';
 
 										// Go through all services
@@ -227,7 +237,13 @@
 											}
 
 											// Service HTML Line
-											if (service.status == 'WARNING' || service.status == 'CRITICAL') service_line += '<tr><td></td><td>'+service.name+'</td><td class="'+table_classes[service.status]+'">'+service.status+'</td></tr>';
+											if (service.status == 'WARNING' || service.status == 'CRITICAL') {
+												switch (instance.icinga_type) {
+													default: var service_name = '<a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=2&host='+host.name+'&service='+service.name+'" target="_blank">'+service.name+'</a>'; break;
+													case 'icinga2_api': if (instance.url_web) { var service_name = '<a href="'+instance.url_web.replace(/\/$/, '')+'/monitoring/service/show?host='+host.name+'&service='+service.sname+'" target="_blank">'+service.name+'</a>'; } else { var service_name = service.name; } break;
+												}
+												service_line += '<tr><td></td><td>'+service_name+'</td><td class="'+table_classes[service.status]+'">'+service.status+'</td></tr>';
+											}
 										});
 
 										// If there is a service line OR host status down, add host line and append service lines

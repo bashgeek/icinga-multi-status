@@ -234,6 +234,7 @@
 													host_name: e.attrs.host_name,
 													service_description: e.attrs.display_name,
 													service_display_name: e.attrs.display_name,
+													service_name: e.attrs.name,
 													status: state,
 													in_scheduled_downtime: e.attrs.last_in_downtime,
 													has_been_acknowledged: e.attrs.acknowledgement,
