@@ -84,15 +84,22 @@
 		}
 	}
 
+	var notf_store = [];
 	function icinga_notification(id, title, message, context) {
 		chrome.notifications.getPermissionLevel(function(e) {
 			if (e == 'granted') {
 				if (title == 'clear') {
 					// Clear it
 					chrome.notifications.clear(id, function(id) {});
+					notf_store = $.grep(notf_store, function(v) {
+						return v != id;
+					});
 				} else {
 					// Send it
-					chrome.notifications.create(id, { 'priority': 2, 'type': 'basic', 'iconUrl': 'img/icon_48.png', 'title': title, 'contextMessage': context, 'message': message }, function(id) {});
+					if ($.inArray(id, notf_store) == -1) {
+						notf_store.push(id);
+						chrome.notifications.create(id, { 'priority': 2, 'type': 'basic', 'iconUrl': 'img/icon_48.png', 'title': title, 'contextMessage': context, 'message': message }, function(id) { });
+					}
 				}
 			}
 		});
