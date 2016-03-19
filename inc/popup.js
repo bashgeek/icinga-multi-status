@@ -322,8 +322,12 @@
 						}
 
 						// Update alert according to worst status
-						$('#popup-tab-overview-alert-'+worst_status).show();
-
+						if (instances.length == 0) {
+							$('#popup-tab-overview-alert-new').show();
+						} else {
+							$('#popup-tab-overview-alert-'+worst_status).show();
+						}
+						
 						delete worst_status;
 					} else {
 						$('#popup-tab-overview').html('An error occured - could not connect with background task.');
