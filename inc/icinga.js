@@ -127,11 +127,14 @@
 			case 'icinga2_api': var gurl = url+'/v1/status/IcingaApplication'; break;
 		}
 
+		var settings = icinga_get_settings();
+		var interval = (settings.refresh == undefined) ? 30000 : settings.refresh*1000;
+
 		$.ajax({
 			username: username,
 			password: password,
 			global: false,
-			timeout: 10000,
+			timeout: interval,
 			url: gurl,
 			error: function(res, status, error) {
 				switch (type) {
@@ -207,14 +210,14 @@
 												username: username,
 												password: password,
 												global: false,
-												timeout: 10000,
+												timeout: interval,
 												url: url+'/v1/objects/hosts'
 											}),
 											$.ajax({
 												username: username,
 												password: password,
 												global: false,
-												timeout: 10000,
+												timeout: interval,
 												url: url+'/v1/objects/services'
 											})
 										).then(function(hosts,services) {
