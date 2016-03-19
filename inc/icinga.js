@@ -128,7 +128,7 @@
 		}
 
 		var settings = icinga_get_settings();
-		var interval = (settings.refresh == undefined) ? 30000 : settings.refresh*1000;
+		var interval = Math.round(((settings.refresh == undefined) ? 30000 : settings.refresh*1000) / 2);
 
 		$.ajax({
 			username: username,
