@@ -48,7 +48,7 @@
 						if (!(service.down && instance.hide_down) && !(service.ack && instance.hide_ack)) {
 							// Notification for this service only if the host is not down, warning just when not ignored
 							if (host.status == 'UP' && (service.status != 'WARNING' || (service.status == 'WARNING' && !instance.notf_nowarn))) {
-								icinga_notification(host.instance+'_service_'+host.name+'_'+service.name, 'Service Problem', host.name+': '+service.name+' ('+service.status+' '+service.state_type+')', instance.title);
+								icinga_notification(host.instance+'_service_'+host.name+'_'+service.name, 'Service Problem', host.name+': '+service.name+' ('+service.status+' - '+service.state_type+')', instance.title);
 							}
 
 							if (service.status == 'WARNING')
@@ -82,8 +82,6 @@
 				}
 			}
 		}
-
-		console.log(bg.data_hosts);
 	}
 
 	var notf_store = [];
@@ -213,14 +211,14 @@
 												password: password,
 												global: false,
 												timeout: interval,
-												url: url+'/v1/objects/hosts'
+												url: url+'/v1/objects/hosts?attrs=display_name&attrs=state&attrs=last_in_downtime&attrs=state_type&attrs=acknowledgement&attrs=enable_notifications&attrs=name'
 											}),
 											$.ajax({
 												username: username,
 												password: password,
 												global: false,
 												timeout: interval,
-												url: url+'/v1/objects/services'
+												url: url+'/v1/objects/services?attrs=display_name&attrs=state&attrs=last_in_downtime&attrs=host_name&attrs=state_type&attrs=acknowledgement&attrs=enable_notifications&attrs=name'
 											})
 										).then(function(hosts,services) {
 											var icinga_data_host = [];
