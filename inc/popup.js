@@ -224,7 +224,7 @@
 											default: var host_name = '<a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=1&host='+host.name+'" target="_blank">'+host.name+'</a>'; break;
 											case 'icinga2_api': if (instance.url_web) { var host_name = '<a href="'+instance.url_web.replace(/\/$/, '')+'/monitoring/host/show?host='+host.name+'" target="_blank">'+host.name+'</a>'; } else { var host_name = host.name; } break;
 										}
-										host_line = '<tr><td>'+host_name+'</td><td></td><td class="'+table_classes[host.status]+'">'+host.status+'</td></tr>';
+										host_line = '<tr><td>'+host_name+'</td><td></td><td class="'+table_classes[host.status]+'">'+host.status+((host.state_type == 'SOFT') ? ' (S)' : '')+'</td></tr>';
 										service_line = '';
 
 										// Go through all services
@@ -246,7 +246,7 @@
 													default: var service_name = '<a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=2&host='+host.name+'&service='+service.name+'" target="_blank">'+service.name+'</a>'; break;
 													case 'icinga2_api': if (instance.url_web) { var service_name = '<a href="'+instance.url_web.replace(/\/$/, '')+'/monitoring/service/show?host='+host.name+'&service='+service.sname+'" target="_blank">'+service.name+'</a>'; } else { var service_name = service.name; } break;
 												}
-												service_line += '<tr><td></td><td>'+service_name+'</td><td class="'+table_classes[service.status]+'">'+service.status+'</td></tr>';
+												service_line += '<tr><td></td><td>'+service_name+'</td><td class="'+table_classes[service.status]+'">'+service.status+((service.state_type == 'SOFT') ? ' (S)' : '')+'</td></tr>';
 											}
 										});
 

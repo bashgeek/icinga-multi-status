@@ -26,8 +26,8 @@
 				// Possible DOWN UNREACHABLE UP
 				if (host.status == 'DOWN' || host.status == 'UNREACHABLE') {
 					// Just if no downtime or acknowleged based on instance settings
-					if (!(host.down && instance.hide_down) && !(host.ack && instance.hide_ack)) {
-						icinga_notification(host.instance+'_host_'+host.name, 'Host Problem', host.name+' ('+host.status+')', instance.title);
+					if (!(host.down && instance.hide_down) && !(host.ack && instance.hide_ack) && !(host.state_type == 'SOFT' && instance.hide_soft)) {
+						icinga_notification(host.instance+'_host_'+host.name, 'Host Problem', host.name+' ('+host.status+' - '+host.state_type+')', instance.title);
 
 						error_counts.downs += 1;
 					} else {
@@ -43,12 +43,12 @@
 					
 					// Possible OK WARNING UNKNOWN CRITICAL
 					// Something is wrong with that status
-					if (service.status == 'WARNING' || service.status == 'CRITICAL') {
+					if ((service.status == 'WARNING' || service.status == 'CRITICAL') && (service.state_type == 'HARD' || !instance.hide_soft)) {
 						// Just if no downtime or acknowleged based on instance settings
 						if (!(service.down && instance.hide_down) && !(service.ack && instance.hide_ack)) {
 							// Notification for this service only if the host is not down, warning just when not ignored
 							if (host.status == 'UP' && (service.status != 'WARNING' || (service.status == 'WARNING' && !instance.notf_nowarn))) {
-								icinga_notification(host.instance+'_service_'+host.name+'_'+service.name, 'Service Problem', host.name+': '+service.name+' ('+service.status+')', instance.title);
+								icinga_notification(host.instance+'_service_'+host.name+'_'+service.name, 'Service Problem', host.name+': '+service.name+' ('+service.status+' '+service.state_type+')', instance.title);
 							}
 
 							if (service.status == 'WARNING')
@@ -82,6 +82,8 @@
 				}
 			}
 		}
+
+		console.log(bg.data_hosts);
 	}
 
 	var notf_store = [];
@@ -226,6 +228,7 @@
 												icinga_data_host.push({
 													host_name: e.name,
 													status: (e.attrs.state == 1) ? 'DOWN' : 'UP',
+													state_type: (e.attrs.state_type == 1) ? 'HARD' : 'SOFT',
 													in_scheduled_downtime: e.attrs.last_in_downtime,
 													has_been_acknowledged: e.attrs.acknowledgement,
 													notifications_enabled: e.attrs.enable_notifications,
@@ -246,6 +249,7 @@
 													service_display_name: e.attrs.display_name,
 													service_name: e.attrs.name,
 													status: state,
+													state_type: (e.attrs.state_type == 1) ? 'HARD' : 'SOFT',
 													in_scheduled_downtime: e.attrs.last_in_downtime,
 													has_been_acknowledged: e.attrs.acknowledgement,
 													notifications_enabled: e.attrs.enable_notifications,

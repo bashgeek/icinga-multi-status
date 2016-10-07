@@ -21,6 +21,7 @@
 			$('#instance-hide-services').val('');
 			$('#instance-hide-ack').prop('checked',false);
 			$('#instance-hide-down').prop('checked',false);
+			$('#instance-hide-soft').prop('checked',false);
 			$('#instance-notf-nowarn').prop('checked',false);
 		} else {
 			var instances = icinga_get_instances();
@@ -39,6 +40,7 @@
 			$('#instance-hide-services').val(e.hide_services);
 			$('#instance-hide-ack').prop('checked', e.hide_ack);
 			$('#instance-hide-down').prop('checked', e.hide_down);
+			$('#instance-hide-soft').prop('checked', e.hide_soft);
 			$('#instance-notf-nowarn').prop('checked', e.notf_nowarn);
 		}
 
@@ -198,7 +200,8 @@
 					'hide_services': $('#instance-hide-services').val(),
 					'hide_ack': ($('#instance-hide-ack').prop('checked')) ? true : false,
 					'hide_down': ($('#instance-hide-down').prop('checked')) ? true : false,
-					'notf_nowarn': ($('#instance-notf-nowarn').prop('checked')) ? true : false
+					'hide_soft': ($('#instance-hide-soft').prop('checked')) ? true : false,
+					'notf_nowarn': ($('#instance-notf-nowarn').prop('checked')) ? true : false,
 				}
 			} else {
 				// Add
@@ -215,7 +218,8 @@
 					'hide_services': $('#instance-hide-services').val(),
 					'hide_ack': ($('#instance-hide-ack').prop('checked')) ? true : false,
 					'hide_down': ($('#instance-hide-down').prop('checked')) ? true : false,
-					'notf_nowarn': ($('#instance-notf-nowarn').prop('checked')) ? true : false
+					'hide_soft': ($('#instance-hide-soft').prop('checked')) ? true : false,
+					'notf_nowarn': ($('#instance-notf-nowarn').prop('checked')) ? true : false,
 				});
 			}
 

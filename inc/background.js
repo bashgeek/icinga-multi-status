@@ -88,6 +88,7 @@ var bg = {
 									'instance': i,
 									'name': host.host_name,
 									'status': host.status,
+									'state_type': host.state_type,
 									'down': host.in_scheduled_downtime,
 									'ack': host.has_been_acknowledged,
 									'notify': host.notifications_enabled,
@@ -117,6 +118,7 @@ var bg = {
 										'name': service.service_display_name,
 										'sname': (typeof(service.service_name) !== 'undefined') ? service.service_name : service.service_display_name,
 										'status': service.status,
+										'state_type': service.state_type,
 										'down': service.in_scheduled_downtime,
 										'ack': service.has_been_acknowledged,
 										'notify': host.notifications_enabled
