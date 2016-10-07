@@ -47,13 +47,17 @@
 									var host = e.hosts[h];
 									if (host.instance == i) {
 										// Host HTML Line
-										host_line = '<tr><td><a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=1&host='+host.name+'" target="_blank">'+host.name+'</a></td><td></td><td class="'+table_classes[host.status]+'">'+host.status+'</td></tr>';
+										switch (instance.icinga_type) {
+											default: var host_name = '<a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=1&host='+host.name+'" target="_blank">'+host.name+'</a>'; break;
+											case 'icinga2_api': if (instance.url_web) { var host_name = '<a href="'+instance.url_web.replace(/\/$/, '')+'/monitoring/host/show?host='+host.name+'" target="_blank">'+host.name+'</a>'; } else { var host_name = host.name; } break;
+										}
+										host_line = '<tr><td>'+host_name+'</td><td></td><td class="'+table_classes[host.status]+'">'+host.status+'</td></tr>';
 										service_line = '';
 
 										// Go through all services
 										$.each(Object.keys(host.services).sort(), function(s_i,s) {
 											var service = host.services[s];
-										
+
 											var add_service = false;
 											if ($('#popup-tab-services-filter').val()) {
 												var reg = new RegExp($('#popup-tab-services-filter').val(), "i");
@@ -327,7 +331,7 @@
 						} else {
 							$('#popup-tab-overview-alert-'+worst_status).show();
 						}
-						
+
 						delete worst_status;
 					} else {
 						$('#popup-tab-overview').html('An error occured - could not connect with background task.');
