@@ -57,12 +57,16 @@
 						<td>Regular Expression to hide/ignore specific services from showing up in the monitoring. You won't receive notifications or alerts of matching services. They also not showing up in the overview lists.<br><br><i>Example: (imap|ssh)</i></td>
 					</tr>
 					<tr>
-						<td><b>Ignore acknowleged hosts & service problems</b></td>
+						<td><b>Ignore acknowleged host & service problems</b></td>
 						<td>If you acknowledge a host or service problem in Icinga, you won't get notified or alerted here if enabled.</td>
 					</tr>
 					<tr>
-						<td><b>Ignore hosts & service with downtimes</b></td>
+						<td><b>Ignore hosts & services with downtimes</b></td>
 						<td>If a scheduled downtime is active for a host or service in Icinga, you won't get notified or alerted here if enabled.</td>
+					</tr>
+					<tr>
+						<td><b>Ignore hosts & services with problems in SOFT state</b></td>
+						<td>Only respects problems in HARD state if enabled.</td>
 					</tr>
 					<tr>
 						<td><b>No notifications for warnings</b></td>
