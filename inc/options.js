@@ -3,7 +3,7 @@
 		$('#instance-alert').text('');
 		$('#instance-alert').hide();
 		$('#instance-submit').prop('disabled', false);
-		
+
 		var modal = $('#modal_instance');
 		modal.find('.form-group').removeClass('has-error');
 
@@ -149,7 +149,7 @@
 
 			if (typeof test != 'undefined')
 				$('#instance-hide-hosts').parent().removeClass('has-error');
-			
+
 			delete test;
 		}
 
@@ -163,13 +163,13 @@
 
 			if (typeof test != 'undefined')
 				$('#instance-hide-services').parent().removeClass('has-error');
-			
+
 			delete test;
 		}
 
 		if (errors.length) {
 			$('#instance-submit').prop('disabled', false);
-			
+
 			$('#instance-alert').removeClass().addClass('alert alert-danger').html('<b>Errors:</b><br>'+errors.join('<br>')).show();
 		} else {
 			$('#instance-alert').removeClass().addClass('alert alert-info').html('Checking...').show();
@@ -184,7 +184,7 @@
 			$('#instance-alert').removeClass().addClass('alert alert-danger').html('<b>Icinga Error:</b><br>'+e.text).show();
 		} else {
 			var instances = icinga_get_instances();
-			
+
 			if ($('#instance-id').val() != -1) {
 				// Save
 				instances[$('#instance-id').val()] = {

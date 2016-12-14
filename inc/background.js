@@ -53,9 +53,9 @@ var bg = {
 		if (all_done) {
 			bg.checks=[];
 			bg.data_hosts={};
-			
+
 			var instances = icinga_get_instances();
-			
+
 			for(i=0; i<bg.data_raw.length; i++) {
 				var e = bg.data_raw[i];
 

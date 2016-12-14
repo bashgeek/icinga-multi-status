@@ -40,7 +40,7 @@
 				// check services on host
 				$.each(Object.keys(host.services), function(s_i,s) {
 					var service = host.services[s];
-					
+
 					// Possible OK WARNING UNKNOWN CRITICAL
 					// Something is wrong with that status
 					if ((service.status == 'WARNING' || service.status == 'CRITICAL') && (service.state_type == 'HARD' || !instance.hide_soft)) {
@@ -211,14 +211,14 @@
 												password: password,
 												global: false,
 												timeout: interval,
-												url: url+'/v1/objects/hosts?attrs=display_name&attrs=state&attrs=last_in_downtime&attrs=state_type&attrs=acknowledgement&attrs=enable_notifications&attrs=name'
+												url: url+'/v1/objects/hosts?attrs=display_name&attrs=state&attrs=downtime_depth&attrs=state_type&attrs=acknowledgement&attrs=enable_notifications&attrs=name'
 											}),
 											$.ajax({
 												username: username,
 												password: password,
 												global: false,
 												timeout: interval,
-												url: url+'/v1/objects/services?attrs=display_name&attrs=state&attrs=last_in_downtime&attrs=host_name&attrs=state_type&attrs=acknowledgement&attrs=enable_notifications&attrs=name'
+												url: url+'/v1/objects/services?attrs=display_name&attrs=state&attrs=downtime_depth&attrs=host_name&attrs=state_type&attrs=acknowledgement&attrs=enable_notifications&attrs=name'
 											})
 										).then(function(hosts,services) {
 											var icinga_data_host = [];
@@ -227,7 +227,7 @@
 													host_name: e.name,
 													status: (e.attrs.state == 1) ? 'DOWN' : 'UP',
 													state_type: (e.attrs.state_type == 1) ? 'HARD' : 'SOFT',
-													in_scheduled_downtime: e.attrs.last_in_downtime,
+													in_scheduled_downtime: (e.attrs.downtime_depth > 0) ? true : false,
 													has_been_acknowledged: e.attrs.acknowledgement,
 													notifications_enabled: e.attrs.enable_notifications,
 												});
@@ -248,7 +248,7 @@
 													service_name: e.attrs.name,
 													status: state,
 													state_type: (e.attrs.state_type == 1) ? 'HARD' : 'SOFT',
-													in_scheduled_downtime: e.attrs.last_in_downtime,
+													in_scheduled_downtime: (e.attrs.downtime_depth > 0) ? true : false,
 													has_been_acknowledged: e.attrs.acknowledgement,
 													notifications_enabled: e.attrs.enable_notifications,
 												});
@@ -293,7 +293,7 @@
 					break;
 				}
 
-				
+
 			}
 		});
 	}

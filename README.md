@@ -15,7 +15,7 @@ Get it from the [Chrome Web Store](https://chrome.google.com/webstore/detail/ici
 - Hosts Tab showing you all hosts of all Instances with a quick filter to search for a host
 - Services Tab showing you all services of all hosts of all Instances with a quick filter to search for a service
 - Instant Chrome Notifications about new problems, if enabled
-- Interface completely build on Bootstrap v3.3.5
+- Interface completely build on Bootstrap v3.3
 
 ## Support
 
