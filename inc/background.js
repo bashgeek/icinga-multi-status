@@ -163,7 +163,7 @@ var bg = {
 
 	// Bind Request Listener
 	listener: function() {
-		chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+		browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 			switch(request.request) {
 				case 'data':
 					sendResponse({ 'state': 'ok', 'hosts': bg.data_hosts });
