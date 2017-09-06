@@ -9,7 +9,13 @@
     "page": "background.html",
     "persistent": true
   },
+
   "options_page": "options.html",
+
+  "options_ui": {
+    "page": "options.html",
+    "chrome_style": true
+  },
 
   "icons": {
     "48": "img/icon_48.png",
