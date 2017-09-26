@@ -163,15 +163,27 @@ var bg = {
 
 	// Bind Request Listener
 	listener: function() {
-		browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-			switch(request.request) {
-				case 'data':
-					sendResponse({ 'state': 'ok', 'hosts': bg.data_hosts });
-				break;
+		if (typeof chrome !== 'undefined') {
+			chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+				switch(request.request) {
+					case 'data':
+						sendResponse({ 'state': 'ok', 'hosts': bg.data_hosts });
+					break;
 
-				default: sendResponse({state: false, error: 'Unknown request'}); break;
-			}
-		});
+					default: sendResponse({state: false, error: 'Unknown request'}); break;
+				}
+			});
+		} else {
+			browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+				switch(request.request) {
+					case 'data':
+						sendResponse({ 'state': 'ok', 'hosts': bg.data_hosts });
+					break;
+
+					default: sendResponse({state: false, error: 'Unknown request'}); break;
+				}
+			});
+		}
 	},
 };
 

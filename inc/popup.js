@@ -19,7 +19,6 @@
 				window.open(chrome.runtime.getURL('options.html'));
 			}
 		});
-
 	});
 
 	table_classes = {
@@ -41,8 +40,7 @@
 
 		switch(to) {
 			case 'services':
-				var sending = browser.runtime.sendMessage({request: 'data' });
-				sending.then(function(e) {
+				var return_func = function(e) {
 					$('#popup-tab-services-tables').empty();
 
 					if (e.state == 'ok') {
@@ -125,14 +123,18 @@
 					} else {
 						$('#popup-tab-services-tables').html('An error occured - could not connect with background task.');
 					}
-				}, function(e) {
-					$('#popup-tab-services-tables').html('An error occured - could not connect with background task.');
-				});
+				}
+
+				if (typeof chrome !== 'undefined') {
+					chrome.runtime.sendMessage({ request: 'data' }, function(e){ return_func(e); });
+				} else {
+					var sending = browser.runtime.sendMessage({ request: 'data' });
+					sending.then(function(e) { return_func(e); }, function(e) { $('#popup-tab-services-tables').html('An error occured - could not connect with background task.'); });
+				}
 			break;
 
 			case 'hosts':
-				var sending = browser.runtime.sendMessage({request: 'data' });
-				sending.then(function(e) {
+				var return_func = function(e) {
 					$('#popup-tab-hosts-tables').empty();
 
 					if (e.state == 'ok') {
@@ -196,14 +198,18 @@
 					} else {
 						$('#popup-tab-hosts-tables').html('An error occured - could not connect with background task.');
 					}
-				}, function(e) {
-					$('#popup-tab-hosts-tables').html('An error occured - could not connect with background task.');
-				});
+				};
+
+				if (typeof chrome !== 'undefined') {
+					chrome.runtime.sendMessage({ request: 'data' }, function(e){ return_func(e); });
+				} else {
+					var sending = browser.runtime.sendMessage({ request: 'data' });
+					sending.then(function(e) { return_func(e); }, function(e) { $('#popup-tab-hosts-tables').html('An error occured - could not connect with background task.'); });
+				}
 			break;
 
 			case 'overview':
-				var sending = browser.runtime.sendMessage({request: 'data' });
-				sending.then(function(e) {
+				var return_func = function(e) {
 					$('#popup-tab-overview-table').find('tbody').empty();
 					$('#popup-tab-overview-downs').empty();
 					$('#popup-tab-overview .alert').each(function(){ $(this).hide(); });
@@ -354,9 +360,14 @@
 					} else {
 						$('#popup-tab-overview').html('An error occured - could not connect with background task.');
 					}
-				}, function(e) {
-					$('#popup-tab-overview').html('An error occured - could not connect with background task.');
-				});
+				};
+
+				if (typeof chrome !== 'undefined') {
+					chrome.runtime.sendMessage({ request: 'data' }, function(e){ return_func(e); });
+				} else {
+					var sending = browser.runtime.sendMessage({ request: 'data' });
+					sending.then(function(e) { return_func(e); }, function(e) { $('#popup-tab-overview').html('An error occured - could not connect with background task.'); });
+				}
 			break;
 		}
 	}

@@ -1,6 +1,6 @@
-# Icinga Multi Status for Google Chrome&trade;
+# Icinga Multi Status for web browsers
 
-Icinga Multi Status helps you monitoring your (multiple or single) Icinga instances with comfortable alert badges and notifications about problems right within Google Chrome&trade;.
+Icinga Multi Status helps you monitoring your (multiple or single) Icinga instances with comfortable alert badges and notifications about problems right within your web browser.
 
 Get it from the [Chrome Web Store](https://chrome.google.com/webstore/detail/icinga-multi-status/khabbhcojgkibdeipanmiphceeoiijal)
 
@@ -14,7 +14,7 @@ Get it from the [Chrome Web Store](https://chrome.google.com/webstore/detail/ici
 - Overview Tab showing status of your Icinga instances as well as it's current host or service problems
 - Hosts Tab showing you all hosts of all Instances with a quick filter to search for a host
 - Services Tab showing you all services of all hosts of all Instances with a quick filter to search for a service
-- Instant Chrome Notifications about new problems, if enabled
+- Instant browser/OS notifications about new problems, if enabled
 - Interface completely build on Bootstrap v3.3
 
 ## Support
