@@ -9,6 +9,17 @@
 
 		$('#popup-tab-hosts-filter').on('keyup', function() { popup_nav('hosts'); });
 		$('#popup-tab-services-filter').on('keyup', function() { popup_nav('services'); });
+
+		$('.open-options').click(function() {
+			if (chrome.runtime.openOptionsPage) {
+				// New way to open options pages, if supported (Chrome 42+).
+				chrome.runtime.openOptionsPage();
+			} else {
+				// Reasonable fallback.
+				window.open(chrome.runtime.getURL('options.html'));
+			}
+		});
+
 	});
 
 	table_classes = {
