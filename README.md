@@ -4,6 +4,8 @@ Icinga Multi Status helps you monitoring your (multiple or single) Icinga instan
 
 Get it from the [Chrome Web Store](https://chrome.google.com/webstore/detail/icinga-multi-status/khabbhcojgkibdeipanmiphceeoiijal)
 
+Get it from the [Mozilla Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/icinga-multi-status-real/)
+
 ## Features
 
 - Monitoring of multiple Icinga Instances (Version 1 and 2) using it's JSON data interface and/or API
