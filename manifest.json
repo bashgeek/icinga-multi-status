@@ -32,6 +32,12 @@
     "default_popup": "popup.html"
   },
 
+  "applications": {
+    "gecko": {
+      "id": "icinga-multi-status@bashgeek.net"
+    }
+  },
+
   "permissions": [ "tabs", "http://*/", "https://*/", "notifications" ],
   "manifest_version": 2
 }
