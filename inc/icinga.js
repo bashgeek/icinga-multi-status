@@ -153,7 +153,7 @@
 				switch (icinga_type) {
 					default:
 						switch (res.status) {
-							default: var error = 'unknown error'; break;
+							default: var error = 'Unknown Error - Was not able to connect to your Icinga instance. Maybe you are using a self-signed SSL certificate that your browser is not trusting (yet)?'; break;
 							case 403: var error = 'Error 403 - Forbidden'; break;
 							case 404: var error = 'Error 404 - Bad URL'; break;
 							case 401: var error = 'Error 401 - Username/Password wrong'; break;
