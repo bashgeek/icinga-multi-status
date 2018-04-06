@@ -4,7 +4,12 @@
 		var error_counts = { instance: 0, warnings: 0, downs: 0, unknown: 0 };
 
 		// Check for instance errors
-		var instances = icinga_get_instances();
+		icinga_get_instances(function (instances) {
+
+            instances = instances.instances;
+
+            if (instances == null)
+                instances = [];
 		if (instances.length) {
 			for(i=0; i<instances.length; i++) {
 				var e = instances[i];
@@ -82,6 +87,7 @@
 				}
 			}
 		}
+	});
 	}
 
 	var notf_store = [];
@@ -129,7 +135,20 @@
 			case 'icinga2_api': var gurl = url+'/v1/status/IcingaApplication'; break;
 		}
 
-		var settings = icinga_get_settings();
+		icinga_get_settings(function (settings) {
+
+            settings = settings.settings;
+
+            var real_settings = default_settings;
+
+            if (settings == null) {
+                settings = default_settings;
+            } else {
+                $.each(settings, function (k, v) {
+                    real_settings[k] = v;
+                });
+                settings = default_settings;
+            }
 		var interval = Math.round(((settings.refresh == undefined) ? 30000 : settings.refresh*1000) / 2);
 
 		$.ajax({
@@ -298,16 +317,12 @@
 
 			}
 		});
+		});
 	}
 
-	function icinga_get_instances() {
-		try {
-			var instances = JSON.parse(localStorage.getItem('instances'));
-			if (instances == null)
-				instances = [];
-		} catch(l) { var instances = []; }
+	function icinga_get_instances(callback) {
 
-		return instances;
+		chrome.storage.local.get('instances', callback);
 	}
 
 	function icinga_set_instances(instances) {
@@ -318,7 +333,7 @@
 				real_instances.push(e);
 			}
 		}
-		localStorage.setItem('instances', JSON.stringify(real_instances));
+        chrome.storage.local.set({'instances': real_instances});
 	}
 
 	default_settings = {
@@ -326,25 +341,30 @@
 	};
 
 	function icinga_set_setting(setting,value) {
-		var settings = icinga_get_settings();
-		settings[setting] = value;
 
-		localStorage.setItem('settings', JSON.stringify(settings));
+		icinga_get_settings(function (settings) {
+
+            settings = settings.settings;
+
+            var real_settings = default_settings;
+
+            if (settings == null) {
+                settings = default_settings;
+            } else {
+                $.each(settings, function (k, v) {
+                    real_settings[k] = v;
+                });
+                settings = default_settings;
+            }
+
+            settings[setting] = value;
+
+            chrome.storage.local.set({'settings': settings});
+        });
 	}
 
-	function icinga_get_settings() {
-		try {
-			var real_settings = default_settings;
+	function icinga_get_settings(callback) {
 
-			var settings = JSON.parse(localStorage.getItem('settings'));
-			if (settings == null) {
-				settings = default_settings;
-			} else {
-				$.each(settings, function(k,v) { real_settings[k] = v; });
-				settings = default_settings;
-			}
-		} catch(l) { var settings = default_settings; }
-
-		return settings;
+		chrome.storage.local.get('settings', callback);
 	}
 

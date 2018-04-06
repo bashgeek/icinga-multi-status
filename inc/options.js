@@ -24,7 +24,12 @@
 			$('#instance-hide-soft').prop('checked',false);
 			$('#instance-notf-nowarn').prop('checked',false);
 		} else {
-			var instances = icinga_get_instances();
+			icinga_get_instances(function (instances) {
+
+                instances = instances.instances;
+
+                if (instances == null)
+                    instances = [];
 			var e = instances[instance];
 
 			modal.find('.modal-title').text('Edit instance');
@@ -42,6 +47,7 @@
 			$('#instance-hide-down').prop('checked', e.hide_down);
 			$('#instance-hide-soft').prop('checked', e.hide_soft);
 			$('#instance-notf-nowarn').prop('checked', e.notf_nowarn);
+			});
 		}
 
 		modal.modal();
@@ -49,7 +55,12 @@
 
 	function instance_modal_delete(instance) {
 		var modal = $('#modal_instance_delete');
-		var instances = icinga_get_instances();
+		icinga_get_instances(function (instances) {
+
+            instances = instances.instances;
+
+            if (instances == null)
+                instances = [];
 		var e = instances[instance];
 
 		$('#instance-delete-submit').prop('disabled', false);
@@ -58,13 +69,19 @@
 		$('#instance-delete-title').html(e.title);
 
 		modal.modal();
+		});
 	}
 
 	function instance_delete() {
 		$('#instance-delete-submit').prop('disabled', true);
 
 		var modal = $('#modal_instance_delete');
-		var instances = icinga_get_instances();
+		icinga_get_instances(function (instances) {
+
+            instances = instances.instances;
+
+            if (instances == null)
+                instances = [];
 		var e = instances[$('#instance-delete-id').val()];
 
 		delete instances[$('#instance-delete-id').val()];
@@ -73,13 +90,20 @@
 		$('#instance-delete-alert').removeClass().addClass('alert alert-success').html('Removed instance!').show();
 		instance_table_reload();
 		setTimeout(function(){ $('#modal_instance_delete').modal('hide'); }, 2000);
+		});
 	}
 
 	function instance_active(instance) {
-		var instances = icinga_get_instances();
+		icinga_get_instances(function (instances) {
+
+            instances = instances.instances;
+
+            if (instances == null)
+                instances = [];
 		instances[instance].active = $('#instance-table-active-'+instance).prop('checked');
 		icinga_set_instances(instances);
 		instance_table_reload();
+		});
 	}
 
 	function instance_save() {
@@ -183,7 +207,12 @@
 			$('#instance-submit').prop('disabled', false);
 			$('#instance-alert').removeClass().addClass('alert alert-danger').html('<b>Icinga Error:</b><br>'+e.text).show();
 		} else {
-			var instances = icinga_get_instances();
+			icinga_get_instances(function (instances) {
+                instances = instances.instances;
+
+                if (instances == null)
+                    instances = [];
+
 
 			if ($('#instance-id').val() != -1) {
 				// Save
@@ -230,11 +259,17 @@
 			instance_table_reload();
 
 			setTimeout(function(){ $('#modal_instance').modal('hide'); }, 2000);
+			});
 		}
 	}
 
 	function instance_table_reload() {
-		var instances = icinga_get_instances();
+		icinga_get_instances(function (instances) {
+
+            instances = instances.instances;
+
+            if (instances == null)
+                instances = [];
 		var tab = $('#instances-table');
 
 		tab.find('tbody').empty();
@@ -257,8 +292,8 @@
 				$('#instance-table-edit-'+i).click({ i: i }, function(e){ instance_modal(e.data.i); });
 				$('#instance-table-delete-'+i).click({ i: i }, function(e){ instance_modal_delete(e.data.i); });
 			}
-
 		}
+		});
 	}
 
 	function instance_untab_url() {
@@ -276,9 +311,22 @@
 	}
 
 	function settings_reload() {
-		var settings = icinga_get_settings();
+		icinga_get_settings(function (settings) {
+            settings = settings.settings;
+
+            var real_settings = default_settings;
+
+            if (settings == null) {
+                settings = default_settings;
+            } else {
+                $.each(settings, function (k, v) {
+                    real_settings[k] = v;
+                });
+                settings = default_settings;
+            }
 
 		$('#settings-refresh').val(settings.refresh);
+		});
 	}
 
 	function settings_save() {
