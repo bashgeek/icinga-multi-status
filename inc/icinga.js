@@ -5,89 +5,90 @@
 
 		// Check for instance errors
 		icinga_get_instances(function (instances) {
+			instances = instances.instances;
 
-            instances = instances.instances;
+			if (instances == null) {
+				instances = [];
+			}
 
-            if (instances == null)
-                instances = [];
-		if (instances.length) {
-			for(i=0; i<instances.length; i++) {
-				var e = instances[i];
-				if (e.active) {
-					if (e.error) {
-						error_counts.instance += 1;
+			if (instances.length) {
+				for(i=0; i<instances.length; i++) {
+					var e = instances[i];
+					if (e.active) {
+						if (e.error) {
+							error_counts.instance += 1;
+						}
 					}
 				}
 			}
-		}
 
-		if (Object.keys(bg.data_hosts).length) {
-			// Go through hosts
-			$.each(Object.keys(bg.data_hosts), function(h_i,h) {
-				var host = bg.data_hosts[h];
-				var instance = instances[host.instance];
+			if (Object.keys(bg.data_hosts).length) {
+				// Go through hosts
+				$.each(Object.keys(bg.data_hosts), function(h_i,h) {
+					var host = bg.data_hosts[h];
+					var instance = instances[host.instance];
 
-				// something is wrong with host != UP && != PENDING
-				// Possible DOWN UNREACHABLE UP
-				if (host.status == 'DOWN' || host.status == 'UNREACHABLE') {
-					// Just if no downtime or acknowleged based on instance settings
-					if (!(host.down && instance.hide_down) && !(host.ack && instance.hide_ack) && !(host.state_type == 'SOFT' && instance.hide_soft)) {
-						icinga_notification(host.instance+'_host_'+host.name, 'Host Problem', host.name+' ('+host.status+' - '+host.state_type+')', instance.title);
+					// something is wrong with host != UP && != PENDING
+					// Possible DOWN UNREACHABLE UP
+					if (host.status == 'DOWN' || host.status == 'UNREACHABLE') {
+						// Just if no downtime or acknowleged based on instance settings
+						if (!(host.down && instance.hide_down) && !(host.ack && instance.hide_ack) && !(host.state_type == 'SOFT' && instance.hide_soft)) {
+							icinga_notification(host.instance+'_host_'+host.name, 'Host Problem', host.name+' ('+host.status+' - '+host.state_type+')', instance.title);
 
-						error_counts.downs += 1;
+							error_counts.downs += 1;
+						} else {
+							icinga_notification(host.instance+'_host_'+host.name, 'clear');
+						}
 					} else {
 						icinga_notification(host.instance+'_host_'+host.name, 'clear');
 					}
-				} else {
-					icinga_notification(host.instance+'_host_'+host.name, 'clear');
-				}
 
-				// check services on host
-				$.each(Object.keys(host.services), function(s_i,s) {
-					var service = host.services[s];
+					// check services on host
+					$.each(Object.keys(host.services), function(s_i,s) {
+						var service = host.services[s];
 
-					// Possible OK WARNING UNKNOWN CRITICAL
-					// Something is wrong with that status
-					if ((service.status == 'WARNING' || service.status == 'CRITICAL') && (service.state_type == 'HARD' || !instance.hide_soft)) {
-						// Just if no downtime or acknowleged based on instance settings
-						if (!(service.down && instance.hide_down) && !(service.ack && instance.hide_ack)) {
-							// Notification for this service only if the host is not down, warning just when not ignored
-							if (host.status == 'UP' && (service.status != 'WARNING' || (service.status == 'WARNING' && !instance.notf_nowarn))) {
-								icinga_notification(host.instance+'_service_'+host.name+'_'+service.name, 'Service Problem', host.name+': '+service.name+' ('+service.status+' - '+service.state_type+')', instance.title);
+						// Possible OK WARNING UNKNOWN CRITICAL
+						// Something is wrong with that status
+						if ((service.status == 'WARNING' || service.status == 'CRITICAL') && (service.state_type == 'HARD' || !instance.hide_soft)) {
+							// Just if no downtime or acknowleged based on instance settings
+							if (!(service.down && instance.hide_down) && !(service.ack && instance.hide_ack)) {
+								// Notification for this service only if the host is not down, warning just when not ignored
+								if (host.status == 'UP' && (service.status != 'WARNING' || (service.status == 'WARNING' && !instance.notf_nowarn))) {
+									icinga_notification(host.instance+'_service_'+host.name+'_'+service.name, 'Service Problem', host.name+': '+service.name+' ('+service.status+' - '+service.state_type+')', instance.title);
+								}
+
+								if (service.status == 'WARNING')
+									error_counts.warnings += 1;
+								else
+									error_counts.downs += 1;
+							} else {
+								icinga_notification(host.instance+'_service_'+host.name+'_'+service.name, 'clear');
 							}
-
-							if (service.status == 'WARNING')
-								error_counts.warnings += 1;
-							else
-								error_counts.downs += 1;
+						} else if (service.status == 'UNKNOWN') {
+							// Unknown is always worth a count
+							error_counts.unknown += 1;
 						} else {
 							icinga_notification(host.instance+'_service_'+host.name+'_'+service.name, 'clear');
 						}
-					} else if (service.status == 'UNKNOWN') {
-						// Unknown is always worth a count
-						error_counts.unknown += 1;
-					} else {
-						icinga_notification(host.instance+'_service_'+host.name+'_'+service.name, 'clear');
-					}
+					});
 				});
-			});
-		}
+			}
 
-		// Badge
-		if (error_counts.instance > 0) {
-			icinga_badge(''+error_counts.instance, 'error');
-		} else {
-			if (error_counts.downs > 0) {
-				icinga_badge(''+error_counts.downs, 'down');
+			// Badge
+			if (error_counts.instance > 0) {
+				icinga_badge(''+error_counts.instance, 'error');
 			} else {
-				if (error_counts.warnings > 0) {
-					icinga_badge(''+error_counts.warnings, 'warning');
+				if (error_counts.downs > 0) {
+					icinga_badge(''+error_counts.downs, 'down');
 				} else {
-					icinga_badge(''+Object.keys(bg.data_hosts).length, 'ok');
+					if (error_counts.warnings > 0) {
+						icinga_badge(''+error_counts.warnings, 'warning');
+					} else {
+						icinga_badge(''+Object.keys(bg.data_hosts).length, 'ok');
+					}
 				}
 			}
-		}
-	});
+		});
 	}
 
 	var notf_store = [];
@@ -136,171 +137,64 @@
 		}
 
 		icinga_get_settings(function (settings) {
+			settings = settings.settings;
+			var real_settings = default_settings;
 
-            settings = settings.settings;
-
-            var real_settings = default_settings;
-
-            if (settings == null) {
-                settings = default_settings;
+			if (settings == null) {
+				settings = default_settings;
             } else {
-                $.each(settings, function (k, v) {
-                    real_settings[k] = v;
-                });
-                settings = default_settings;
+				$.each(settings, function (k, v) {
+					real_settings[k] = v;
+				});
+				settings = default_settings;
             }
-		var interval = Math.round(((settings.refresh == undefined) ? 30000 : settings.refresh*1000) / 2);
 
-		$.ajax({
-			username: username,
-			password: password,
-			global: false,
-			timeout: interval,
-			url: gurl,
-			error: function(res, status, error) {
-				switch (type) {
-					case 'instance-check':
-						instance_save_return({ error: true, text: status+' '+error });
-					break;
+			var interval = Math.round(((settings.refresh == undefined) ? 30000 : settings.refresh*1000) / 2);
 
-					case 'refresh-background':
-						bg.refreshData_return({ error: true, text: status+' '+error });
-					break;
-				}
-			},
-			complete: function (res, status) {
-				switch (icinga_type) {
-					default:
-						switch (res.status) {
-							default: var error = 'Unknown Error - Was not able to connect to your Icinga instance. Maybe you are using a self-signed SSL certificate that your browser is not trusting (yet)?'; break;
-							case 403: var error = 'Error 403 - Forbidden'; break;
-							case 404: var error = 'Error 404 - Bad URL'; break;
-							case 401: var error = 'Error 401 - Username/Password wrong'; break;
-							case 200:
-								if ((status === "success" || status === "notmodified")) {
-									var json = jQuery.parseJSON(res.responseText);
+			$.ajax({
+				username: username,
+				password: password,
+				global: false,
+				timeout: interval,
+				url: gurl,
+				error: function(res, status, error) {
+					switch (type) {
+						case 'instance-check':
+							instance_save_return({ error: true, text: status+' '+error });
+						break;
 
-									// Get Icinga Version
-									if (!json.cgi_json_version) {
-										var error = 'Invalid Format from Icinga';
-									} else {
-										var icinga_version = json.icinga_status.program_version;
-										var icinga_data_service = json.status.service_status;
-										var icinga_data_host = json.status.host_status;
-										var text = 'OK - '+icinga_data_host.length+' hosts, '+icinga_data_service.length+' services (Icinga '+icinga_version+')';
-									}
-								} else {
-									var error = status;
-								}
-							break;
-						}
+						case 'refresh-background':
+							bg.refreshData_return({ error: true, text: status+' '+error });
+						break;
+					}
+				},
+				complete: function (res, status) {
+					switch (icinga_type) {
+						default:
+							switch (res.status) {
+								default: var error = 'Unknown Error - Was not able to connect to your Icinga instance. Maybe you are using a self-signed SSL certificate that your browser is not trusting (yet)?'; break;
+								case 403: var error = 'Error 403 - Forbidden'; break;
+								case 404: var error = 'Error 404 - Bad URL'; break;
+								case 401: var error = 'Error 401 - Username/Password wrong'; break;
+								case 200:
+									if ((status === "success" || status === "notmodified")) {
+										var json = jQuery.parseJSON(res.responseText);
 
-						switch (type) {
-							case 'instance-check':
-								instance_save_return((error) ? { error: true, text: error } : { error: false, text: text });
-							break;
-
-							case 'refresh-background':
-								bg.refreshData_return((error) ? { error: true, text: error, instance: instance } : { error: false, text: text, instance: instance, hosts: icinga_data_host, services: icinga_data_service });
-							break;
-						}
-
-						delete icinga_data_service;
-						delete icinga_data_host;
-						delete res;
-						delete text;
-						delete error;
-					break;
-					case 'icinga2_api':
-						switch (res.status) {
-							default: var error = 'unknown error'; break;
-							case 403: var error = 'Error 403 - Forbidden'; break;
-							case 404: var error = 'Error 404 - Bad URL'; break;
-							case 401: var error = 'Error 401 - Username/Password wrong'; break;
-							case 200:
-								if ((status === "success" || status === "notmodified")) {
-									var json = jQuery.parseJSON(res.responseText);
-									var icinga_version = json.results[0].status.icingaapplication.app.version;
-									if (!icinga_version) {
-										var error = 'Invalid Format from Icinga';
-									} else {
-										var no_return = true;
-
-										$.when(
-											$.ajax({
-												username: username,
-												password: password,
-												global: false,
-												timeout: interval,
-												url: url+'/v1/objects/hosts?attrs=display_name&attrs=state&attrs=downtime_depth&attrs=state_type&attrs=acknowledgement&attrs=enable_notifications&attrs=name'
-											}),
-											$.ajax({
-												username: username,
-												password: password,
-												global: false,
-												timeout: interval,
-												url: url+'/v1/objects/services?attrs=display_name&attrs=state&attrs=downtime_depth&attrs=host_name&attrs=state_type&attrs=acknowledgement&attrs=enable_notifications&attrs=name'
-											})
-										).then(function(hosts,services) {
-											var icinga_data_host = [];
-											$.each(hosts[0].results, function(i,e){
-												icinga_data_host.push({
-													host_name: e.name,
-													status: (e.attrs.state == 1) ? 'DOWN' : 'UP',
-													state_type: (e.attrs.state_type == 1) ? 'HARD' : 'SOFT',
-													in_scheduled_downtime: (e.attrs.downtime_depth > 0) ? true : false,
-													has_been_acknowledged: e.attrs.acknowledgement,
-													notifications_enabled: e.attrs.enable_notifications,
-												});
-											});
-
-											var icinga_data_service = [];
-											$.each(services[0].results, function(i,e){
-												switch (e.attrs.state) {
-													case 0: var state = 'OK'; break;
-													case 1: var state = 'WARNING'; break;
-													case 2: var state = 'CRITICAL'; break;
-													case 3: var state = 'UNKNOWN'; break;
-												}
-												icinga_data_service.push({
-													host_name: e.attrs.host_name,
-													service_description: e.attrs.display_name,
-													service_display_name: e.attrs.display_name,
-													service_name: e.attrs.name,
-													status: state,
-													state_type: (e.attrs.state_type == 1) ? 'HARD' : 'SOFT',
-													in_scheduled_downtime: (e.attrs.downtime_depth > 0) ? true : false,
-													has_been_acknowledged: e.attrs.acknowledgement,
-													notifications_enabled: e.attrs.enable_notifications,
-												});
-											});
-
+										// Get Icinga Version
+										if (!json.cgi_json_version) {
+											var error = 'Invalid Format from Icinga';
+										} else {
+											var icinga_version = json.icinga_status.program_version;
+											var icinga_data_service = json.status.service_status;
+											var icinga_data_host = json.status.host_status;
 											var text = 'OK - '+icinga_data_host.length+' hosts, '+icinga_data_service.length+' services (Icinga '+icinga_version+')';
-
-											switch (type) {
-												case 'instance-check':
-													instance_save_return((error) ? { error: true, text: error } : { error: false, text: text });
-												break;
-
-												case 'refresh-background':
-													bg.refreshData_return((error) ? { error: true, text: error, instance: instance } : { error: false, text: text, instance: instance, hosts: icinga_data_host, services: icinga_data_service });
-												break;
-											}
-
-											delete icinga_data_service;
-											delete icinga_data_host;
-											delete res;
-											delete text;
-											delete error;
-										});
+										}
+									} else {
+										var error = status;
 									}
-								} else {
-									var error = status;
-								}
-							break;
-						}
+								break;
+							}
 
-						if (!no_return) {
 							switch (type) {
 								case 'instance-check':
 									instance_save_return((error) ? { error: true, text: error } : { error: false, text: text });
@@ -310,18 +204,121 @@
 									bg.refreshData_return((error) ? { error: true, text: error, instance: instance } : { error: false, text: text, instance: instance, hosts: icinga_data_host, services: icinga_data_service });
 								break;
 							}
-						}
-					break;
+
+							delete icinga_data_service;
+							delete icinga_data_host;
+							delete res;
+							delete text;
+							delete error;
+						break;
+						case 'icinga2_api':
+							switch (res.status) {
+								default: var error = 'unknown error'; break;
+								case 403: var error = 'Error 403 - Forbidden'; break;
+								case 404: var error = 'Error 404 - Bad URL'; break;
+								case 401: var error = 'Error 401 - Username/Password wrong'; break;
+								case 200:
+									if ((status === "success" || status === "notmodified")) {
+										var json = jQuery.parseJSON(res.responseText);
+										var icinga_version = json.results[0].status.icingaapplication.app.version;
+										if (!icinga_version) {
+											var error = 'Invalid Format from Icinga';
+										} else {
+											var no_return = true;
+
+											$.when(
+												$.ajax({
+													username: username,
+													password: password,
+													global: false,
+													timeout: interval,
+													url: url+'/v1/objects/hosts?attrs=display_name&attrs=state&attrs=downtime_depth&attrs=state_type&attrs=acknowledgement&attrs=enable_notifications&attrs=name'
+												}),
+												$.ajax({
+													username: username,
+													password: password,
+													global: false,
+													timeout: interval,
+													url: url+'/v1/objects/services?attrs=display_name&attrs=state&attrs=downtime_depth&attrs=host_name&attrs=state_type&attrs=acknowledgement&attrs=enable_notifications&attrs=name'
+												})
+											).then(function(hosts,services) {
+												var icinga_data_host = [];
+												$.each(hosts[0].results, function(i,e){
+													icinga_data_host.push({
+														host_name: e.name,
+														status: (e.attrs.state == 1) ? 'DOWN' : 'UP',
+														state_type: (e.attrs.state_type == 1) ? 'HARD' : 'SOFT',
+														in_scheduled_downtime: (e.attrs.downtime_depth > 0) ? true : false,
+														has_been_acknowledged: e.attrs.acknowledgement,
+														notifications_enabled: e.attrs.enable_notifications,
+													});
+												});
+
+												var icinga_data_service = [];
+												$.each(services[0].results, function(i,e){
+													switch (e.attrs.state) {
+														case 0: var state = 'OK'; break;
+														case 1: var state = 'WARNING'; break;
+														case 2: var state = 'CRITICAL'; break;
+														case 3: var state = 'UNKNOWN'; break;
+													}
+													icinga_data_service.push({
+														host_name: e.attrs.host_name,
+														service_description: e.attrs.display_name,
+														service_display_name: e.attrs.display_name,
+														service_name: e.attrs.name,
+														status: state,
+														state_type: (e.attrs.state_type == 1) ? 'HARD' : 'SOFT',
+														in_scheduled_downtime: (e.attrs.downtime_depth > 0) ? true : false,
+														has_been_acknowledged: e.attrs.acknowledgement,
+														notifications_enabled: e.attrs.enable_notifications,
+													});
+												});
+
+												var text = 'OK - '+icinga_data_host.length+' hosts, '+icinga_data_service.length+' services (Icinga '+icinga_version+')';
+
+												switch (type) {
+													case 'instance-check':
+														instance_save_return((error) ? { error: true, text: error } : { error: false, text: text });
+													break;
+
+													case 'refresh-background':
+														bg.refreshData_return((error) ? { error: true, text: error, instance: instance } : { error: false, text: text, instance: instance, hosts: icinga_data_host, services: icinga_data_service });
+													break;
+												}
+
+												delete icinga_data_service;
+												delete icinga_data_host;
+												delete res;
+												delete text;
+												delete error;
+											});
+										}
+									} else {
+										var error = status;
+									}
+								break;
+							}
+
+							if (!no_return) {
+								switch (type) {
+									case 'instance-check':
+										instance_save_return((error) ? { error: true, text: error } : { error: false, text: text });
+									break;
+
+									case 'refresh-background':
+										bg.refreshData_return((error) ? { error: true, text: error, instance: instance } : { error: false, text: text, instance: instance, hosts: icinga_data_host, services: icinga_data_service });
+									break;
+								}
+							}
+						break;
+					}
 				}
-
-
-			}
-		});
+			});
 		});
 	}
 
 	function icinga_get_instances(callback) {
-
 		chrome.storage.local.get('instances', callback);
 	}
 
@@ -333,7 +330,8 @@
 				real_instances.push(e);
 			}
 		}
-        chrome.storage.local.set({'instances': real_instances});
+
+		chrome.storage.local.set({'instances': real_instances});
 	}
 
 	default_settings = {
@@ -341,30 +339,27 @@
 	};
 
 	function icinga_set_setting(setting,value) {
-
 		icinga_get_settings(function (settings) {
+			settings = settings.settings;
 
-            settings = settings.settings;
+			var real_settings = default_settings;
 
-            var real_settings = default_settings;
+			if (settings == null) {
+				settings = default_settings;
+			} else {
+				$.each(settings, function (k, v) {
+					real_settings[k] = v;
+				});
+				settings = default_settings;
+			}
 
-            if (settings == null) {
-                settings = default_settings;
-            } else {
-                $.each(settings, function (k, v) {
-                    real_settings[k] = v;
-                });
-                settings = default_settings;
-            }
+			settings[setting] = value;
 
-            settings[setting] = value;
-
-            chrome.storage.local.set({'settings': settings});
-        });
+			chrome.storage.local.set({'settings': settings});
+		});
 	}
 
 	function icinga_get_settings(callback) {
-
 		chrome.storage.local.get('settings', callback);
 	}
 

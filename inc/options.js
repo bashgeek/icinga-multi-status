@@ -25,28 +25,27 @@
 			$('#instance-notf-nowarn').prop('checked',false);
 		} else {
 			icinga_get_instances(function (instances) {
+				instances = instances.instances;
 
-                instances = instances.instances;
+				if (instances == null) {
+					instances = [];
+				}
 
-                if (instances == null)
-                    instances = [];
-			var e = instances[instance];
-
-			modal.find('.modal-title').text('Edit instance');
-			$('#instance-id').val(instance);
-
-			$('#instance-url').val(e.url);
-			$('#instance-url-web').val(e.url_web);
-			$('#instance-title').val(e.title);
-			$('#instance-icinga-type').val(e.icinga_type);
-			$('#instance-user').val(e.user);
-			$('#instance-pass').val(e.pass);
-			$('#instance-hide-hosts').val(e.hide_hosts);
-			$('#instance-hide-services').val(e.hide_services);
-			$('#instance-hide-ack').prop('checked', e.hide_ack);
-			$('#instance-hide-down').prop('checked', e.hide_down);
-			$('#instance-hide-soft').prop('checked', e.hide_soft);
-			$('#instance-notf-nowarn').prop('checked', e.notf_nowarn);
+				var e = instances[instance];
+				modal.find('.modal-title').text('Edit instance');
+				$('#instance-id').val(instance);
+				$('#instance-url').val(e.url);
+				$('#instance-url-web').val(e.url_web);
+				$('#instance-title').val(e.title);
+				$('#instance-icinga-type').val(e.icinga_type);
+				$('#instance-user').val(e.user);
+				$('#instance-pass').val(e.pass);
+				$('#instance-hide-hosts').val(e.hide_hosts);
+				$('#instance-hide-services').val(e.hide_services);
+				$('#instance-hide-ack').prop('checked', e.hide_ack);
+				$('#instance-hide-down').prop('checked', e.hide_down);
+				$('#instance-hide-soft').prop('checked', e.hide_soft);
+				$('#instance-notf-nowarn').prop('checked', e.notf_nowarn);
 			});
 		}
 
@@ -56,19 +55,18 @@
 	function instance_modal_delete(instance) {
 		var modal = $('#modal_instance_delete');
 		icinga_get_instances(function (instances) {
+			instances = instances.instances;
 
-            instances = instances.instances;
+			if (instances == null) {
+				instances = [];
+			}
 
-            if (instances == null)
-                instances = [];
-		var e = instances[instance];
+			var e = instances[instance];
+			$('#instance-delete-submit').prop('disabled', false);
+			$('#instance-delete-id').val(instance);
+			$('#instance-delete-title').html(e.title);
 
-		$('#instance-delete-submit').prop('disabled', false);
-
-		$('#instance-delete-id').val(instance);
-		$('#instance-delete-title').html(e.title);
-
-		modal.modal();
+			modal.modal();
 		});
 	}
 
@@ -77,32 +75,34 @@
 
 		var modal = $('#modal_instance_delete');
 		icinga_get_instances(function (instances) {
+			instances = instances.instances;
 
-            instances = instances.instances;
+			if (instances == null) {
+				instances = [];
+			}
 
-            if (instances == null)
-                instances = [];
-		var e = instances[$('#instance-delete-id').val()];
+			var e = instances[$('#instance-delete-id').val()];
 
-		delete instances[$('#instance-delete-id').val()];
-		icinga_set_instances(instances);
+			delete instances[$('#instance-delete-id').val()];
+			icinga_set_instances(instances);
 
-		$('#instance-delete-alert').removeClass().addClass('alert alert-success').html('Removed instance!').show();
-		instance_table_reload();
-		setTimeout(function(){ $('#modal_instance_delete').modal('hide'); }, 2000);
+			$('#instance-delete-alert').removeClass().addClass('alert alert-success').html('Removed instance!').show();
+			instance_table_reload();
+			setTimeout(function(){ $('#modal_instance_delete').modal('hide'); }, 2000);
 		});
 	}
 
 	function instance_active(instance) {
 		icinga_get_instances(function (instances) {
+			instances = instances.instances;
 
-            instances = instances.instances;
+			if (instances == null) {
+				instances = [];
+			}
 
-            if (instances == null)
-                instances = [];
-		instances[instance].active = $('#instance-table-active-'+instance).prop('checked');
-		icinga_set_instances(instances);
-		instance_table_reload();
+			instances[instance].active = $('#instance-table-active-'+instance).prop('checked');
+			icinga_set_instances(instances);
+			instance_table_reload();
 		});
 	}
 
@@ -208,91 +208,91 @@
 			$('#instance-alert').removeClass().addClass('alert alert-danger').html('<b>Icinga Error:</b><br>'+e.text).show();
 		} else {
 			icinga_get_instances(function (instances) {
-                instances = instances.instances;
+				instances = instances.instances;
 
-                if (instances == null)
-                    instances = [];
-
-
-			if ($('#instance-id').val() != -1) {
-				// Save
-				instances[$('#instance-id').val()] = {
-					'active': instances[$('#instance-id').val()].active,
-					'status_last': instances[$('#instance-id').val()].status_last,
-					'url': $('#instance-url').val(),
-					'url_web': $('#instance-url-web').val(),
-					'icinga_type': $('#instance-icinga-type').val(),
-					'user': $('#instance-user').val(),
-					'pass': $('#instance-pass').val(),
-					'title': $('#instance-title').val(),
-					'hide_hosts': $('#instance-hide-hosts').val(),
-					'hide_services': $('#instance-hide-services').val(),
-					'hide_ack': ($('#instance-hide-ack').prop('checked')) ? true : false,
-					'hide_down': ($('#instance-hide-down').prop('checked')) ? true : false,
-					'hide_soft': ($('#instance-hide-soft').prop('checked')) ? true : false,
-					'notf_nowarn': ($('#instance-notf-nowarn').prop('checked')) ? true : false,
+				if (instances == null) {
+					instances = [];
 				}
-			} else {
-				// Add
-				instances.push({
-					'active': true,
-					'status_last': e.text,
-					'url': $('#instance-url').val(),
-					'url_web': $('#instance-url-web').val(),
-					'user': $('#instance-user').val(),
-					'pass': $('#instance-pass').val(),
-					'icinga_type': $('#instance-icinga-type').val(),
-					'title': $('#instance-title').val(),
-					'hide_hosts': $('#instance-hide-hosts').val(),
-					'hide_services': $('#instance-hide-services').val(),
-					'hide_ack': ($('#instance-hide-ack').prop('checked')) ? true : false,
-					'hide_down': ($('#instance-hide-down').prop('checked')) ? true : false,
-					'hide_soft': ($('#instance-hide-soft').prop('checked')) ? true : false,
-					'notf_nowarn': ($('#instance-notf-nowarn').prop('checked')) ? true : false,
-				});
-			}
 
-			icinga_set_instances(instances);
+				if ($('#instance-id').val() != -1) {
+					// Save
+					instances[$('#instance-id').val()] = {
+						'active': instances[$('#instance-id').val()].active,
+						'status_last': instances[$('#instance-id').val()].status_last,
+						'url': $('#instance-url').val(),
+						'url_web': $('#instance-url-web').val(),
+						'icinga_type': $('#instance-icinga-type').val(),
+						'user': $('#instance-user').val(),
+						'pass': $('#instance-pass').val(),
+						'title': $('#instance-title').val(),
+						'hide_hosts': $('#instance-hide-hosts').val(),
+						'hide_services': $('#instance-hide-services').val(),
+						'hide_ack': ($('#instance-hide-ack').prop('checked')) ? true : false,
+						'hide_down': ($('#instance-hide-down').prop('checked')) ? true : false,
+						'hide_soft': ($('#instance-hide-soft').prop('checked')) ? true : false,
+						'notf_nowarn': ($('#instance-notf-nowarn').prop('checked')) ? true : false,
+					}
+				} else {
+					// Add
+					instances.push({
+						'active': true,
+						'status_last': e.text,
+						'url': $('#instance-url').val(),
+						'url_web': $('#instance-url-web').val(),
+						'user': $('#instance-user').val(),
+						'pass': $('#instance-pass').val(),
+						'icinga_type': $('#instance-icinga-type').val(),
+						'title': $('#instance-title').val(),
+						'hide_hosts': $('#instance-hide-hosts').val(),
+						'hide_services': $('#instance-hide-services').val(),
+						'hide_ack': ($('#instance-hide-ack').prop('checked')) ? true : false,
+						'hide_down': ($('#instance-hide-down').prop('checked')) ? true : false,
+						'hide_soft': ($('#instance-hide-soft').prop('checked')) ? true : false,
+						'notf_nowarn': ($('#instance-notf-nowarn').prop('checked')) ? true : false,
+					});
+				}
 
-			$('#instance-alert').removeClass().addClass('alert alert-success').html('<b>Awesome!</b><br>'+e.text).show();
+				icinga_set_instances(instances);
 
-			instance_table_reload();
+				$('#instance-alert').removeClass().addClass('alert alert-success').html('<b>Awesome!</b><br>'+e.text).show();
 
-			setTimeout(function(){ $('#modal_instance').modal('hide'); }, 2000);
+				instance_table_reload();
+
+				setTimeout(function(){ $('#modal_instance').modal('hide'); }, 2000);
 			});
 		}
 	}
 
 	function instance_table_reload() {
 		icinga_get_instances(function (instances) {
-
             instances = instances.instances;
 
-            if (instances == null)
-                instances = [];
-		var tab = $('#instances-table');
-
-		tab.find('tbody').empty();
-
-		if (instances.length == 0) {
-			tab.find('tbody').html('<tr><td colspan="100">No instances configured yet - time to add one!</td></tr>');
-		} else {
-			for (i=0; i<instances.length; i++) {
-				var e = instances[i];
-				tab.find('tbody').append(
-					'<tr class="'+((!e.active) ? 'warning' : ((e.error) ? 'danger' : ''))+'">'
-					+ '<td>'+e.title+'</td>'
-					+ '<td>'+e.status_last+'</td>'
-					+ '<td><input type="checkbox" id="instance-table-active-'+i+'" '+((e.active) ? 'checked' : '')+'></td>'
-					+ '<td><button type="button" class="btn btn-primary btn-xs" id="instance-table-edit-'+i+'">Edit</button> <button type="button" class="btn btn-danger btn-xs" id="instance-table-delete-'+i+'">Delete</button></td>'
-					+ '</tr>'
-				);
-
-				$('#instance-table-active-'+i).click({ i: i }, function(e){ instance_active(e.data.i); });
-				$('#instance-table-edit-'+i).click({ i: i }, function(e){ instance_modal(e.data.i); });
-				$('#instance-table-delete-'+i).click({ i: i }, function(e){ instance_modal_delete(e.data.i); });
+			if (instances == null) {
+				instances = [];
 			}
-		}
+
+			var tab = $('#instances-table');
+			tab.find('tbody').empty();
+
+			if (instances.length == 0) {
+				tab.find('tbody').html('<tr><td colspan="100">No instances configured yet - time to add one!</td></tr>');
+			} else {
+				for (i=0; i<instances.length; i++) {
+					var e = instances[i];
+					tab.find('tbody').append(
+						'<tr class="'+((!e.active) ? 'warning' : ((e.error) ? 'danger' : ''))+'">'
+						+ '<td>'+e.title+'</td>'
+						+ '<td>'+e.status_last+'</td>'
+						+ '<td><input type="checkbox" id="instance-table-active-'+i+'" '+((e.active) ? 'checked' : '')+'></td>'
+						+ '<td><button type="button" class="btn btn-primary btn-xs" id="instance-table-edit-'+i+'">Edit</button> <button type="button" class="btn btn-danger btn-xs" id="instance-table-delete-'+i+'">Delete</button></td>'
+						+ '</tr>'
+					);
+
+					$('#instance-table-active-'+i).click({ i: i }, function(e){ instance_active(e.data.i); });
+					$('#instance-table-edit-'+i).click({ i: i }, function(e){ instance_modal(e.data.i); });
+					$('#instance-table-delete-'+i).click({ i: i }, function(e){ instance_modal_delete(e.data.i); });
+				}
+			}
 		});
 	}
 
@@ -312,20 +312,20 @@
 
 	function settings_reload() {
 		icinga_get_settings(function (settings) {
-            settings = settings.settings;
+			settings = settings.settings;
 
-            var real_settings = default_settings;
+			var real_settings = default_settings;
 
-            if (settings == null) {
-                settings = default_settings;
-            } else {
-                $.each(settings, function (k, v) {
-                    real_settings[k] = v;
-                });
-                settings = default_settings;
-            }
+			if (settings == null) {
+				settings = default_settings;
+			} else {
+				$.each(settings, function (k, v) {
+					real_settings[k] = v;
+				});
+				settings = default_settings;
+			}
 
-		$('#settings-refresh').val(settings.refresh);
+			$('#settings-refresh').val(settings.refresh);
 		});
 	}
 
