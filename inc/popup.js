@@ -44,7 +44,12 @@
 					$('#popup-tab-services-tables').empty();
 
 					if (e.state == 'ok') {
-						var instances = icinga_get_instances();
+						icinga_get_instances(function (instances) {
+
+                            instances = instances.instances;
+
+                            if (instances == null)
+                                instances = [];
 
 						// Go through active instances
 						for(i=0; i<instances.length; i++) {
@@ -120,6 +125,7 @@
 								delete instance_line;
 							}
 						}
+						});
 					} else {
 						$('#popup-tab-services-tables').html('An error occured - could not connect with background task.');
 					}
@@ -138,7 +144,12 @@
 					$('#popup-tab-hosts-tables').empty();
 
 					if (e.state == 'ok') {
-						var instances = icinga_get_instances();
+						icinga_get_instances(function (instances) {
+
+                            instances = instances.instances;
+
+                            if (instances == null)
+                                instances = [];
 
 						// Go through active instances
 						for(i=0; i<instances.length; i++) {
@@ -195,6 +206,7 @@
 								delete instance_line;
 							}
 						}
+						});
 					} else {
 						$('#popup-tab-hosts-tables').html('An error occured - could not connect with background task.');
 					}
@@ -215,7 +227,12 @@
 					$('#popup-tab-overview .alert').each(function(){ $(this).hide(); });
 
 					if (e.state == 'ok') {
-						var instances = icinga_get_instances();
+						icinga_get_instances(function (instances) {
+
+                            instances = instances.instances;
+
+                            if (instances == null)
+                                instances = [];
 
 						var worst_status = 0;
 
@@ -357,6 +374,7 @@
 						}
 
 						delete worst_status;
+						});
 					} else {
 						$('#popup-tab-overview').html('An error occured - could not connect with background task.');
 					}

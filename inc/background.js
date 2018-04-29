@@ -15,7 +15,12 @@ var bg = {
 		if (bg.timer != undefined)
 			clearTimeout(bg.timer);
 
-		var instances = icinga_get_instances();
+		icinga_get_instances(function (instances) {
+
+            instances = instances.instances;
+
+            if (instances == null)
+                instances = [];
 		if (instances.length) {
 			icinga_badge('...', 'reload');
 
@@ -36,6 +41,7 @@ var bg = {
 		}
 
 		bg.restartTimer();
+		});
 	},
 
 	refreshData_return: function(e) {
@@ -54,7 +60,12 @@ var bg = {
 			bg.checks=[];
 			bg.data_hosts={};
 
-			var instances = icinga_get_instances();
+			icinga_get_instances(function (instances) {
+
+                instances = instances.instances;
+
+                if (instances == null)
+                    instances = [];
 
 			for(i=0; i<bg.data_raw.length; i++) {
 				var e = bg.data_raw[i];
@@ -145,6 +156,7 @@ var bg = {
 			bg.data_raw=[];
 			icinga_check();
 			bg.restartTimer();
+        });
 		} else {
 			setTimeout(function(){ bg.refreshData_done(); }, 500);
 		}
@@ -155,10 +167,24 @@ var bg = {
 		if (bg.timer != undefined)
 			clearInterval(bg.timer);
 
-		var settings = icinga_get_settings();
+		icinga_get_settings(function (settings) {
+
+            settings = settings.settings;
+
+            var real_settings = default_settings;
+
+            if (settings == null) {
+                settings = default_settings;
+            } else {
+                $.each(settings, function (k, v) {
+                    real_settings[k] = v;
+                });
+                settings = default_settings;
+            }
 		var interval = (settings.refresh == undefined) ? 30000 : settings.refresh*1000;
 
 		bg.timer = setTimeout(function() { bg.refreshData(); }, interval);
+		});
 	},
 
 	// Bind Request Listener
