@@ -13,7 +13,7 @@
 		<div class="container">
 			<h3>Icinga Instances</h3>
 
-			<table class="table table-hover" id="instances-table">
+			<table class="table table-hover table-sm" id="instances-table">
 				<thead>
 					<tr>
 						<th>Name</th>
@@ -25,7 +25,7 @@
 				<tbody></tbody>
 			</table>
 
-			<button type="button" class="btn btn-default" id="instance-button-add">Add instance</button>
+			<button type="button" class="btn btn-light" id="instance-button-add">Add instance</button>
 
 			<div class="panel panel-default" style="margin-top: 50px">
 				<div class="panel-heading">
@@ -60,11 +60,11 @@
 			</div>
 
 			<div class="modal fade" id="modal_instance" tabindex="-1" role="dialog" aria-labelledby="modal_instance_label" aria-hidden="true">
-				<div class="modal-dialog">
+				<div class="modal-dialog modal-lg" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-							<h4 class="modal-title" id="modal_instance_title"></h4>
+							<h5 class="modal-title" id="modal_instance_title"></h5>
+							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
 						</div>
 						<div class="modal-body">
 							<form role="form">
@@ -129,8 +129,8 @@
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-							<h4 class="modal-title" id="modal_instance_delete_title">Delete Instance</h4>
+							<h5 class="modal-title" id="modal_instance_delete_title">Delete Instance</h5>
+							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>></button>
 						</div>
 						<div class="modal-body">
 							<input type="hidden" id="instance-delete-id" value="">

@@ -32,8 +32,8 @@
 	};
 
 	function popup_nav(to) {
-		$('#popup-nav li').each(function(){ $(this).removeClass('active'); });
-		$('#popup-nav-'+to).parent().addClass('active');
+		$('#popup-nav li a').each(function(){ $(this).removeClass('active'); });
+		$('#popup-nav-'+to).addClass('active');
 
 		$('.popup-tab').each(function(){ $(this).hide(); });
 		$('#popup-tab-'+to).show();
@@ -105,8 +105,8 @@
 									// Insert table
 									if (instance_line) {
 										$('#popup-tab-services-tables').append(''
-											+ '<table class="table table-condensed table-striped icinga-hosts-services">'
-												+ '<caption>'+instance.title+'</caption>'
+											+ '<h5 class="instance-title">'+instance.title+'</h5>'
+											+ '<table class="table table-sm table-striped icinga-hosts-services">'
 												+ '<thead>'
 													+ '<tr>'
 														+ '<th>Host</th>'
@@ -188,8 +188,8 @@
 									// Insert table
 									if (instance_line) {
 										$('#popup-tab-hosts-tables').append(''
-											+ '<table class="table table-condensed table-striped icinga-hosts">'
-												+ '<caption>'+instance.title+'</caption>'
+											+ '<h5 class="instance-title">'+instance.title+'</h5>'
+											+ '<table class="table table-sm table-striped icinga-hosts">'
 												+ '<thead>'
 													+ '<tr>'
 														+ '<th>Host</th>'
@@ -303,16 +303,16 @@
 
 									// Build hosts column
 									host_column = '';
-									if (counter_hosts.up) host_column += '<span class="label label-success" title="UP">'+counter_hosts.up+'</span> ';
-									if (counter_hosts.down) host_column += '<span class="label label-danger" title="DOWN">'+counter_hosts.down+'</span> ';
-									if (counter_hosts.unr) host_column += '<span class="label label-primary" title="UNREACHABLE">'+counter_hosts.unr+'</span> ';
+									if (counter_hosts.up) host_column += '<span class="badge badge-success" title="UP">'+counter_hosts.up+'</span> ';
+									if (counter_hosts.down) host_column += '<span class="badge badge-danger" title="DOWN">'+counter_hosts.down+'</span> ';
+									if (counter_hosts.unr) host_column += '<span class="badge badge-primary" title="UNREACHABLE">'+counter_hosts.unr+'</span> ';
 
 									// Build services column
 									service_column = '';
-									if (counter_services.ok) service_column += '<span class="label label-success" title="OK">'+counter_services.ok+'</span> ';
-									if (counter_services.warn) service_column += '<span class="label label-warning" title="WARNING">'+counter_services.warn+'</span> ';
-									if (counter_services.crit) service_column += '<span class="label label-danger" title="CRITICAL">'+counter_services.crit+'</span> ';
-									if (counter_services.unkn) service_column += '<span class="label label-default" title="UNKNOWN">'+counter_services.unkn+'</span> ';
+									if (counter_services.ok) service_column += '<span class="badge badge-success" title="OK">'+counter_services.ok+'</span> ';
+									if (counter_services.warn) service_column += '<span class="badge badge-warning" title="WARNING">'+counter_services.warn+'</span> ';
+									if (counter_services.crit) service_column += '<span class="badge badge-danger" title="CRITICAL">'+counter_services.crit+'</span> ';
+									if (counter_services.unkn) service_column += '<span class="badge badge-default" title="UNKNOWN">'+counter_services.unkn+'</span> ';
 
 									// Insert into table
 									$('#popup-tab-overview-table').find('tbody').append('<tr>'
@@ -331,8 +331,8 @@
 									// Error table
 									if (instance_line) {
 										$('#popup-tab-overview-downs').append(''
-											+ '<table class="table table-condensed table-striped icinga-hosts-services">'
-												+ '<caption>'+instance.title+'</caption>'
+											+ '<h5 class="instance-title">'+instance.title+'</h5>'
+											+ '<table class="table table-sm table-striped icinga-hosts-services">'
 												+ '<thead>'
 													+ '<tr>'
 														+ '<th>Host</th>'

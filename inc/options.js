@@ -284,7 +284,7 @@
 						+ '<td>'+e.title+'</td>'
 						+ '<td>'+e.status_last+'</td>'
 						+ '<td><input type="checkbox" id="instance-table-active-'+i+'" '+((e.active) ? 'checked' : '')+'></td>'
-						+ '<td><button type="button" class="btn btn-primary btn-xs" id="instance-table-edit-'+i+'">Edit</button> <button type="button" class="btn btn-danger btn-xs" id="instance-table-delete-'+i+'">Delete</button></td>'
+						+ '<td><div class="btn-group" role="group" aria-label=""><button type="button" class="btn btn-primary btn-sm" id="instance-table-edit-'+i+'">Edit</button> <button type="button" class="btn btn-danger btn-sm" id="instance-table-delete-'+i+'">Delete</button></div></td>'
 						+ '</tr>'
 					);
 
