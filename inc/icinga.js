@@ -319,6 +319,17 @@
 	}
 
 	function icinga_get_instances(callback) {
+		// Migrate old instances
+		try {
+			if (localStorage.getItem('instances') !== null) {
+				console.log('Found old instances, migrating', localStorage.getItem('instances'))
+				chrome.storage.local.set({'instances': JSON.parse(localStorage.getItem('instances'))});
+				localStorage.setItem('instances_old', localStorage.getItem('instances'));
+				localStorage.removeItem('instances');
+			}
+		} catch(l) {
+		}
+
 		chrome.storage.local.get('instances', callback);
 	}
 
@@ -360,6 +371,17 @@
 	}
 
 	function icinga_get_settings(callback) {
+		// Migrate old settings
+		try {
+			if (localStorage.getItem('settings') !== null) {
+				console.log('Found old settings, migrating', localStorage.getItem('settings'))
+				chrome.storage.local.set({'settings': JSON.parse(localStorage.getItem('settings'))});
+				localStorage.setItem('settings_old', localStorage.getItem('settings'));
+				localStorage.removeItem('settings');
+			}
+		} catch(l) {
+		}
+
 		chrome.storage.local.get('settings', callback);
 	}
 
