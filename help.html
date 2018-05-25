@@ -88,6 +88,7 @@ $ service icinga2 restart</pre>
 				<li>You will find the automatically generated API user here: /etc/icinga2/conf.d/api-users.conf</li>
 				<li>The default port of the Icinga 2 API is 5665, so the URL to go with would be like: https://myicingaserver.com:5665/</li>
 				<li>If you use a self-signed certificate (like the one automatically created in the first step) you have to add it to your browser/OS trusted store before it'll work in the plugin. This can easily be done be visiting the API URL in a browser tab and accept the certificate.</li>
+				<li>Currently we require the following permissions: objects/query/host, objects/query/service, status/query</li>
 				<li>If you run into any problems, please stick to the official <a href="https://www.icinga.com/docs/icinga2/latest/doc/12-icinga2-api/" target="_blank">Icinga 2 API documentation</a></li>
 			</ul>
 
