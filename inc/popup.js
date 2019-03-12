@@ -355,7 +355,7 @@
 								} else if (instance.active && instance.error) {
 									// Insert into table
 									$('#popup-tab-overview-table').find('tbody').append('<tr>'
-									+ '<td><a href="'+instance.url+'" target="_blank">'+instance.title+'</a></td>'
+									+ '<td><a href="'+((instance.icinga_type=='icinga2_api')?instance.url_web:instance.url)+'" target="_blank">'+instance.title+'</a></td>'
 									+ '<td colspan="2">'+instance.status_last+'</td>'
 									+ '</tr>');
 								}
