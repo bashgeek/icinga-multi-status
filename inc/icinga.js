@@ -346,7 +346,11 @@
 	}
 
 	default_settings = {
-		'refresh': 60
+		'refresh': 60,
+		'ack_expire': 0,
+		'ack_persistent': 0,
+		'ack_sticky': 0,
+		'ack_author': 'icinga-multi-status',
 	};
 
 	function icinga_set_setting(setting,value) {
@@ -383,5 +387,154 @@
 		}
 
 		chrome.storage.local.get('settings', callback);
+	}
+
+	function icinga_recheck(type, instance_i, host_name, service_name='') {
+		// Get instance settings
+		icinga_get_instances((instances)=>{
+			let instance = instances.instances[instance_i];
+			if (instance.icinga_type !== 'icinga2_api') {
+				return;
+			}
+
+			let payload, payload_for;
+			switch (type) {
+				case 'host':
+					payload = {type:"Host",filter:"host.name==\""+host_name+"\""};
+					payload_for = host_name;
+					break;
+				case 'service':
+					payload = {type:"Service",filter:"host.name\=\=\""+host_name+"\" && service.name\=\=\""+service_name+"\""};
+					payload_for = host_name+'['+service_name+']';
+					break;
+			}
+
+			$.ajax({
+				username: instance.user,
+				password: instance.pass,
+				global: false,
+				timeout: 10000,
+				url: instance.url.replace(/\/$/, '')+'/v1/actions/reschedule-check',
+				method: 'POST',
+				data: JSON.stringify(payload),
+				headers: {'Accept': 'application/json'},
+				complete: function (res) {
+					if (res.status === 200) {
+						$('#popup-tab-overview-downs').append('<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+						'  Rescheduled check for '+payload_for +
+						'  <button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+						'    <span aria-hidden="true">&times;</span>' +
+						'  </button>' +
+						'</div>');
+						return;
+					}
+
+					$('#popup-tab-overview-downs').append('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+					'  <strong>Error Rescheduling Check</strong> ('+res.status+') - '+JSON.stringify(res)+'' +
+					'  <button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+					'    <span aria-hidden="true">&times;</span>' +
+					'  </button>' +
+					'</div>');
+				}
+			});
+		});
+	}
+
+	function icinga_acknowledge(type, instance_i, host_name, service_name='') {
+		// Get instance settings
+		icinga_get_instances((instances)=>{
+			let instance = instances.instances[instance_i];
+			if (instance.icinga_type !== 'icinga2_api') {
+				return;
+			}
+
+			icinga_get_settings((settings)=>{
+				let defaults = [];
+				defaults['ack_expire'] = (instance.ack_expire == -1) ? (settings.ack_expire ?? default_settings.ack_expire) : instance.ack_expire;
+				defaults['ack_persistent'] = (instance.ack_persistent == -1) ? (settings.ack_persistent ?? default_settings.ack_persistent) : instance.ack_persistent;
+				defaults['ack_sticky'] = (instance.ack_sticky == -1) ? (settings.ack_sticky ?? default_settings.ack_sticky) : instance.ack_sticky;
+				defaults['ack_author'] = (instance.ack_author == "") ? (settings.ack_author ?? default_settings.ack_author) : instance.ack_author;
+
+				let payload_for;
+				switch (type) {
+					case 'host':
+						payload_for = host_name;
+						$('#ack-services').prop('checked', false);
+						$('#ack-services').parents('.checkbox').show();
+						break;
+					case 'service':
+						payload_for = host_name+'['+service_name+']';
+						$('#ack-services').parents('.checkbox').hide();
+						break;
+				}
+
+				// Modal
+				$('#ack-alert').hide();
+				$('#modal_ack h5').html('Acknowledge - '+payload_for);
+				$('#ack-expire').val(defaults['ack_expire']);
+				$('#ack-persistent').val(defaults['ack_persistent']);
+				$('#ack-sticky').val(defaults['ack_sticky']);
+				$('#ack-author').val(defaults['ack_author']);
+				$('#modal_ack')
+					.on('show.bs.modal', ()=>{ $('body').css('min-height', '600px'); })
+					.on('hidden.bs.modal', ()=>{ $('body').css('min-height', ''); })
+					.modal();
+				$('#ack-submit').off('click').on('click', ()=>{
+					$('#ack-submit').prop('disabled', true);
+
+					let payload=[];
+					let author = $('#ack-author').val();
+					let comment = $('#ack-comment').val();
+					let expiry = parseInt(Math.round((Date.now()/1000)) + $('#ack-expire').val());
+					let sticky = $('#ack-sticky').prop('checked');
+					let persistent = $('#ack-persistent').prop('checked');
+
+					switch (type) {
+						case 'host':
+							payload.push({type:"Host",filter:"host.name==\""+host_name+"\"",author:author,comment:comment,expiry:expiry,sticky:sticky,persistent:persistent});
+
+							if ($('#ack-services').prop('checked')) {
+								payload.push({type:"Service",filter:"service.state>0 && host.name==\""+host_name+"\"",author:author,comment:comment,expiry:expiry,sticky:sticky,persistent:persistent});
+							}
+							break;
+						case 'service':
+							payload.push({type:"Service",filter:"host.name\=\=\""+host_name+"\" && service.name\=\=\""+service_name+"\"",author:author,comment:comment,expiry:expiry,sticky:sticky,persistent:persistent});
+							break;
+					}
+
+					payload.forEach((p)=>{
+						$.ajax({
+							username: instance.user,
+							password: instance.pass,
+							global: false,
+							timeout: 10000,
+							url: instance.url.replace(/\/$/, '')+'/v1/actions/acknowledge-problem',
+							method: 'POST',
+							data: JSON.stringify(p),
+							headers: {'Accept': 'application/json'},
+							complete: function (res) {
+								if (res.status === 200) {
+									$('#ack-alert').show().append('<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+										'  Problem acknowledged for '+payload_for +
+										'  <button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+										'    <span aria-hidden="true">&times;</span>' +
+										'  </button>' +
+										'</div>');
+									setTimeout(()=>{ $('#modal_ack').modal('hide'); }, 2000);
+									return;
+								}
+
+								$('#ack-alert').show().append('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+								'  <strong>Error Problem Acknowledgement</strong> ('+res.status+') - '+JSON.stringify(res)+'' +
+								'  <button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+								'    <span aria-hidden="true">&times;</span>' +
+								'  </button>' +
+								'</div>');
+							}
+						});
+					});
+				});
+			});
+		});
 	}
 

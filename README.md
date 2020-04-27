@@ -14,6 +14,8 @@ Get it from the [Mozilla Firefox Add-ons](https://addons.mozilla.org/en-US/firef
 - Ability to temporarily disable instances without deleting them
 - Status-Icon in Toolbar, showing indicator for problems or number of hosts if everything is okay
 - Overview Tab showing status of your Icinga instances as well as it's current host or service problems
+- Set an host and/or service issue as "Acknowledged"
+- Ability to trigger an immediate service recheck
 - Hosts Tab showing you all hosts of all Instances with a quick filter to search for a host
 - Services Tab showing you all services of all hosts of all Instances with a quick filter to search for a service
 - Instant browser/OS notifications about new problems, if enabled
@@ -37,6 +39,8 @@ $ service icinga2 restart
 - The default port of the Icinga 2 API is `5665`, so the URL to go with would be like: `https://myicingaserver.com:5665/`
 - If you use a self-signed certificate (like the one automatically created in the first step) you have to add it to your browsers/OS trusted store before it'll work in the plugin. This can easily be done be visiting the API URL in a browser tab and accept the certificate.
 - Currently we require the following API permissions: ```objects/query/host```, ```status/query```, ```objects/query/service```
+- If you want to use the Acknowledgement functionality, we additionally need: ```actions/acknowledge-problem```
+- If you want to use the Reschedule functionality, we additionally need: ```actions/reschedule-check```
 - If you run into any problems, please stick to the official [Icinga 2 API documentation](https://www.icinga.com/docs/icinga2/latest/doc/12-icinga2-api/)
 
 

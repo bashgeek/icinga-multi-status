@@ -16,13 +16,18 @@
 			$('#instance-title').val('');
 			$('#instance-user').val('');
 			$('#instance-pass').val('');
-			$('#instance-icinga-type').val('');
+			$('#instance-icinga-type').val('icinga2_api');
 			$('#instance-hide-hosts').val('');
 			$('#instance-hide-services').val('');
 			$('#instance-hide-ack').prop('checked',false);
 			$('#instance-hide-down').prop('checked',false);
 			$('#instance-hide-soft').prop('checked',false);
 			$('#instance-notf-nowarn').prop('checked',false);
+
+			$('#instance-ack-expire').val(-1);
+			$('#instance-ack-persistent').val(-1);
+			$('#instance-ack-sticky').val(-1);
+			$('#instance-ack-author').val('');
 		} else {
 			icinga_get_instances(function (instances) {
 				instances = instances.instances;
@@ -46,6 +51,10 @@
 				$('#instance-hide-down').prop('checked', e.hide_down);
 				$('#instance-hide-soft').prop('checked', e.hide_soft);
 				$('#instance-notf-nowarn').prop('checked', e.notf_nowarn);
+				$('#instance-ack-expire').val(e.ack_expire ?? -1);
+				$('#instance-ack-persistent').val(e.ack_persistent ?? -1);
+				$('#instance-ack-sticky').val(e.ack_sticky ?? -1);
+				$('#instance-ack-author').val(e.ack_author ?? '');
 			});
 		}
 
@@ -227,10 +236,14 @@
 						'title': $('#instance-title').val(),
 						'hide_hosts': $('#instance-hide-hosts').val(),
 						'hide_services': $('#instance-hide-services').val(),
-						'hide_ack': ($('#instance-hide-ack').prop('checked')) ? true : false,
-						'hide_down': ($('#instance-hide-down').prop('checked')) ? true : false,
-						'hide_soft': ($('#instance-hide-soft').prop('checked')) ? true : false,
-						'notf_nowarn': ($('#instance-notf-nowarn').prop('checked')) ? true : false,
+						'hide_ack': $('#instance-hide-ack').prop('checked'),
+						'hide_down': $('#instance-hide-down').prop('checked'),
+						'hide_soft': $('#instance-hide-soft').prop('checked'),
+						'notf_nowarn': $('#instance-notf-nowarn').prop('checked'),
+						'ack_expire': $('#instance-ack-expire').val(),
+						'ack_persistent': $('#instance-ack-persistent').val(),
+						'ack_sticky': $('#instance-ack-sticky').val(),
+						'ack_author': $('#instance-ack-author').val(),
 					}
 				} else {
 					// Add
@@ -245,10 +258,14 @@
 						'title': $('#instance-title').val(),
 						'hide_hosts': $('#instance-hide-hosts').val(),
 						'hide_services': $('#instance-hide-services').val(),
-						'hide_ack': ($('#instance-hide-ack').prop('checked')) ? true : false,
-						'hide_down': ($('#instance-hide-down').prop('checked')) ? true : false,
-						'hide_soft': ($('#instance-hide-soft').prop('checked')) ? true : false,
-						'notf_nowarn': ($('#instance-notf-nowarn').prop('checked')) ? true : false,
+						'hide_ack': $('#instance-hide-ack').prop('checked'),
+						'hide_down': $('#instance-hide-down').prop('checked'),
+						'hide_soft': $('#instance-hide-soft').prop('checked'),
+						'notf_nowarn': $('#instance-notf-nowarn').prop('checked'),
+						'ack_expire': $('#instance-ack-expire').val(),
+						'ack_persistent': $('#instance-ack-persistent').val(),
+						'ack_sticky': $('#instance-ack-sticky').val(),
+						'ack_author': $('#instance-ack-author').val(),
 					});
 				}
 
@@ -326,11 +343,19 @@
 			}
 
 			$('#settings-refresh').val(settings.refresh);
+			$('#settings-ack-expire').val(settings.ack_expire);
+			$('#settings-ack-persistent').val(settings.ack_persistent);
+			$('#settings-ack-sticky').val(settings.ack_sticky);
+			$('#settings-ack-author').val(settings.ack_author);
 		});
 	}
 
 	function settings_save() {
 		icinga_set_setting('refresh', $('#settings-refresh').val());
+		icinga_set_setting('ack_expire', $('#settings-ack-expire').val());
+		icinga_set_setting('ack_persistent', $('#settings-ack-persistent').val());
+		icinga_set_setting('ack_sticky', $('#settings-ack-sticky').val());
+		icinga_set_setting('ack_author', $('#settings-ack-author').val());
 
 		settings_reload();
 	}

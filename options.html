@@ -28,11 +28,11 @@
 			<button type="button" class="btn btn-light" id="instance-button-add">Add instance</button>
 
 			<div class="card card-default" style="margin-top: 50px">
-				<h5 class="card-header">Advanced Options</h5>
+				<h5 class="card-header">Global Settings <a href="help.html" target="_blank" class="btn btn-sm float-right btn-outline-info">?</a></h5>
 				<div class="card-body">
 					<form class="form-horizontal" role="form">
 						<div class="form-group">
-							<label for="settings-refresh" class="col-sm-2 control-label">Refresh Rate:</label>
+							<label for="settings-refresh" class="col-sm-12 control-label">Refresh Rate:</label>
 							<div class="col-sm-10">
 								<select class="form-control" id="settings-refresh">
 									<option value="10">10 seconds</option>
@@ -47,10 +47,56 @@
 								</select>
 							</div>
 						</div>
+						<div class="form-group">
+							<label for="settings-ack-expire" class="col-sm-12 control-label">Default Acknowledge Expiry</label>
+							<div class="col-sm-10">
+								<select class="form-control" id="settings-ack-expire">
+									<option value="0">no expiration</option>
+									<option value="60">1 minute</option>
+									<option value="120">2 minutes</option>
+									<option value="300">5 minutes</option>
+									<option value="600">10 minutes</option>
+									<option value="900">15 minutes</option>
+									<option value="1800">30 minutes</option>
+									<option value="3600">1 hour</option>
+									<option value="7200">2 hours</option>
+									<option value="10800">3 hours</option>
+									<option value="21600">6 hours</option>
+									<option value="43200">12 hours</option>
+									<option value="86400">1 day</option>
+									<option value="172800">2 days</option>
+									<option value="259200">3 days</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="settings-ack-persistent" class="col-sm-12 control-label">Default Acknowledge Persistent</label>
+							<div class="col-sm-10">
+								<select class="form-control" id="settings-ack-persistent">
+									<option value="0">not persistent</option>
+									<option value="1">persistent</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="settings-ack-sticky" class="col-sm-12 control-label">Default Acknowledge Sticky</label>
+							<div class="col-sm-10">
+								<select class="form-control" id="settings-ack-sticky">
+									<option value="0">not sticky</option>
+									<option value="1">sticky</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="settings-ack-author" class="col-sm-12 control-label">Default Acknowledge Author</label>
+							<div class="col-sm-10">
+								<input type="text" class="form-control" id="settings-ack-author">
+							</div>
+						</div>
 
 						<div class="form-group" style="margin-bottom:0">
 							<div class="col-sm-offset-2 col-sm-10">
-								<button type="submit" class="btn btn-info" id="settings-submit">Save settings</button>
+								<button type="submit" class="btn btn-info" id="settings-submit">Save Settings</button>
 							</div>
 						</div>
 					</form>
@@ -92,6 +138,47 @@
 									<input type="password" class="form-control" id="instance-pass">
 								</div>
 								<div class="form-group">
+									<label for="instance-ack-expire" class="control-label">Default Acknowledge Expiry</label>
+									<select class="form-control" id="instance-ack-expire">
+										<option value="-1">- use global default -</option>
+										<option value="0">no expiration</option>
+										<option value="60">1 minute</option>
+										<option value="120">2 minutes</option>
+										<option value="300">5 minutes</option>
+										<option value="600">10 minutes</option>
+										<option value="900">15 minutes</option>
+										<option value="1800">30 minutes</option>
+										<option value="3600">1 hour</option>
+										<option value="7200">2 hours</option>
+										<option value="10800">3 hours</option>
+										<option value="21600">6 hours</option>
+										<option value="43200">12 hours</option>
+										<option value="86400">1 day</option>
+										<option value="172800">2 days</option>
+										<option value="259200">3 days</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="instance-ack-persistent" class="control-label">Default Acknowledge Persistent</label>
+									<select class="form-control" id="instance-ack-persistent">
+										<option value="-1">- use global default -</option>
+										<option value="0">not persistent</option>
+										<option value="1">persistent</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="instance-ack-sticky" class="control-label">Default Acknowledge Sticky</label>
+									<select class="form-control" id="instance-ack-sticky">
+										<option value="-1">- use global default -</option>
+										<option value="0">not sticky</option>
+										<option value="1">sticky</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="instance-ack-author" class="control-label">Default Acknowledge Author</label>
+									<input type="text" class="form-control" id="instance-ack-author" placeholder="Leave empty for global default">
+								</div>
+								<div class="form-group">
 									<label for="instance-hide-hosts" class="control-label">Hide and ignore hosts (regexp):</label>
 									<input type="text" class="form-control" id="instance-hide-hosts" placeholder="example: web[0-9]+">
 								</div>
@@ -116,7 +203,7 @@
 							<div class="alert" id="instance-alert" style="margin-bottom:0"></div>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
 							<button type="button" class="btn btn-primary" id="instance-submit">Save instance</button>
 						</div>
 					</div>

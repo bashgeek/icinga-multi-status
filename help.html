@@ -19,6 +19,39 @@
 		<div class="container">
 			<h1>Help</h1>
 
+			<h2>Global Settings</h2>
+			<p>Some settings act as a global default and can be overridden by specifying them again in the instance settings.</p>
+			<table class="table table-bordered table-striped">
+				<thead>
+				<tr>
+					<th width="400">Setting</th>
+					<th>Description</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><b>Refresh Rate</b></td>
+					<td>The interval in which all active Icinga instances will get queried and the plugin data updated.</td>
+				</tr>
+				<tr>
+					<td><b>Default Acknowledge Expiry</b></td>
+					<td>If you use the Acknowledge functionality, this will define the default expiration for your acknowledgement.</td>
+				</tr>
+				<tr>
+					<td><b>Default Acknowledge Persistent</b></td>
+					<td>If you use the Acknowledge functionality, this will define the default persistent setting for your acknowledgement. Persistent means, the comment for your acknowledgement will remain after the host/service recovers or the acknowledgement expires.</td>
+				</tr>
+				<tr>
+					<td><b>Default Acknowledge Sticky</b></td>
+					<td>If you use the Acknowledge functionality, this will define the default sticky setting for your acknowledgement. Sticky means, the acknowledgement will be set until the service or host fully recovers.</td>
+				</tr>
+				<tr>
+					<td><b>Default Acknowledge Author</b></td>
+					<td>If you use the Acknowledge functionality, this will define the default author name for your acknowledgement. Can be anything, most likely your name recognized by your co-workers. The comment will be posted with this username.</td>
+				</tr>
+				</tbody>
+			</table>
+
 			<h2>Instance Settings</h2>
 			<table class="table table-bordered table-striped">
 				<thead>
@@ -49,6 +82,22 @@
 						<td>If your Icinga instance requires an authentication, you can place the password to the above username here. If you use the Icinga 2 API type, put your API password here.<br><br><i>Example: icingaadmin</i></td>
 					</tr>
 					<tr>
+						<td><b>Default Acknowledge Expiry</b></td>
+						<td>If you use the Acknowledge functionality, this will define the default expiration for your acknowledgement.</td>
+					</tr>
+					<tr>
+						<td><b>Default Acknowledge Persistent</b></td>
+						<td>If you use the Acknowledge functionality, this will define the default persistent setting for your acknowledgement. Persistent means, the comment for your acknowledgement will remain after the host/service recovers or the acknowledgement expires.</td>
+					</tr>
+					<tr>
+						<td><b>Default Acknowledge Sticky</b></td>
+						<td>If you use the Acknowledge functionality, this will define the default sticky setting for your acknowledgement. Sticky means, the acknowledgement will be set until the service or host fully recovers.</td>
+					</tr>
+					<tr>
+						<td><b>Default Acknowledge Author</b></td>
+						<td>If you use the Acknowledge functionality, this will define the default author name for your acknowledgement. Can be anything, most likely your name recognized by your co-workers. The comment will be posted with this username.</td>
+					</tr>
+					<tr>
 						<td><b>Hide and ignore hosts</b></td>
 						<td>Regular Expression to hide/ignore specific hosts from showing up in the monitoring. You won't receive notifications or alerts of matching hosts. They also not showing up in the overview lists.<br><br><i>Example: web[0-9]+</i></td>
 					</tr>
@@ -57,11 +106,11 @@
 						<td>Regular Expression to hide/ignore specific services from showing up in the monitoring. You won't receive notifications or alerts of matching services. They also not showing up in the overview lists.<br><br><i>Example: (imap|ssh)</i></td>
 					</tr>
 					<tr>
-						<td><b>Ignore acknowleged host & service problems</b></td>
+						<td><b>Ignore acknowledged host & service problems</b></td>
 						<td>If you acknowledge a host or service problem in Icinga, you won't get notified or alerted here if enabled.</td>
 					</tr>
 					<tr>
-						<td><b>Ignore hosts & services with downtimes</b></td>
+						<td><b>Ignore hosts & services with a downtime</b></td>
 						<td>If a scheduled downtime is active for a host or service in Icinga, you won't get notified or alerted here if enabled.</td>
 					</tr>
 					<tr>
@@ -89,6 +138,8 @@ $ service icinga2 restart</pre>
 				<li>The default port of the Icinga 2 API is 5665, so the URL to go with would be like: https://myicingaserver.com:5665/</li>
 				<li>If you use a self-signed certificate (like the one automatically created in the first step) you have to add it to your browser/OS trusted store before it'll work in the plugin. This can easily be done be visiting the API URL in a browser tab and accept the certificate.</li>
 				<li>Currently we require the following permissions: objects/query/host, objects/query/service, status/query</li>
+				<li>If you want to use the Acknowledgement functionality, we additionally need: actions/acknowledge-problem</li>
+				<li>If you want to use the Reschedule functionality, we additionally need: actions/reschedule-check</li>
 				<li>If you run into any problems, please stick to the official <a href="https://www.icinga.com/docs/icinga2/latest/doc/12-icinga2-api/" target="_blank">Icinga 2 API documentation</a></li>
 			</ul>
 
@@ -137,6 +188,10 @@ $ service icinga2 restart</pre>
 				<li>
 					<b>What Icinga Version is required?</b><br>
 					We support the Icinga Classic UI (Icinga v1 and v2) and the new API of Icinga 2. Please find setup instructions on <a href="https://github.com/bashgeek/icinga-multi-status">Github</a>.
+				</li>
+				<li>
+					<b>I cannot see or use the "Acknowledgement" functionality?</b>
+					Due to feature restrictions, this only works with the Icinga 2 API backend.
 				</li>
 			</ul>
 		</div>

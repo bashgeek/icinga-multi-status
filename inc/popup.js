@@ -226,7 +226,7 @@
 					$('#popup-tab-overview-downs').empty();
 					$('#popup-tab-overview .alert').each(function(){ $(this).hide(); });
 
-					if (e.state == 'ok') {
+					if (e.state === 'ok') {
 						icinga_get_instances(function (instances) {
 							instances = instances.instances;
 
@@ -234,23 +234,23 @@
 								instances = [];
 							}
 
-							var worst_status = 0;
+							let worst_status = 0;
 
 							// Go through active instances
 							for(i=0; i<instances.length; i++) {
-								var instance = instances[i];
-								var counter_total = { hosts: 0, services: 0 };
-								var counter_hosts = { up: 0, down: 0, unr: 0 };
-								var counter_services = { ok: 0, warn: 0, unkn: 0, crit: 0 };
-								var errors = '';
+								let instance = instances[i];
+								let instance_i = i;
+								let counter_total = { hosts: 0, services: 0 };
+								let counter_hosts = { up: 0, down: 0, unr: 0 };
+								let counter_services = { ok: 0, warn: 0, unkn: 0, crit: 0 };
 
 								if (instance.active && !instance.error) {
-									instance_line = '';
+									let instance_lines = [];
 
 									// Go through all hosts and check instance
 									$.each(Object.keys(e.hosts), function(h_i,h) {
-										var host = e.hosts[h];
-										if (host.instance == i) {
+										let host = e.hosts[h];
+										if (host.instance === i) {
 											counter_total.hosts += 1;
 
 											// Possible DOWN UNREACHABLE UP
@@ -261,16 +261,42 @@
 											}
 
 											// Host HTML Line
+											let host_line=$('<tr>');
+											let service_lines=[];
+											let host_options=null;
 											switch (instance.icinga_type) {
-												default: var host_name = '<a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=1&host='+host.name+'" target="_blank">'+host.name+'</a>'; break;
-												case 'icinga2_api': if (instance.url_web) { var host_name = '<a href="'+instance.url_web.replace(/\/$/, '')+'/monitoring/host/show?host='+host.name+'" target="_blank">'+host.name+'</a>'; } else { var host_name = host.name; } break;
+												default:
+													host_line.append($('<td class="align-middle">').html('<a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=1&host='+host.name+'" target="_blank">'+host.name+'</a>'));
+													break;
+												case 'icinga2_api':
+													host_line.append($('<td class="align-middle">').html(
+														instance.url_web
+														? '<a href="'+instance.url_web.replace(/\/$/, '')+'/monitoring/host/show?host='+host.name+'" target="_blank">'+host.name+'</a>'
+														: host.name
+													));
+													host_options = $('<td class="align-middle">').append($('<div class="btn-group" role="group" aria-label="Actions">')
+														.append(
+															$('<button class="btn btn-outline-dark py-0 px-1">').html('<svg style="width:24px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>')
+	                                                        .attr('title', 'Acknowledge issue')
+	                                                        .on('click', function(){ icinga_acknowledge('host', instance_i, host.name); })
+														)
+														.append(
+															$('<button class="btn btn-outline-dark py-0 px-1">').html('<svg style="width:24px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>')
+		                                                    .attr('title', 'Reschedule check')
+                                                            .on('click', function(){ icinga_recheck('host', instance_i, host.name); })
+														)
+													);
+													break;
 											}
-											host_line = '<tr><td>'+host_name+'</td><td></td><td class="'+table_classes[host.status]+'">'+host.status+((host.state_type == 'SOFT') ? ' (S)' : '')+'</td></tr>';
-											service_line = '';
+											host_line.append($('<td>'));
+											host_line.append($('<td class="align-middle">').addClass(table_classes[host.status]).html(host.status+((host.state_type === 'SOFT') ? ' (S)' : '')));
+											if (host_options !== null) {
+												host_line.append(host_options);
+											}
 
 											// Go through all services
 											$.each(Object.keys(host.services), function(s_i,s) {
-												var service = host.services[s];
+												let service = host.services[s];
 												counter_total.services += 1;
 
 												// Possible OK WARNING UNKNOWN CRITICAL
@@ -282,33 +308,62 @@
 												}
 
 												// Service HTML Line
-												if (service.status == 'WARNING' || service.status == 'CRITICAL') {
+												if (service.status === 'WARNING' || service.status === 'CRITICAL') {
+													let service_line = $('<tr>');
+													service_line.append($('<td>'));
+													let service_options=null;
 													switch (instance.icinga_type) {
-														default: var service_name = '<a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=2&host='+host.name+'&service='+service.name+'" target="_blank">'+service.name+'</a>'; break;
-														case 'icinga2_api': if (instance.url_web) { var service_name = '<a href="'+instance.url_web.replace(/\/$/, '')+'/monitoring/service/show?host='+host.name+'&service='+service.sname+'" target="_blank">'+service.name+'</a>'; } else { var service_name = service.name; } break;
+														default:
+															service_line.append($('<td class="align-middle">').html('<a href="'+instance.url.replace(/\/$/, '')+'/cgi-bin/extinfo.cgi?type=2&host='+host.name+'&service='+service.name+'" target="_blank">'+service.name+'</a>'));
+															break;
+														case 'icinga2_api':
+															service_line.append($('<td class="align-middle">').html(
+																instance.url_web
+																? '<a href="'+instance.url_web.replace(/\/$/, '')+'/monitoring/service/show?host='+host.name+'&service='+service.sname+'" target="_blank">'+service.name+'</a>'
+																: service.name
+															));
+															service_options = $('<td class="align-middle">').append($('<div class="btn-group" role="group" aria-label="Actions">')
+																.append(
+																	$('<button class="btn btn-outline-dark py-0 px-1">').html('<svg style="width:24px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>')
+				                                                    .attr('title', 'Acknowledge issue')
+				                                                    .on('click', function(){ icinga_acknowledge('service', instance_i, host.name, service.sname); })
+																)
+																.append(
+																	$('<button class="btn btn-outline-dark py-0 px-1">').html('<svg style="width:24px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>')
+				                                                    .attr('title', 'Reschedule check')
+				                                                    .on('click', function(){ icinga_recheck('service', instance_i, host.name, service.sname); })
+																)
+															);
+															break;
 													}
-													service_line += '<tr><td></td><td>'+service_name+'</td><td class="'+table_classes[service.status]+'">'+service.status+((service.state_type == 'SOFT') ? ' (S)' : '')+'</td></tr>';
+													service_line.append($('<td class="align-middle">').addClass(table_classes[service.status]).html(service.status+((service.state_type === 'SOFT') ? ' (S)' : '')));
+													if (service_options !== null) {
+														service_line.append(service_options);
+													}
+
+													service_lines.push(service_line);
 												}
 											});
 
 											// If there is a service line OR host status down, add host line and append service lines
-											if (host.status == 'DOWN' || host.status == 'UNREACHABLE' || service_line != '') {
-												instance_line += host_line+service_line;
-											}
+											if (host.status === 'DOWN' || host.status === 'UNREACHABLE' || service_lines.length > 0) {
+												instance_lines.push(host_line);
 
-											delete host_line;
-											delete service_line;
+												service_lines.forEach(function(v){
+													instance_lines.push(v);
+												});
+											}
 										}
 									});
 
 									// Build hosts column
-									host_column = '';
+									let host_column = '';
 									if (counter_hosts.up) host_column += '<span class="badge badge-success" title="UP">'+counter_hosts.up+'</span> ';
 									if (counter_hosts.down) host_column += '<span class="badge badge-danger" title="DOWN">'+counter_hosts.down+'</span> ';
 									if (counter_hosts.unr) host_column += '<span class="badge badge-primary" title="UNREACHABLE">'+counter_hosts.unr+'</span> ';
 
 									// Build services column
-									service_column = '';
+									let service_column = '';
 									if (counter_services.ok) service_column += '<span class="badge badge-success" title="OK">'+counter_services.ok+'</span> ';
 									if (counter_services.warn) service_column += '<span class="badge badge-warning" title="WARNING">'+counter_services.warn+'</span> ';
 									if (counter_services.crit) service_column += '<span class="badge badge-danger" title="CRITICAL">'+counter_services.crit+'</span> ';
@@ -316,64 +371,51 @@
 
 									// Insert into table
 									$('#popup-tab-overview-table').find('tbody').append('<tr>'
-									+ '<td><a href="'+((instance.icinga_type=='icinga2_api')?instance.url_web:instance.url)+'" target="_blank">'+instance.title+'</a></td>'
+									+ '<td><a href="'+((instance.icinga_type==='icinga2_api')?instance.url_web:instance.url)+'" target="_blank">'+instance.title+'</a></td>'
 									+ '<td>'+host_column+'</td>'
 									+ '<td>'+service_column+'</td>'
 									+ '</tr>');
 
 									// Update worst status
 									if (counter_services.crit || counter_hosts.down || counter_hosts.unr) {
-										var worst_status = 2;
-									} else if (counter_services.warn && worst_status == 0) {
-										var worst_status = 1;
+										worst_status = 2;
+									} else if (counter_services.warn && worst_status === 0) {
+										worst_status = 1;
 									}
 
 									// Error table
-									if (instance_line) {
-										$('#popup-tab-overview-downs').append(''
-											+ '<h5 class="instance-title">'+instance.title+'</h5>'
-											+ '<table class="table table-sm table-striped icinga-hosts-services">'
-												+ '<thead>'
-													+ '<tr>'
-														+ '<th>Host</th>'
-														+ '<th>Service</th>'
-														+ '<th>Status</th>'
-														//+ '<th></th>'
-													+ '</tr>'
-												+ '</thead>'
-												+ '<tbody>'
-													+ instance_line
-												+ '</tbody>'
-											+ '</table>'
-										);
-									}
+									if (instance_lines.length > 0) {
+										$('#popup-tab-overview-downs').append('<h5 class="instance-title">'+instance.title+'</h5>');
 
-									delete host_column;
-									delete service_column;
-									delete instance_line;
+										let table = $('<table class="table table-sm table-striped icinga-hosts-services">');
+										let thead = $('<thead>').append('<th>Host</th><th>Service</th><th>Status</th>');
+										if (instance.icinga_type === 'icinga2_api') {
+											thead.append('<th></th>');
+										}
+										table.append(thead);
+										let tbody = $('<tbody>');
+										instance_lines.forEach(function(v){
+											tbody.append(v);
+										});
+										table.append(tbody);
+										$('#popup-tab-overview-downs').append(table);
+									}
 
 								} else if (instance.active && instance.error) {
 									// Insert into table
 									$('#popup-tab-overview-table').find('tbody').append('<tr>'
-									+ '<td><a href="'+((instance.icinga_type=='icinga2_api')?instance.url_web:instance.url)+'" target="_blank">'+instance.title+'</a></td>'
+									+ '<td><a href="'+((instance.icinga_type==='icinga2_api')?instance.url_web:instance.url)+'" target="_blank">'+instance.title+'</a></td>'
 									+ '<td colspan="2">'+instance.status_last+'</td>'
 									+ '</tr>');
 								}
-
-								delete counter_total;
-								delete counter_hosts;
-								delete counter_services;
-								delete instance;
 							}
 
 							// Update alert according to worst status
-							if (instances.length == 0) {
+							if (instances.length === 0) {
 								$('#popup-tab-overview-alert-new').show();
 							} else {
 								$('#popup-tab-overview-alert-'+worst_status).show();
 							}
-
-							delete worst_status;
 						});
 					} else {
 						$('#popup-tab-overview').html('An error occured - could not connect with background task.');

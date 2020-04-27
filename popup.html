@@ -7,12 +7,13 @@
 		<script src="inc/jquery-3.5.0.min.js"></script>
 		<script src="inc/bootstrap.min.js"></script>
 		<style type="text/css">
-			body { min-width: 500px; padding: 5px 5px 15px 5px; }
+			body { min-width: 600px; padding: 5px 5px 15px 5px; min-height: 180px; }
 			/*ul.nav li a { padding: 5px 10px; }*/
 			a:focus { outline: 0; }
 			.popup-tab { padding: 10px; padding-bottom: 0px; }
-			td, th {  padding: 2px; font-size: 13px; }
-			.alert { padding: 5px; font-size: 13px; margin: 20px 0px 0px 0px; }
+			td, th {  padding: 2px; font-size: .9rem; }
+			.alert { padding: 5px; font-size: .9rem; margin: 20px 0px 0px 0px; }
+			.alert .close { padding: 2px 10px 5px; }
 			table { margin-bottom: 0px !important; }
 			h4 { margin-bottom: 25px; }
 			h5.instance-title { font-size: 1rem; margin: 0.6rem 0 0.7rem 0; }
@@ -59,17 +60,17 @@
 
 			<div class="alert alert-success" id="popup-tab-overview-alert-0" role="alert"><b>Good job!</b> Looks like everything is working as it should. Coffee granted.</div>
 			<div class="alert alert-warning" id="popup-tab-overview-alert-1" role="alert"><b>Hmm..</b> We got a warning, maybe something is about to break.</div>
-			<div class="alert alert-warning" id="popup-tab-overview-alert-new" role="alert"><b>Welcome!</b> Time to setup your first Icinga instance. <a href="#" class="open-options alert-link">Click here to get to the options right away.</a></div>
-			<div class="alert alert-danger" id="popup-tab-overview-alert-2" role="alert"><b>Houston, we have a problem!</b> Something seems broken, sorry.</div>
+			<div class="alert alert-warning" id="popup-tab-overview-alert-new" role="alert"><b>Welcome!</b> Time to setup your first Icinga instance.<a href="#" class="open-options btn btn-sm btn-outline-dark mt-2">Click here to get to the options right away.</a></div>
+			<div class="alert alert-danger" id="popup-tab-overview-alert-2" role="alert"><b>Houston, we have a problem!</b> Something seems broken :-(</div>
 
-			<div id="popup-tab-overview-downs"></div>
+			<div id="popup-tab-overview-downs" class="pt-4"></div>
 		</div>
 		<div class="popup-tab" id="popup-tab-hosts">
-			<div class="float-right filter"><input type="text" id="popup-tab-hosts-filter" placeholder="Filter hosts" class="form-control form-control-sm"></div>
+			<div class="float-right filter"><input aria-label="Filter hostname" type="text" id="popup-tab-hosts-filter" placeholder="Filter hosts" class="form-control form-control-sm"></div>
 			<div id="popup-tab-hosts-tables"></div>
 		</div>
 		<div class="popup-tab" id="popup-tab-services">
-			<div class="float-right filter"><input type="text" id="popup-tab-services-filter" placeholder="Filter services" class="form-control form-control-sm"></div>
+			<div class="float-right filter"><input aria-label="Filter service" type="text" id="popup-tab-services-filter" placeholder="Filter services" class="form-control form-control-sm"></div>
 			<div id="popup-tab-services-tables"></div>
 		</div>
 		<div class="popup-tab" id="popup-tab-about">
@@ -82,11 +83,69 @@
 			The author of this extension is Daniel Schmitz. The development was sponsored by <a href="https://bashgeek.net" target="_blank">bashgeek.net</a>.
 			<br><br>
 			<div class="float-right">
-				<a href="https://github.com/bashgeek/icinga-multi-status" target="_blank"><img src="img/github.jpg" border="0" alt="GitHub"></a>
-				<a href="https://bashgeek.net" target="_blank"><img src="img/bashgeek.jpg" border="0" alt="bashgeek.net"></a>
+				<a href="https://github.com/bashgeek/icinga-multi-status" target="_blank"><img src="img/github.jpg" alt="GitHub"></a>
+				<a href="https://bashgeek.net" target="_blank"><img src="img/bashgeek.jpg" alt="bashgeek.net"></a>
 			</div>
 			<a href="#" class="btn btn-sm btn-light open-options">Options</a>
 			<a href="help.html" target="_blank" class="btn btn-sm btn-light">Help</a>
+		</div>
+
+		<div class="modal fade" id="modal_ack" tabindex="-1" role="dialog" aria-labelledby="modal_acknowledge" aria-hidden="true">
+			<div class="modal-dialog modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modal_iacknowledge_title"></h5>
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+					</div>
+					<div class="modal-body">
+						<form role="form">
+							<div class="form-group">
+								<label for="ack-comment" class="control-label">Comment</label>
+								<input type="text" class="form-control" id="ack-comment">
+							</div>
+							<div class="form-group">
+								<label for="ack-author" class="control-label">Author</label>
+								<input type="text" class="form-control" id="ack-author">
+							</div>
+							<div class="form-group">
+								<label for="ack-expire" class="control-label">Expiration</label>
+								<select class="form-control" id="ack-expire">
+									<option value="0">no expiration</option>
+									<option value="60">1 minute</option>
+									<option value="120">2 minutes</option>
+									<option value="300">5 minutes</option>
+									<option value="600">10 minutes</option>
+									<option value="900">15 minutes</option>
+									<option value="1800">30 minutes</option>
+									<option value="3600">1 hour</option>
+									<option value="7200">2 hours</option>
+									<option value="10800">3 hours</option>
+									<option value="21600">6 hours</option>
+									<option value="43200">12 hours</option>
+									<option value="86400">1 day</option>
+									<option value="172800">2 days</option>
+									<option value="259200">3 days</option>
+								</select>
+							</div>
+							<div class="checkbox">
+								<label><input type="checkbox" id="ack-services"> Apply for all services</label>
+							</div>
+							<div class="checkbox">
+								<label><input type="checkbox" id="ack-persistent"> Persistent</label>
+							</div>
+							<div class="checkbox">
+								<label><input type="checkbox" id="ack-sticky"> Sticky</label>
+							</div>
+						</form>
+
+						<div class="alert" id="ack-alert"></div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+						<button type="button" class="btn btn-primary" id="ack-submit">ACK!</button>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<script src="inc/icinga.js"></script>
