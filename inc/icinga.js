@@ -491,14 +491,14 @@
 
 					switch (type) {
 						case 'host':
-							payload.push({type:"Host",filter:"host.name==\""+host_name+"\"",author:author,comment:comment,expiry:expiry,sticky:sticky,persistent:persistent});
+							payload.push({type:"Host",filter:"host.name==\""+host_name+"\"",author:author,comment:comment,expiry:expiry,sticky:sticky,persistent:persistent,notify:true});
 
 							if ($('#ack-services').prop('checked')) {
-								payload.push({type:"Service",filter:"service.state>0 && host.name==\""+host_name+"\"",author:author,comment:comment,expiry:expiry,sticky:sticky,persistent:persistent});
+								payload.push({type:"Service",filter:"service.state>0 && host.name==\""+host_name+"\"",author:author,comment:comment,expiry:expiry,sticky:sticky,persistent:persistent,notify:true});
 							}
 							break;
 						case 'service':
-							payload.push({type:"Service",filter:"host.name\=\=\""+host_name+"\" && service.name\=\=\""+service_name+"\"",author:author,comment:comment,expiry:expiry,sticky:sticky,persistent:persistent});
+							payload.push({type:"Service",filter:"host.name\=\=\""+host_name+"\" && service.name\=\=\""+service_name+"\"",author:author,comment:comment,expiry:expiry,sticky:sticky,persistent:persistent,notify:true});
 							break;
 					}
 
