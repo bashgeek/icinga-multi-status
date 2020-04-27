@@ -21,8 +21,8 @@ Get it from the [Mozilla Firefox Add-ons](https://addons.mozilla.org/en-US/firef
 
 ## Support
 
-- Icinga Classic UI (Requires Version >= 1.8.0), reachable via HTTP or HTTPS
-- Icinga 2 API (Requires Version >= 2.4), reachable via HTTPS
+- Icinga Classic UI (Requires Version >= 1.8.0), via HTTP or HTTPS
+- Icinga 2 API (Requires Version >= 2.4), via HTTPS
 
 ## How-to for using the [Icinga 2 API](https://www.icinga.com/docs/icinga2/latest/doc/12-icinga2-api/)
 - Please make sure you enabled and configured the new API in your Icinga 2 installation by either setting it up manually or use the CLI command for the automatic setup, which also creates a root-user for the API with a random password.
