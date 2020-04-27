@@ -32,6 +32,6 @@
     "default_popup": "popup.html"
   },
 
-  "permissions": [ "storage", "tabs", "http://*/", "https://*/", "notifications" ],
+  "permissions": [ "storage", "http://*/", "https://*/", "notifications" ],
   "manifest_version": 2
 }
