@@ -51,14 +51,15 @@
 				$('#instance-hide-down').prop('checked', e.hide_down);
 				$('#instance-hide-soft').prop('checked', e.hide_soft);
 				$('#instance-notf-nowarn').prop('checked', e.notf_nowarn);
-				$('#instance-ack-expire').val(e.ack_expire ?? -1);
-				$('#instance-ack-persistent').val(e.ack_persistent ?? -1);
-				$('#instance-ack-sticky').val(e.ack_sticky ?? -1);
-				$('#instance-ack-author').val(e.ack_author ?? '');
+				$('#instance-ack-expire').val(e.ack_expire || -1);
+				$('#instance-ack-persistent').val(e.ack_persistent || -1);
+				$('#instance-ack-sticky').val(e.ack_sticky || -1);
+				$('#instance-ack-author').val(e.ack_author || '');
 			});
 		}
 
-		modal.modal();
+		let _modal = new bootstrap.Modal('#modal_instance');
+		_modal.show();
 	}
 
 	function instance_modal_delete(instance) {
@@ -75,7 +76,8 @@
 			$('#instance-delete-id').val(instance);
 			$('#instance-delete-title').html(e.title);
 
-			modal.modal();
+			let _modal = new bootstrap.Modal('#modal_instance_delete');
+			_modal.show();
 		});
 	}
 
@@ -97,7 +99,7 @@
 
 			$('#instance-delete-alert').removeClass().addClass('alert alert-success').html('Removed instance!').show();
 			instance_table_reload();
-			setTimeout(function(){ $('#modal_instance_delete').modal('hide'); }, 2000);
+			setTimeout(function(){ bootstrap.Modal.getInstance('#modal_instance_delete').hide(); }, 2000);
 		});
 	}
 
@@ -118,28 +120,39 @@
 	function instance_save() {
 		var errors = [];
 
-		$('#instance-submit').prop('disabled', true);
+		let _submit = $('#instance-submit');
+		let _url = $('#instance-url');
+		let _wurl = $('#instance-url-web');
+		let _title = $('#instance-title');
+		let _user = $('#instance-user');
+		let _pass = $('#instance-pass');
+		let _hide_hosts = $('#instance-hide-hosts');
+		let _hide_services = $('#instance-hide-services');
 
-		if ($('#instance-url').val()) {
-			var url = URI($('#instance-url').val());
-			if (!url.hostname() || (url.scheme() != 'http' && url.scheme() != 'https')) {
+		_submit.prop('disabled', true);
+
+		if (_url.val()) {
+			let url = new URL(_url.val());
+			if (!url.hostname ||(url.protocol !== 'http:' && url.protocol !== 'https:')) {
 				$('#instance-url').parent().addClass('has-error');
 				errors.push('Given URL does not seem a valid HTTP/HTTPS URL.');
 			} else {
 				// OK
 				$('#instance-url').parent().removeClass('has-error');
 
-				if (!$('#instance-title').val())
-					$('#instance-title').val(url.hostname());
+				if (!_title.val()) {
+					_title.val(url.hostname);
+				}
 			}
 		} else {
 			$('#instance-url').parent().addClass('has-error');
 			errors.push('No URL given');
 		}
 
-		if ($('#instance-url-web').val()) {
-			var url = URI($('#instance-url-web').val());
-			if (!url.hostname() || (url.scheme() != 'http' && url.scheme() != 'https')) {
+
+		if (_wurl.val()) {
+			let url = new URL(_wurl.val());
+			if (!url.hostname ||(url.protocol !== 'http:' && url.protocol !== 'https:')) {
 				$('#instance-url-web').parent().addClass('has-error');
 				errors.push('Given URL does not seem a valid HTTP/HTTPS URL.');
 			} else {
@@ -148,60 +161,61 @@
 			}
 		}
 
-		if ($('#instance-title').val()) {
+		if (_title.val()) {
 			// OK
-			$('#instance-title').parent().removeClass('has-error');
+			_title.parent().removeClass('has-error');
 		} else {
-			$('#instance-title').parent().addClass('has-error');
+			_title.parent().addClass('has-error');
 			errors.push('No instance title given');
 		}
 
-		if (($('#instance-user').val() && $('#instance-pass').val())) {
+
+		if ((_user.val() && _pass.val())) {
 			// OK
-			$('#instance-user').parent().removeClass('has-error');
-			$('#instance-pass').parent().removeClass('has-error');
-		} else if ($('#instance-user').val() && !$('#instance-pass').val()) {
+			_user.parent().removeClass('has-error');
+			_pass.parent().removeClass('has-error');
+		} else if (_user.val() && !_pass.val()) {
 			// Pass missing
-			$('#instance-pass').parent().addClass('has-error');
-			$('#instance-user').parent().removeClass('has-error');
+			_pass.parent().addClass('has-error');
+			_user.parent().removeClass('has-error');
 			errors.push('Username given, but password missing');
-		} else if (!$('#instance-user').val() && $('#instance-pass').val()) {
+		} else if (!_user.val() && _pass.val()) {
 			// User missing
-			$('#instance-user').parent().addClass('has-error');
-			$('#instance-pass').parent().removeClass('has-error');
+			_user.parent().addClass('has-error');
+			_pass.parent().removeClass('has-error');
 			errors.push('Password given, but username missing');
 		}
 
-		if ($('#instance-hide-hosts').val()) {
+		if (_hide_hosts.val()) {
 			try {
-				test = new RegExp($('#instance-hide-hosts').val(), "i");
+				test = new RegExp(_hide_hosts.val(), "i");
 			} catch(e) {
-				$('#instance-hide-hosts').parent().addClass('has-error');
+				_hide_hosts.parent().addClass('has-error');
 				errors.push('Invalid regexp for hosts given');
 			}
 
 			if (typeof test != 'undefined')
-				$('#instance-hide-hosts').parent().removeClass('has-error');
+				_hide_hosts.parent().removeClass('has-error');
 
 			delete test;
 		}
 
-		if ($('#instance-hide-services').val()) {
+		if (_hide_services.val()) {
 			try {
-				test = new RegExp($('#instance-hide-services').val(), "i");
+				test = new RegExp(_hide_services.val(), "i");
 			} catch(e) {
-				$('#instance-hide-services').parent().addClass('has-error');
+				_hide_services.parent().addClass('has-error');
 				errors.push('Invalid regexp for services given');
 			}
 
 			if (typeof test != 'undefined')
-				$('#instance-hide-services').parent().removeClass('has-error');
+				_hide_services.parent().removeClass('has-error');
 
 			delete test;
 		}
 
 		if (errors.length) {
-			$('#instance-submit').prop('disabled', false);
+			_submit.prop('disabled', false);
 
 			$('#instance-alert').removeClass().addClass('alert alert-danger').html('<b>Errors:</b><br>'+errors.join('<br>')).show();
 		} else {
@@ -275,7 +289,7 @@
 
 				instance_table_reload();
 
-				setTimeout(function(){ $('#modal_instance').modal('hide'); }, 2000);
+				setTimeout(function(){ bootstrap.Modal.getInstance('#modal_instance').hide(); }, 2000);
 			});
 		}
 	}
@@ -314,15 +328,18 @@
 	}
 
 	function instance_untab_url() {
-		if ($('#instance-url').val()) {
-			var url = URI($('#instance-url').val());
-			if (!url.hostname() || (url.scheme() != 'http' && url.scheme() != 'https')) {
-				$('#instance-url').parent().addClass('has-error');
+		let _url = $('#instance-url');
+		let _title = $('#instance-title');
+		if (_url.val()) {
+			let url = new URL(_url.val());
+			if (!url.hostname || (url.protocol !== 'http:' && url.protocol !== 'https:')) {
+				_url.parent().addClass('has-error');
 			} else {
-				$('#instance-url').parent().removeClass('has-error');
+				_url.parent().removeClass('has-error');
 
-				if (!$('#instance-title').val())
-					$('#instance-title').val(url.hostname());
+				if (!_title.val()) {
+					_title.val(url.hostname);
+				}
 			}
 		}
 	}
@@ -351,13 +368,15 @@
 	}
 
 	function settings_save() {
-		icinga_set_setting('refresh', $('#settings-refresh').val());
-		icinga_set_setting('ack_expire', $('#settings-ack-expire').val());
-		icinga_set_setting('ack_persistent', $('#settings-ack-persistent').val());
-		icinga_set_setting('ack_sticky', $('#settings-ack-sticky').val());
-		icinga_set_setting('ack_author', $('#settings-ack-author').val());
+		chrome.storage.local.set({'settings': {
+			'refresh': $('#settings-refresh').val(),
+			'ack_expire': $('#settings-ack-expire').val(),
+			'ack_persistent': $('#settings-ack-persistent').val(),
+			'ack_sticky': $('#settings-ack-sticky').val(),
+			'ack_author': $('#settings-ack-author').val(),
+		}});
 
-		settings_reload();
+		setTimeout(()=>{ settings_reload(); }, 100);
 	}
 
 	$(document).ready(function() {

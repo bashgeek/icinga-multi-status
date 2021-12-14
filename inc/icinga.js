@@ -353,27 +353,6 @@
 		'ack_author': 'icinga-multi-status',
 	};
 
-	function icinga_set_setting(setting,value) {
-		icinga_get_settings(function (settings) {
-			settings = settings.settings;
-
-			var real_settings = default_settings;
-
-			if (settings == null) {
-				settings = default_settings;
-			} else {
-				$.each(settings, function (k, v) {
-					real_settings[k] = v;
-				});
-				settings = default_settings;
-			}
-
-			settings[setting] = value;
-
-			chrome.storage.local.set({'settings': settings});
-		});
-	}
-
 	function icinga_get_settings(callback) {
 		// Migrate old settings
 		try {
@@ -422,18 +401,14 @@
 					if (res.status === 200) {
 						$('#popup-tab-overview-downs').append('<div class="alert alert-success alert-dismissible fade show" role="alert">' +
 						'  Rescheduled check for '+payload_for +
-						'  <button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-						'    <span aria-hidden="true">&times;</span>' +
-						'  </button>' +
+						'  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
 						'</div>');
 						return;
 					}
 
 					$('#popup-tab-overview-downs').append('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
 					'  <strong>Error Rescheduling Check</strong> ('+res.status+') - '+JSON.stringify(res)+'' +
-					'  <button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-					'    <span aria-hidden="true">&times;</span>' +
-					'  </button>' +
+					'  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
 					'</div>');
 				}
 			});
@@ -450,10 +425,10 @@
 
 			icinga_get_settings((settings)=>{
 				let defaults = [];
-				defaults['ack_expire'] = (instance.ack_expire == -1) ? (settings.ack_expire ?? default_settings.ack_expire) : instance.ack_expire;
-				defaults['ack_persistent'] = (instance.ack_persistent == -1) ? (settings.ack_persistent ?? default_settings.ack_persistent) : instance.ack_persistent;
-				defaults['ack_sticky'] = (instance.ack_sticky == -1) ? (settings.ack_sticky ?? default_settings.ack_sticky) : instance.ack_sticky;
-				defaults['ack_author'] = (instance.ack_author == "") ? (settings.ack_author ?? default_settings.ack_author) : instance.ack_author;
+				defaults['ack_expire'] = (instance.ack_expire == -1) ? (settings.ack_expire || default_settings.ack_expire) : instance.ack_expire;
+				defaults['ack_persistent'] = (instance.ack_persistent == -1) ? (settings.ack_persistent || default_settings.ack_persistent) : instance.ack_persistent;
+				defaults['ack_sticky'] = (instance.ack_sticky == -1) ? (settings.ack_sticky || default_settings.ack_sticky) : instance.ack_sticky;
+				defaults['ack_author'] = (instance.ack_author == "") ? (settings.ack_author || default_settings.ack_author) : instance.ack_author;
 
 				let payload_for;
 				switch (type) {
@@ -477,8 +452,9 @@
 				$('#ack-author').val(defaults['ack_author']);
 				$('#modal_ack')
 					.on('show.bs.modal', ()=>{ $('body').css('min-height', '600px'); })
-					.on('hidden.bs.modal', ()=>{ $('body').css('min-height', ''); })
-					.modal();
+					.on('hidden.bs.modal', ()=>{ $('body').css('min-height', ''); });
+				let _modal = new bootstrap.Modal('#modal_ack');
+				_modal.show();
 				$('#ack-submit').off('click').on('click', ()=>{
 					$('#ack-submit').prop('disabled', true);
 
@@ -516,9 +492,7 @@
 								if (res.status === 200) {
 									$('#ack-alert').show().append('<div class="alert alert-success alert-dismissible fade show" role="alert">' +
 										'  Problem acknowledged for '+payload_for +
-										'  <button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-										'    <span aria-hidden="true">&times;</span>' +
-										'  </button>' +
+										'  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
 										'</div>');
 									setTimeout(()=>{ $('#modal_ack').modal('hide'); }, 2000);
 									return;
@@ -526,9 +500,7 @@
 
 								$('#ack-alert').show().append('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
 								'  <strong>Error Problem Acknowledgement</strong> ('+res.status+') - '+JSON.stringify(res)+'' +
-								'  <button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-								'    <span aria-hidden="true">&times;</span>' +
-								'  </button>' +
+								'  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
 								'</div>');
 							}
 						});

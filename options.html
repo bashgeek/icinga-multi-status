@@ -4,10 +4,9 @@
 		<meta charset="utf-8">
 		<title>Icinga Multi Status - Options</title>
 		<link href="inc/bootstrap.min.css" rel="stylesheet">
-		<script src="inc/jquery-3.5.0.min.js"></script>
-		<script src="inc/bootstrap.min.js"></script>
-		<script src="inc/URI.min.js"></script>
-		<style type="text/css">body { min-width: 1000px; min-height: 1000px; }</style>
+		<script src="inc/jquery-3.6.0.min.js"></script>
+		<script src="inc/bootstrap.bundle.min.js"></script>
+		<style>body { min-width: 1000px; min-height: 1000px; }</style>
 	</head>
 	<body>
 		<div class="container">
@@ -30,76 +29,74 @@
 			<div class="card card-default" style="margin-top: 50px">
 				<h5 class="card-header">Global Settings <a href="help.html" target="_blank" class="btn btn-sm float-right btn-outline-info">?</a></h5>
 				<div class="card-body">
-					<form class="form-horizontal" role="form">
-						<div class="form-group">
-							<label for="settings-refresh" class="col-sm-12 control-label">Refresh Rate:</label>
-							<div class="col-sm-10">
-								<select class="form-control" id="settings-refresh">
-									<option value="10">10 seconds</option>
-									<option value="30">30 seconds</option>
-									<option value="60">1 minute</option>
-									<option value="120">2 minutes</option>
-									<option value="300">5 minutes</option>
-									<option value="600">10 minutes</option>
-									<option value="900">15 minutes</option>
-									<option value="1800">30 minutes</option>
-									<option value="3600">60 minutes</option>
-								</select>
-							</div>
+					<div class="form-group">
+						<label for="settings-refresh" class="col-sm-12 col-form-label">Refresh Rate:</label>
+						<div class="col-sm-10">
+							<select class="form-control" id="settings-refresh">
+								<option value="10">10 seconds</option>
+								<option value="30">30 seconds</option>
+								<option value="60">1 minute</option>
+								<option value="120">2 minutes</option>
+								<option value="300">5 minutes</option>
+								<option value="600">10 minutes</option>
+								<option value="900">15 minutes</option>
+								<option value="1800">30 minutes</option>
+								<option value="3600">60 minutes</option>
+							</select>
 						</div>
-						<div class="form-group">
-							<label for="settings-ack-expire" class="col-sm-12 control-label">Default Acknowledge Expiry</label>
-							<div class="col-sm-10">
-								<select class="form-control" id="settings-ack-expire">
-									<option value="0">no expiration</option>
-									<option value="60">1 minute</option>
-									<option value="120">2 minutes</option>
-									<option value="300">5 minutes</option>
-									<option value="600">10 minutes</option>
-									<option value="900">15 minutes</option>
-									<option value="1800">30 minutes</option>
-									<option value="3600">1 hour</option>
-									<option value="7200">2 hours</option>
-									<option value="10800">3 hours</option>
-									<option value="21600">6 hours</option>
-									<option value="43200">12 hours</option>
-									<option value="86400">1 day</option>
-									<option value="172800">2 days</option>
-									<option value="259200">3 days</option>
-								</select>
-							</div>
+					</div>
+					<div class="form-group">
+						<label for="settings-ack-expire" class="col-sm-12 col-form-label">Default Acknowledge Expiry</label>
+						<div class="col-sm-10">
+							<select class="form-control" id="settings-ack-expire">
+								<option value="0">no expiration</option>
+								<option value="60">1 minute</option>
+								<option value="120">2 minutes</option>
+								<option value="300">5 minutes</option>
+								<option value="600">10 minutes</option>
+								<option value="900">15 minutes</option>
+								<option value="1800">30 minutes</option>
+								<option value="3600">1 hour</option>
+								<option value="7200">2 hours</option>
+								<option value="10800">3 hours</option>
+								<option value="21600">6 hours</option>
+								<option value="43200">12 hours</option>
+								<option value="86400">1 day</option>
+								<option value="172800">2 days</option>
+								<option value="259200">3 days</option>
+							</select>
 						</div>
-						<div class="form-group">
-							<label for="settings-ack-persistent" class="col-sm-12 control-label">Default Acknowledge Persistent</label>
-							<div class="col-sm-10">
-								<select class="form-control" id="settings-ack-persistent">
-									<option value="0">not persistent</option>
-									<option value="1">persistent</option>
-								</select>
-							</div>
+					</div>
+					<div class="form-group">
+						<label for="settings-ack-persistent" class="col-sm-12 col-form-label">Default Acknowledge Persistent</label>
+						<div class="col-sm-10">
+							<select class="form-control" id="settings-ack-persistent">
+								<option value="0">not persistent</option>
+								<option value="1">persistent</option>
+							</select>
 						</div>
-						<div class="form-group">
-							<label for="settings-ack-sticky" class="col-sm-12 control-label">Default Acknowledge Sticky</label>
-							<div class="col-sm-10">
-								<select class="form-control" id="settings-ack-sticky">
-									<option value="0">not sticky</option>
-									<option value="1">sticky</option>
-								</select>
-							</div>
+					</div>
+					<div class="form-group">
+						<label for="settings-ack-sticky" class="col-sm-12 col-form-label">Default Acknowledge Sticky</label>
+						<div class="col-sm-10">
+							<select class="form-control" id="settings-ack-sticky">
+								<option value="0">not sticky</option>
+								<option value="1">sticky</option>
+							</select>
 						</div>
-						<div class="form-group">
-							<label for="settings-ack-author" class="col-sm-12 control-label">Default Acknowledge Author</label>
-							<div class="col-sm-10">
-								<input type="text" class="form-control" id="settings-ack-author">
-							</div>
+					</div>
+					<div class="form-group">
+						<label for="settings-ack-author" class="col-sm-12 col-form-label">Default Acknowledge Author</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="settings-ack-author">
 						</div>
+					</div>
 
-						<div class="form-group" style="margin-bottom:0">
-							<div class="col-sm-offset-2 col-sm-10">
-								<button type="submit" class="btn btn-info" id="settings-submit">Save Settings</button>
-							</div>
+					<div class="form-group mt-4" style="margin-bottom:0">
+						<div class="col-sm-offset-2 col-sm-10">
+							<button class="btn btn-info" id="settings-submit">Save Settings</button>
 						</div>
-					</form>
+					</div>
 				</div>
 			</div>
 
@@ -108,37 +105,37 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="modal_instance_title"></h5>
-							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
 							<form role="form">
 								<input type="hidden" id="instance-id" value="">
 								<div class="form-group">
-									<label for="instance-url" class="control-label">Icinga Data URL (API URL for Icinga 2, Icinga Classic UI URL for Icinga 1):</label>
+									<label for="instance-url" class="col-form-label">Icinga Data URL (API URL for Icinga 2, Icinga Classic UI URL for Icinga 1):</label>
 									<input type="text" class="form-control" id="instance-url" placeholder="example: https://myicingaserver.com/icinga/ or https://myicingaserver.com:5665/">
 								</div>
 								<div class="form-group">
-									<label for="instance-url-web" class="control-label">Icingaweb 2 URL (URL to Icingaweb 2 to use for links), optional:</label>
+									<label for="instance-url-web" class="col-form-label">Icingaweb 2 URL (URL to Icingaweb 2 to use for links), optional:</label>
 									<input type="text" class="form-control" id="instance-url-web" placeholder="example: https://myicingaserver.com/icingaweb2/">
 								</div>
 								<div class="form-group">
-									<label for="instance-title" class="control-label">Instance Title:</label>
+									<label for="instance-title" class="col-form-label">Instance Title:</label>
 									<input type="text" class="form-control" id="instance-title" placeholder="example: My Icinga Instance">
 								</div>
 								<div class="form-group">
-									<label for="instance-icinga-type" class="control-label">Icinga Type:</label>
+									<label for="instance-icinga-type" class="col-form-label">Icinga Type:</label>
 									<select class="form-control" id="instance-icinga-type"><option value="icinga2_api">Icinga2 API</option><option value="">Icinga Classic UI</option></select>
 								</div>
 								<div class="form-group">
-									<label for="instance-user" class="control-label">Username:</label>
+									<label for="instance-user" class="col-form-label">Username:</label>
 									<input type="text" class="form-control" id="instance-user" placeholder="example: icinga">
 								</div>
 								<div class="form-group">
-									<label for="instance-pass" class="control-label">Password:</label>
+									<label for="instance-pass" class="col-form-label">Password:</label>
 									<input type="password" class="form-control" id="instance-pass">
 								</div>
 								<div class="form-group">
-									<label for="instance-ack-expire" class="control-label">Default Acknowledge Expiry</label>
+									<label for="instance-ack-expire" class="col-form-label">Default Acknowledge Expiry</label>
 									<select class="form-control" id="instance-ack-expire">
 										<option value="-1">- use global default -</option>
 										<option value="0">no expiration</option>
@@ -159,7 +156,7 @@
 									</select>
 								</div>
 								<div class="form-group">
-									<label for="instance-ack-persistent" class="control-label">Default Acknowledge Persistent</label>
+									<label for="instance-ack-persistent" class="col-form-label">Default Acknowledge Persistent</label>
 									<select class="form-control" id="instance-ack-persistent">
 										<option value="-1">- use global default -</option>
 										<option value="0">not persistent</option>
@@ -167,7 +164,7 @@
 									</select>
 								</div>
 								<div class="form-group">
-									<label for="instance-ack-sticky" class="control-label">Default Acknowledge Sticky</label>
+									<label for="instance-ack-sticky" class="col-form-label">Default Acknowledge Sticky</label>
 									<select class="form-control" id="instance-ack-sticky">
 										<option value="-1">- use global default -</option>
 										<option value="0">not sticky</option>
@@ -175,15 +172,15 @@
 									</select>
 								</div>
 								<div class="form-group">
-									<label for="instance-ack-author" class="control-label">Default Acknowledge Author</label>
+									<label for="instance-ack-author" class="col-form-label">Default Acknowledge Author</label>
 									<input type="text" class="form-control" id="instance-ack-author" placeholder="Leave empty for global default">
 								</div>
 								<div class="form-group">
-									<label for="instance-hide-hosts" class="control-label">Hide and ignore hosts (regexp):</label>
+									<label for="instance-hide-hosts" class="col-form-label">Hide and ignore hosts (regexp):</label>
 									<input type="text" class="form-control" id="instance-hide-hosts" placeholder="example: web[0-9]+">
 								</div>
 								<div class="form-group">
-									<label for="instance-hide-services" class="control-label">Hide and ignore services (regexp):</label>
+									<label for="instance-hide-services" class="col-form-label">Hide and ignore services (regexp):</label>
 									<input type="text" class="form-control" id="instance-hide-services" placeholder="example: (imap|ssh)">
 								</div>
 								<div class="checkbox">
@@ -215,7 +212,7 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="modal_instance_delete_title">Delete Instance</h5>
-							<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
 							<input type="hidden" id="instance-delete-id" value="">

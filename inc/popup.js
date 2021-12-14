@@ -22,13 +22,13 @@
 	});
 
 	table_classes = {
-		'UP': 'success',
-		'DOWN': 'danger',
-		'UNREACHABLE': 'info',
-		'OK': 'success',
-		'WARNING': 'warning',
-		'UNKNOWN': 'active',
-		'CRITICAL': 'danger'
+		'UP': 'table-success',
+		'DOWN': 'table-danger',
+		'UNREACHABLE': 'table-info',
+		'OK': 'table-success',
+		'WARNING': 'table-warning',
+		'UNKNOWN': 'table-info',
+		'CRITICAL': 'table-danger'
 	};
 
 	function popup_nav(to) {
@@ -106,7 +106,7 @@
 									if (instance_line) {
 										$('#popup-tab-services-tables').append(''
 											+ '<h5 class="instance-title">'+instance.title+'</h5>'
-											+ '<table class="table table-sm table-striped icinga-hosts-services">'
+											+ '<table class="table table-sm table-striped table-hover icinga-hosts-services">'
 												+ '<thead>'
 													+ '<tr>'
 														+ '<th>Host</th>'
@@ -189,7 +189,7 @@
 									if (instance_line) {
 										$('#popup-tab-hosts-tables').append(''
 											+ '<h5 class="instance-title">'+instance.title+'</h5>'
-											+ '<table class="table table-sm table-striped icinga-hosts">'
+											+ '<table class="table table-sm table-striped table-hover icinga-hosts">'
 												+ '<thead>'
 													+ '<tr>'
 														+ '<th>Host</th>'
@@ -358,16 +358,16 @@
 
 									// Build hosts column
 									let host_column = '';
-									if (counter_hosts.up) host_column += '<span class="badge badge-success" title="UP">'+counter_hosts.up+'</span> ';
-									if (counter_hosts.down) host_column += '<span class="badge badge-danger" title="DOWN">'+counter_hosts.down+'</span> ';
-									if (counter_hosts.unr) host_column += '<span class="badge badge-primary" title="UNREACHABLE">'+counter_hosts.unr+'</span> ';
+									if (counter_hosts.up) host_column += '<span class="badge bg-success" title="UP">'+counter_hosts.up+'</span> ';
+									if (counter_hosts.down) host_column += '<span class="badge bg-danger" title="DOWN">'+counter_hosts.down+'</span> ';
+									if (counter_hosts.unr) host_column += '<span class="badge bg-primary" title="UNREACHABLE">'+counter_hosts.unr+'</span> ';
 
 									// Build services column
 									let service_column = '';
-									if (counter_services.ok) service_column += '<span class="badge badge-success" title="OK">'+counter_services.ok+'</span> ';
-									if (counter_services.warn) service_column += '<span class="badge badge-warning" title="WARNING">'+counter_services.warn+'</span> ';
-									if (counter_services.crit) service_column += '<span class="badge badge-danger" title="CRITICAL">'+counter_services.crit+'</span> ';
-									if (counter_services.unkn) service_column += '<span class="badge badge-default" title="UNKNOWN">'+counter_services.unkn+'</span> ';
+									if (counter_services.ok) service_column += '<span class="badge bg-success" title="OK">'+counter_services.ok+'</span> ';
+									if (counter_services.warn) service_column += '<span class="badge bg-warning" title="WARNING">'+counter_services.warn+'</span> ';
+									if (counter_services.crit) service_column += '<span class="badge bg-danger" title="CRITICAL">'+counter_services.crit+'</span> ';
+									if (counter_services.unkn) service_column += '<span class="badge bg-default" title="UNKNOWN">'+counter_services.unkn+'</span> ';
 
 									// Insert into table
 									$('#popup-tab-overview-table').find('tbody').append('<tr>'
@@ -377,7 +377,7 @@
 									+ '</tr>');
 
 									// Update worst status
-									if (counter_services.crit || counter_hosts.down || counter_hosts.unr) {
+									if (counter_services.crit || counter_hosts.down || counter_hosts.unr) {
 										worst_status = 2;
 									} else if (counter_services.warn && worst_status === 0) {
 										worst_status = 1;
@@ -387,7 +387,7 @@
 									if (instance_lines.length > 0) {
 										$('#popup-tab-overview-downs').append('<h5 class="instance-title">'+instance.title+'</h5>');
 
-										let table = $('<table class="table table-sm table-striped icinga-hosts-services">');
+										let table = $('<table class="table table-sm table-striped table-hover icinga-hosts-services">');
 										let thead = $('<thead>').append('<th>Host</th><th>Service</th><th>Status</th>');
 										if (instance.icinga_type === 'icinga2_api') {
 											thead.append('<th></th>');

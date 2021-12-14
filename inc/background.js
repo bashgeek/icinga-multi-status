@@ -12,8 +12,9 @@ var bg = {
 
 	// Refresh data for all icinga instances
 	refreshData: function() {
-		if (bg.timer != undefined)
+		if (bg.timer !== undefined) {
 			clearTimeout(bg.timer);
+		}
 
 		icinga_get_instances(function (instances) {
 			instances = instances.instances;
@@ -52,9 +53,11 @@ var bg = {
 
 	refreshData_done: function() {
 		var all_done = true;
-		for(i=0; i<=bg.checks.length; i++) {
-			if (bg.checks[i] == false)
+		for (i=0; i<=bg.checks.length; i++) {
+			if (bg.checks[i] === false) {
 				all_done = false;
+				break;
+			}
 		}
 
 		if (all_done) {
@@ -165,7 +168,7 @@ var bg = {
 
 	// Restart refresh timer
 	restartTimer: function() {
-		if (bg.timer != undefined)
+		if (bg.timer !== undefined)
 			clearInterval(bg.timer);
 
 		icinga_get_settings(function (settings) {
@@ -182,7 +185,7 @@ var bg = {
 				settings = default_settings;
 			}
 
-			var interval = (settings.refresh == undefined) ? 30000 : settings.refresh*1000;
+			var interval = (settings.refresh === undefined) ? 30000 : settings.refresh*1000;
 			bg.timer = setTimeout(function() { bg.refreshData(); }, interval);
 		});
 	},

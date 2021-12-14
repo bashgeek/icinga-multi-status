@@ -4,17 +4,16 @@
 		<meta charset="utf-8">
 		<title>Icinga Multi Status - Popup</title>
 		<link href="inc/bootstrap.min.css" rel="stylesheet">
-		<script src="inc/jquery-3.5.0.min.js"></script>
-		<script src="inc/bootstrap.min.js"></script>
-		<style type="text/css">
+		<script src="inc/jquery-3.6.0.min.js"></script>
+		<script src="inc/bootstrap.bundle.min.js"></script>
+		<style>
 			body { min-width: 600px; padding: 5px 5px 15px 5px; min-height: 180px; }
-			/*ul.nav li a { padding: 5px 10px; }*/
 			a:focus { outline: 0; }
-			.popup-tab { padding: 10px; padding-bottom: 0px; }
+			.popup-tab { padding: 10px; padding-bottom: 0; }
 			td, th {  padding: 2px; font-size: .9rem; }
-			.alert { padding: 5px; font-size: .9rem; margin: 20px 0px 0px 0px; }
+			.alert { padding: 5px; font-size: .9rem; margin: 20px 0 0 0; }
 			.alert .close { padding: 2px 10px 5px; }
-			table { margin-bottom: 0px !important; }
+			table { margin-bottom: 0 !important; }
 			h4 { margin-bottom: 25px; }
 			h5.instance-title { font-size: 1rem; margin: 0.6rem 0 0.7rem 0; }
 
@@ -82,12 +81,16 @@
 			<br><br>
 			The author of this extension is Daniel Schmitz. The development was sponsored by <a href="https://bashgeek.net" target="_blank">bashgeek.net</a>.
 			<br><br>
-			<div class="float-right">
-				<a href="https://github.com/bashgeek/icinga-multi-status" target="_blank"><img src="img/github.jpg" alt="GitHub"></a>
-				<a href="https://bashgeek.net" target="_blank"><img src="img/bashgeek.jpg" alt="bashgeek.net"></a>
+			<div class="row justify-content-between">
+				<div class="col-auto">
+					<a href="#" class="btn btn-sm btn-light open-options">Options</a>
+					<a href="help.html" target="_blank" class="btn btn-sm btn-light">Help</a>
+				</div>
+				<div class="col-auto">
+					<a href="https://github.com/bashgeek/icinga-multi-status" target="_blank"><img src="img/github.jpg" alt="GitHub"></a>
+					<a href="https://bashgeek.net" target="_blank"><img src="img/bashgeek.jpg" alt="bashgeek.net"></a>
+				</div>
 			</div>
-			<a href="#" class="btn btn-sm btn-light open-options">Options</a>
-			<a href="help.html" target="_blank" class="btn btn-sm btn-light">Help</a>
 		</div>
 
 		<div class="modal fade" id="modal_ack" tabindex="-1" role="dialog" aria-labelledby="modal_acknowledge" aria-hidden="true">
@@ -95,48 +98,46 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="modal_iacknowledge_title"></h5>
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
 					<div class="modal-body">
-						<form role="form">
-							<div class="form-group">
-								<label for="ack-comment" class="control-label">Comment</label>
-								<input type="text" class="form-control" id="ack-comment">
-							</div>
-							<div class="form-group">
-								<label for="ack-author" class="control-label">Author</label>
-								<input type="text" class="form-control" id="ack-author">
-							</div>
-							<div class="form-group">
-								<label for="ack-expire" class="control-label">Expiration</label>
-								<select class="form-control" id="ack-expire">
-									<option value="0">no expiration</option>
-									<option value="60">1 minute</option>
-									<option value="120">2 minutes</option>
-									<option value="300">5 minutes</option>
-									<option value="600">10 minutes</option>
-									<option value="900">15 minutes</option>
-									<option value="1800">30 minutes</option>
-									<option value="3600">1 hour</option>
-									<option value="7200">2 hours</option>
-									<option value="10800">3 hours</option>
-									<option value="21600">6 hours</option>
-									<option value="43200">12 hours</option>
-									<option value="86400">1 day</option>
-									<option value="172800">2 days</option>
-									<option value="259200">3 days</option>
-								</select>
-							</div>
-							<div class="checkbox">
-								<label><input type="checkbox" id="ack-services"> Apply for all services</label>
-							</div>
-							<div class="checkbox">
-								<label><input type="checkbox" id="ack-persistent"> Persistent</label>
-							</div>
-							<div class="checkbox">
-								<label><input type="checkbox" id="ack-sticky"> Sticky</label>
-							</div>
-						</form>
+						<div class="form-group">
+							<label for="ack-comment" class="col-form-label">Comment</label>
+							<input type="text" class="form-control" id="ack-comment">
+						</div>
+						<div class="form-group">
+							<label for="ack-author" class="col-form-label">Author</label>
+							<input type="text" class="form-control" id="ack-author">
+						</div>
+						<div class="form-group">
+							<label for="ack-expire" class="col-form-label">Expiration</label>
+							<select class="form-control" id="ack-expire">
+								<option value="0">no expiration</option>
+								<option value="60">1 minute</option>
+								<option value="120">2 minutes</option>
+								<option value="300">5 minutes</option>
+								<option value="600">10 minutes</option>
+								<option value="900">15 minutes</option>
+								<option value="1800">30 minutes</option>
+								<option value="3600">1 hour</option>
+								<option value="7200">2 hours</option>
+								<option value="10800">3 hours</option>
+								<option value="21600">6 hours</option>
+								<option value="43200">12 hours</option>
+								<option value="86400">1 day</option>
+								<option value="172800">2 days</option>
+								<option value="259200">3 days</option>
+							</select>
+						</div>
+						<div class="checkbox">
+							<label><input type="checkbox" id="ack-services"> Apply for all services</label>
+						</div>
+						<div class="checkbox">
+							<label><input type="checkbox" id="ack-persistent"> Persistent</label>
+						</div>
+						<div class="checkbox">
+							<label><input type="checkbox" id="ack-sticky"> Sticky</label>
+						</div>
 
 						<div class="alert" id="ack-alert"></div>
 					</div>
