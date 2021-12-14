@@ -407,9 +407,10 @@
 					}
 
 					$('#popup-tab-overview-downs').append('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
-					'  <strong>Error Rescheduling Check</strong> ('+res.status+') - '+JSON.stringify(res)+'' +
+					'  <strong>Error Rescheduling Check</strong> <span class="alert-error-info"></span>' +
 					'  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
 					'</div>');
+					$('#popup-tab-overview-downs .alert-error-info').text('('+parseInt(res.status)+') '+JSON.stringify(res));
 				}
 			});
 		});
@@ -499,9 +500,10 @@
 								}
 
 								$('#ack-alert').show().append('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
-								'  <strong>Error Problem Acknowledgement</strong> ('+res.status+') - '+JSON.stringify(res)+'' +
+								'  <strong>Error Problem Acknowledgement</strong> <span class="alert-error-info"></span>' +
 								'  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
 								'</div>');
+								$('#ack-alert .alert-error-info').text('('+parseInt(res.status)+') '+JSON.stringify(res));
 							}
 						});
 					});
