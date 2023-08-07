@@ -1,6 +1,6 @@
 # Icinga Multi Status for web browsers
 
-Icinga Multi Status helps you monitoring your (multiple or single) Icinga instances with comfortable alert badges and notifications about problems right within your web browser.
+Icinga Multi Status helps you to monitor your (multiple or single) Icinga instances with comfortable alert badges and notifications about incidents right within your web browser.
 
 Get it from the [Chrome Web Store](https://chrome.google.com/webstore/detail/icinga-multi-status/khabbhcojgkibdeipanmiphceeoiijal)
 
@@ -19,7 +19,7 @@ Get it from the [Mozilla Firefox Add-ons](https://addons.mozilla.org/en-US/firef
 - Hosts Tab showing you all hosts of all Instances with a quick filter to search for a host
 - Services Tab showing you all services of all hosts of all Instances with a quick filter to search for a service
 - Instant browser/OS notifications about new problems, if enabled
-- Interface completely build on Bootstrap v4.1
+- Interface completely build on Bootstrap v5.3
 
 ## Support
 
