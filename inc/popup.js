@@ -124,7 +124,11 @@ function popup_nav(to)
                                                         }
                                                         break;
                                                 }
-                                                service_line += '<tr><td></td><td>' + service_name + '</td><td class="' + table_classes[service.status] + '">' + service.status + '</td></tr>';
+                                                service_line += '<tr><td></td><td>' + service_name + '</td><td class="' + table_classes[service.status] + '">'
+                                                    + service.status
+                                                    + (service.ack ? ' <span title="Has been acknowledged"><svg style="width:24px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>' : '')
+                                                    + (service.down ? ' <span title="Has scheduled downtime"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:24px;" ><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>' : '')
+                                                    + '</td></tr>';
                                             }
                                         });
 
@@ -225,7 +229,11 @@ function popup_nav(to)
                                                     }
                                                     break;
                                             }
-                                            let host_line = '<tr><td>' + host_name + '</td><td class="' + table_classes[host.status] + '">' + host.status + '</td></tr>';
+                                            let host_line = '<tr><td>' + host_name + '</td><td class="' + table_classes[host.status] + '">'
+                                                + host.status
+                                                + (host.ack ? ' <span title="Has been acknowledged"><svg style="width:24px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>' : '')
+                                                + (host.down ? ' <span title="Has scheduled downtime"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:24px;" ><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>' : '')
+                                                + '</td></tr>';
                                             instance_line += host_line;
                                         }
                                     }
@@ -351,7 +359,12 @@ function popup_nav(to)
                                                 break;
                                         }
                                         host_line.append($('<td>'));
-                                        host_line.append($('<td class="align-middle">').addClass(table_classes[host.status]).html(host.status + ((host.state_type === 'SOFT') ? ' (S)' : '')));
+                                        host_line.append($('<td class="align-middle">').addClass(table_classes[host.status]).html(
+                                            host.status
+                                            + ((host.state_type === 'SOFT') ? ' (S)' : '')
+                                            + (host.ack ? ' <span title="Has been acknowledged"><svg style="width:24px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>' : '')
+                                            + (host.down ? ' <span title="Has scheduled downtime"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:24px;" ><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>' : '')
+                                        ));
                                         if (host_options !== null) {
                                             host_line.append(host_options);
                                         }
@@ -410,7 +423,12 @@ function popup_nav(to)
                                                         );
                                                         break;
                                                 }
-                                                service_line.append($('<td class="align-middle">').addClass(table_classes[service.status]).html(service.status + ((service.state_type === 'SOFT') ? ' (S)' : '')));
+                                                service_line.append($('<td class="align-middle">').addClass(table_classes[service.status]).html(
+                                                    service.status
+                                                    + ((service.state_type === 'SOFT') ? ' (S)' : '')
+                                                    + (service.ack ? ' <span title="Has been acknowledged"><svg style="width:24px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>' : '')
+                                                    + (service.down ? ' <span title="Has scheduled downtime"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:24px;" ><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>' : '')
+                                                ));
                                                 if (service_options !== null) {
                                                     service_line.append(service_options);
                                                 }
@@ -481,7 +499,7 @@ function popup_nav(to)
                                     let table = $('<table class="table table-sm table-striped table-hover icinga-hosts-services">');
                                     let thead = $('<thead>').append('<th>Host</th><th>Service</th><th>Status</th>');
                                     if (instance.icinga_type === 'icinga2_api') {
-                                        thead.append('<th></th>');
+                                        thead.append('<th>Actions</th>');
                                     }
                                     table.append(thead);
                                     let tbody = $('<tbody>');

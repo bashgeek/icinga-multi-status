@@ -587,9 +587,9 @@ function icinga_acknowledge(type, instance_i, host_name, service_name = '')
 
         icinga_get_settings((settings) => {
             let defaults = [];
-            defaults['ack_expire'] = (instance.ack_expire === -1) ? (settings.ack_expire || default_settings.ack_expire) : instance.ack_expire;
-            defaults['ack_persistent'] = (instance.ack_persistent === -1) ? (settings.ack_persistent || default_settings.ack_persistent) : instance.ack_persistent;
-            defaults['ack_sticky'] = (instance.ack_sticky === -1) ? (settings.ack_sticky || default_settings.ack_sticky) : instance.ack_sticky;
+            defaults['ack_expire'] = (instance.ack_expire == -1) ? (settings.ack_expire || default_settings.ack_expire) : instance.ack_expire;
+            defaults['ack_persistent'] = (instance.ack_persistent == -1) ? (settings.ack_persistent || default_settings.ack_persistent) : instance.ack_persistent;
+            defaults['ack_sticky'] = (instance.ack_sticky == -1) ? (settings.ack_sticky || default_settings.ack_sticky) : instance.ack_sticky;
             defaults['ack_author'] = (instance.ack_author === "") ? (settings.ack_author || default_settings.ack_author) : instance.ack_author;
 
             let ack_services = $('#ack-services');
