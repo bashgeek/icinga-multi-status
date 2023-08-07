@@ -1,13 +1,12 @@
 function instance_modal(instance)
 {
-    $('#instance-alert').text('');
-    $('#instance-alert').hide();
+    $('#instance-alert').text('').hide();
     $('#instance-submit').prop('disabled', false);
 
-    var modal = $('#modal_instance');
+    let modal = $('#modal_instance');
     modal.find('.form-group').removeClass('has-error');
 
-    if (instance == -1) {
+    if (instance === -1) {
         modal.find('.modal-title').text('Add new instance');
         $('#instance-id').val(-1);
 
@@ -36,7 +35,7 @@ function instance_modal(instance)
                 instances = [];
             }
 
-            var e = instances[instance];
+            let e = instances[instance];
             modal.find('.modal-title').text('Edit instance');
             $('#instance-id').val(instance);
             $('#instance-url').val(e.url);
@@ -64,7 +63,7 @@ function instance_modal(instance)
 
 function instance_modal_delete(instance)
 {
-    var modal = $('#modal_instance_delete');
+    let modal = $('#modal_instance_delete');
     icinga_get_instances(function (instances) {
         instances = instances.instances;
 
@@ -72,7 +71,7 @@ function instance_modal_delete(instance)
             instances = [];
         }
 
-        var e = instances[instance];
+        let e = instances[instance];
         $('#instance-delete-submit').prop('disabled', false);
         $('#instance-delete-id').val(instance);
         $('#instance-delete-title').html(e.title);
@@ -86,15 +85,13 @@ function instance_delete()
 {
     $('#instance-delete-submit').prop('disabled', true);
 
-    var modal = $('#modal_instance_delete');
+    let modal = $('#modal_instance_delete');
     icinga_get_instances(function (instances) {
         instances = instances.instances;
 
         if (instances == null) {
             instances = [];
         }
-
-        var e = instances[$('#instance-delete-id').val()];
 
         delete instances[$('#instance-delete-id').val()];
         icinga_set_instances(instances);
@@ -124,7 +121,7 @@ function instance_active(instance)
 
 function instance_save()
 {
-    var errors = [];
+    let errors = [];
 
     let _submit = $('#instance-submit');
     let _url = $('#instance-url');
@@ -140,30 +137,29 @@ function instance_save()
     if (_url.val()) {
         let url = new URL(_url.val());
         if (!url.hostname || (url.protocol !== 'http:' && url.protocol !== 'https:')) {
-            $('#instance-url').parent().addClass('has-error');
+            _url.parent().addClass('has-error');
             errors.push('Given URL does not seem a valid HTTP/HTTPS URL.');
         } else {
             // OK
-            $('#instance-url').parent().removeClass('has-error');
+            _url.parent().removeClass('has-error');
 
             if (!_title.val()) {
                 _title.val(url.hostname);
             }
         }
     } else {
-        $('#instance-url').parent().addClass('has-error');
+        _url.parent().addClass('has-error');
         errors.push('No URL given');
     }
-
 
     if (_wurl.val()) {
         let url = new URL(_wurl.val());
         if (!url.hostname || (url.protocol !== 'http:' && url.protocol !== 'https:')) {
-            $('#instance-url-web').parent().addClass('has-error');
+            _wurl.parent().addClass('has-error');
             errors.push('Given URL does not seem a valid HTTP/HTTPS URL.');
         } else {
             // OK
-            $('#instance-url-web').parent().removeClass('has-error');
+            _wurl.parent().removeClass('has-error');
         }
     }
 
@@ -233,7 +229,7 @@ function instance_save()
     } else {
         $('#instance-alert').removeClass().addClass('alert alert-info').html('Checking...').show();
 
-        icinga_fetch($('#instance-icinga-type').val(), $('#instance-url').val(), $('#instance-user').val(), $('#instance-pass').val(), 'instance-check');
+        icinga_fetch($('#instance-icinga-type').val(), _url.val(), _user.val(), _pass.val(), 'instance-check');
     }
 }
 
@@ -250,11 +246,12 @@ function instance_save_return(e)
                 instances = [];
             }
 
-            if ($('#instance-id').val() != -1) {
+            let instance_id = $('#instance-id').val();
+            if (instance_id !== -1) {
                 // Save
-                instances[$('#instance-id').val()] = {
-                    'active': instances[$('#instance-id').val()].active,
-                    'status_last': instances[$('#instance-id').val()].status_last,
+                instances[instance_id] = {
+                    'active': instances[instance_id].active,
+                    'status_last': instances[instance_id].status_last,
                     'url': $('#instance-url').val(),
                     'url_web': $('#instance-url-web').val(),
                     'icinga_type': $('#instance-icinga-type').val(),
@@ -318,10 +315,10 @@ function instance_table_reload()
             instances = [];
         }
 
-        var tab = $('#instances-table');
+        let tab = $('#instances-table');
         tab.find('tbody').empty();
 
-        if (instances.length == 0) {
+        if (instances.length === 0) {
             tab.find('tbody').html('<tr><td colspan="100">No instances configured yet - time to add one!</td></tr>');
         } else {
             for (i = 0; i < instances.length; i++) {
@@ -372,8 +369,7 @@ function settings_reload()
     icinga_get_settings(function (settings) {
         settings = settings.settings;
 
-        var real_settings = default_settings;
-
+        let real_settings = default_settings;
         if (settings == null) {
             settings = default_settings;
         } else {
@@ -388,6 +384,8 @@ function settings_reload()
         $('#settings-ack-persistent').val(settings.ack_persistent);
         $('#settings-ack-sticky').val(settings.ack_sticky);
         $('#settings-ack-author').val(settings.ack_author);
+        $('#settings-alarm-file').val(settings.alarm_file);
+        $('#settings-alarm-repeat').val(settings.alarm_repeat);
     });
 }
 
@@ -400,6 +398,8 @@ function settings_save()
             'ack_persistent': $('#settings-ack-persistent').val(),
             'ack_sticky': $('#settings-ack-sticky').val(),
             'ack_author': $('#settings-ack-author').val(),
+            'alarm_file': $('#settings-alarm-file').val(),
+            'alarm_repeat': $('#settings-alarm-repeat').val(),
         }
     });
 

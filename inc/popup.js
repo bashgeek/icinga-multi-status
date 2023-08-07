@@ -32,7 +32,7 @@ $(document).ready(function () {
     });
 });
 
-table_classes = {
+const table_classes = {
     'UP': 'table-success',
     'DOWN': 'table-danger',
     'UNREACHABLE': 'table-info',
@@ -54,12 +54,13 @@ function popup_nav(to)
     });
     $('#popup-tab-' + to).show();
 
+    let return_func;
     switch (to) {
         case 'services':
-            var return_func = function (e) {
+            return_func = function (e) {
                 $('#popup-tab-services-tables').empty();
 
-                if (e.state == 'ok') {
+                if (e.state === 'ok') {
                     icinga_get_instances(function (instances) {
                         instances = instances.instances;
 
@@ -68,38 +69,39 @@ function popup_nav(to)
                         }
 
                         // Go through active instances
-                        for (i = 0; i < instances.length; i++) {
-                            var instance = instances[i];
-                            instance_line = '';
+                        for (let i = 0; i < instances.length; i++) {
+                            let instance = instances[i];
+                            let instance_line = '';
 
                             if (instance.active) {
                                 // Go through all hosts and check instance
                                 $.each(Object.keys(e.hosts).sort(), function (h_i, h) {
-                                    var host = e.hosts[h];
-                                    if (host.instance == i) {
+                                    let host = e.hosts[h];
+                                    if (host.instance === i) {
                                         // Host HTML Line
+                                        let host_name;
                                         switch (instance.icinga_type) {
                                             default:
-                                                var host_name = '<a href="' + instance.url.replace(/\/$/, '') + '/cgi-bin/extinfo.cgi?type=1&host=' + host.name + '" target="_blank">' + host.name + '</a>';
+                                                host_name = '<a href="' + instance.url.replace(/\/$/, '') + '/cgi-bin/extinfo.cgi?type=1&host=' + host.name + '" target="_blank">' + host.name + '</a>';
                                                 break;
                                             case 'icinga2_api':
                                                 if (instance.url_web) {
-                                                    var host_name = '<a href="' + instance.url_web.replace(/\/$/, '') + '/monitoring/host/show?host=' + host.name + '" target="_blank">' + host.name + '</a>';
+                                                    host_name = '<a href="' + instance.url_web.replace(/\/$/, '') + '/monitoring/host/show?host=' + host.name + '" target="_blank">' + host.name + '</a>';
                                                 } else {
-                                                    var host_name = host.name;
+                                                    host_name = host.name;
                                                 }
                                                 break;
                                         }
-                                        host_line = '<tr><td>' + host_name + '</td><td></td><td class="' + table_classes[host.status] + '">' + host.status + '</td></tr>';
-                                        service_line = '';
+                                        let host_line = '<tr><td>' + host_name + '</td><td></td><td class="' + table_classes[host.status] + '">' + host.status + '</td></tr>';
+                                        let service_line = '';
 
                                         // Go through all services
                                         $.each(Object.keys(host.services).sort(), function (s_i, s) {
-                                            var service = host.services[s];
+                                            let service = host.services[s];
 
-                                            var add_service = false;
+                                            let add_service = false;
                                             if ($('#popup-tab-services-filter').val()) {
-                                                var reg = new RegExp($('#popup-tab-services-filter').val(), "i");
+                                                let reg = new RegExp($('#popup-tab-services-filter').val(), "i");
                                                 if (reg.test(service.name)) {
                                                     add_service = true;
                                                 }
@@ -109,15 +111,16 @@ function popup_nav(to)
 
                                             // Service HTML Line
                                             if (add_service) {
+                                                let service_name;
                                                 switch (instance.icinga_type) {
                                                     default:
-                                                        var service_name = '<a href="' + instance.url.replace(/\/$/, '') + '/cgi-bin/extinfo.cgi?type=2&host=' + host.name + '&service=' + service.name + '" target="_blank">' + service.name + '</a>';
+                                                        service_name = '<a href="' + instance.url.replace(/\/$/, '') + '/cgi-bin/extinfo.cgi?type=2&host=' + host.name + '&service=' + service.name + '" target="_blank">' + service.name + '</a>';
                                                         break;
                                                     case 'icinga2_api':
                                                         if (instance.url_web) {
-                                                            var service_name = '<a href="' + instance.url_web.replace(/\/$/, '') + '/monitoring/service/show?host=' + host.name + '&service=' + service.sname + '" target="_blank">' + service.name + '</a>';
+                                                            service_name = '<a href="' + instance.url_web.replace(/\/$/, '') + '/monitoring/service/show?host=' + host.name + '&service=' + service.sname + '" target="_blank">' + service.name + '</a>';
                                                         } else {
-                                                            var service_name = service.name;
+                                                            service_name = service.name;
                                                         }
                                                         break;
                                                 }
@@ -126,12 +129,9 @@ function popup_nav(to)
                                         });
 
                                         // If there is a service line OR host status down, add host line and append service lines
-                                        if (service_line != '') {
+                                        if (service_line !== '') {
                                             instance_line += host_line + service_line;
                                         }
-
-                                        delete host_line;
-                                        delete service_line;
                                     }
                                 });
 
@@ -154,13 +154,11 @@ function popup_nav(to)
                                         + '</table>'
                                     );
                                 }
-
-                                delete instance_line;
                             }
                         }
                     });
                 } else {
-                    $('#popup-tab-services-tables').html('An error occured - could not connect with background task.');
+                    $('#popup-tab-services-tables').html('An error occurred - could not connect with background task.');
                 }
             }
 
@@ -169,20 +167,20 @@ function popup_nav(to)
                     return_func(e);
                 });
             } else {
-                var sending = browser.runtime.sendMessage({request: 'data'});
+                let sending = browser.runtime.sendMessage({request: 'data'});
                 sending.then(function (e) {
                     return_func(e);
-                }, function (e) {
-                    $('#popup-tab-services-tables').html('An error occured - could not connect with background task.');
+                }, function () {
+                    $('#popup-tab-services-tables').html('An error occurred - could not connect with background task.');
                 });
             }
             break;
 
         case 'hosts':
-            var return_func = function (e) {
+            return_func = function (e) {
                 $('#popup-tab-hosts-tables').empty();
 
-                if (e.state == 'ok') {
+                if (e.state === 'ok') {
                     icinga_get_instances(function (instances) {
                         instances = instances.instances;
 
@@ -191,19 +189,20 @@ function popup_nav(to)
                         }
 
                         // Go through active instances
-                        for (i = 0; i < instances.length; i++) {
-                            var instance = instances[i];
+                        let instance_line;
+                        for (let i = 0; i < instances.length; i++) {
+                            let instance = instances[i];
                             instance_line = '';
 
                             if (instance.active) {
                                 // Go through all hosts and check instance
                                 $.each(Object.keys(e.hosts).sort(), function (h_i, h) {
-                                    var host = e.hosts[h];
-                                    if (host.instance == i) {
+                                    let host = e.hosts[h];
+                                    if (host.instance === i) {
                                         // regexp check filter
-                                        var add_host = false;
+                                        let add_host = false;
                                         if ($('#popup-tab-hosts-filter').val()) {
-                                            var reg = new RegExp($('#popup-tab-hosts-filter').val(), "i");
+                                            let reg = new RegExp($('#popup-tab-hosts-filter').val(), "i");
                                             if (reg.test(host.name)) {
                                                 add_host = true;
                                             }
@@ -213,23 +212,22 @@ function popup_nav(to)
 
                                         if (add_host) {
                                             // Host HTML Line
+                                            let host_name;
                                             switch (instance.icinga_type) {
                                                 default:
-                                                    var host_name = '<a href="' + instance.url.replace(/\/$/, '') + '/cgi-bin/extinfo.cgi?type=1&host=' + host.name + '" target="_blank">' + host.name + '</a>';
+                                                    host_name = '<a href="' + instance.url.replace(/\/$/, '') + '/cgi-bin/extinfo.cgi?type=1&host=' + host.name + '" target="_blank">' + host.name + '</a>';
                                                     break;
                                                 case 'icinga2_api':
                                                     if (instance.url_web) {
-                                                        var host_name = '<a href="' + instance.url_web.replace(/\/$/, '') + '/monitoring/host/show?host=' + host.name + '" target="_blank">' + host.name + '</a>';
+                                                        host_name = '<a href="' + instance.url_web.replace(/\/$/, '') + '/monitoring/host/show?host=' + host.name + '" target="_blank">' + host.name + '</a>';
                                                     } else {
-                                                        var host_name = host.name;
+                                                        host_name = host.name;
                                                     }
                                                     break;
                                             }
-                                            host_line = '<tr><td>' + host_name + '</td><td class="' + table_classes[host.status] + '">' + host.status + '</td></tr>';
+                                            let host_line = '<tr><td>' + host_name + '</td><td class="' + table_classes[host.status] + '">' + host.status + '</td></tr>';
                                             instance_line += host_line;
                                         }
-
-                                        delete host_line;
                                     }
                                 });
 
@@ -250,13 +248,11 @@ function popup_nav(to)
                                         + '</table>'
                                     );
                                 }
-
-                                delete instance_line;
                             }
                         }
                     });
                 } else {
-                    $('#popup-tab-hosts-tables').html('An error occured - could not connect with background task.');
+                    $('#popup-tab-hosts-tables').html('An error occurred - could not connect with background task.');
                 }
             };
 
@@ -265,17 +261,17 @@ function popup_nav(to)
                     return_func(e);
                 });
             } else {
-                var sending = browser.runtime.sendMessage({request: 'data'});
+                let sending = browser.runtime.sendMessage({request: 'data'});
                 sending.then(function (e) {
                     return_func(e);
-                }, function (e) {
-                    $('#popup-tab-hosts-tables').html('An error occured - could not connect with background task.');
+                }, function () {
+                    $('#popup-tab-hosts-tables').html('An error occurred - could not connect with background task.');
                 });
             }
             break;
 
         case 'overview':
-            var return_func = function (e) {
+            return_func = function (e) {
                 $('#popup-tab-overview-table').find('tbody').empty();
                 $('#popup-tab-overview-downs').empty();
                 $('#popup-tab-overview .alert').each(function () {
@@ -293,7 +289,7 @@ function popup_nav(to)
                         let worst_status = 0;
 
                         // Go through active instances
-                        for (i = 0; i < instances.length; i++) {
+                        for (let i = 0; i < instances.length; i++) {
                             let instance = instances[i];
                             let instance_i = i;
                             let counter_total = {hosts: 0, services: 0};
@@ -479,7 +475,8 @@ function popup_nav(to)
 
                                 // Error table
                                 if (instance_lines.length > 0) {
-                                    $('#popup-tab-overview-downs').append('<h5 class="instance-title">' + instance.title + '</h5>');
+                                    let ov_downs = $('#popup-tab-overview-downs');
+                                    ov_downs.append('<h5 class="instance-title">' + instance.title + '</h5>');
 
                                     let table = $('<table class="table table-sm table-striped table-hover icinga-hosts-services">');
                                     let thead = $('<thead>').append('<th>Host</th><th>Service</th><th>Status</th>');
@@ -492,7 +489,7 @@ function popup_nav(to)
                                         tbody.append(v);
                                     });
                                     table.append(tbody);
-                                    $('#popup-tab-overview-downs').append(table);
+                                    ov_downs.append(table);
                                 }
 
                             } else {
@@ -502,11 +499,14 @@ function popup_nav(to)
                                         + '<td><a href="' + ((instance.icinga_type === 'icinga2_api') ? instance.url_web : instance.url) + '" target="_blank">' + instance.title + '</a></td>'
                                         + '<td colspan="2">' + instance.status_last + '</td>'
                                         + '</tr>');
+
+                                    // something broken here, always show error then
+                                    worst_status = 2;
                                 }
                             }
                         }
 
-                        // Update alert according to worst status
+                        // Update alert according to the worst status
                         if (instances.length === 0) {
                             $('#popup-tab-overview-alert-new').show();
                         } else {
@@ -514,7 +514,7 @@ function popup_nav(to)
                         }
                     });
                 } else {
-                    $('#popup-tab-overview').html('An error occured - could not connect with background task.');
+                    $('#popup-tab-overview').html('An error occurred - could not connect with background task.');
                 }
             };
 
@@ -523,11 +523,11 @@ function popup_nav(to)
                     return_func(e);
                 });
             } else {
-                var sending = browser.runtime.sendMessage({request: 'data'});
+                let sending = browser.runtime.sendMessage({request: 'data'});
                 sending.then(function (e) {
                     return_func(e);
-                }, function (e) {
-                    $('#popup-tab-overview').html('An error occured - could not connect with background task.');
+                }, function () {
+                    $('#popup-tab-overview').html('An error occurred - could not connect with background task.');
                 });
             }
             break;

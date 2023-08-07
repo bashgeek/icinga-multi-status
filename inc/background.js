@@ -1,4 +1,4 @@
-var bg = {
+const bg = {
     version: 0.1,
     data_hosts: {},
     data_raw: [],
@@ -30,7 +30,7 @@ var bg = {
                 bg.data_raw = [];
 
                 for (i = 0; i < instances.length; i++) {
-                    var e = instances[i];
+                    let e = instances[i];
                     if (e.active) {
                         bg.checks[i] = false;
                         icinga_fetch(e.icinga_type, e.url, e.user, e.pass, 'refresh-background', i);
@@ -54,8 +54,8 @@ var bg = {
     },
 
     refreshData_done: function () {
-        var all_done = true;
-        for (i = 0; i <= bg.checks.length; i++) {
+        let all_done = true;
+        for (let i = 0; i <= bg.checks.length; i++) {
             if (bg.checks[i] === false) {
                 all_done = false;
                 break;
@@ -73,11 +73,12 @@ var bg = {
                     instances = [];
                 }
 
-                for (i = 0; i < bg.data_raw.length; i++) {
-                    var e = bg.data_raw[i];
+                for (let i = 0; i < bg.data_raw.length; i++) {
+                    let e = bg.data_raw[i];
 
                     if (typeof e != 'undefined') {
                         if (!e.error) {
+                            let regexp_hosts, regexp_services;
                             // RegExp for hiding
                             if (instances[i].hide_hosts) {
                                 regexp_hosts = new RegExp(instances[i].hide_hosts, 'i');
@@ -88,11 +89,11 @@ var bg = {
 
                             // Go through all hosts and services and build object
                             // If set hide hosts or hide services, ignore then
-                            for (i_h = 0; i_h < e.hosts.length; i_h++) {
-                                var host = e.hosts[i_h];
+                            for (let i_h = 0; i_h < e.hosts.length; i_h++) {
+                                let host = e.hosts[i_h];
 
                                 // Check host if regexp
-                                var add_host = false;
+                                let add_host = false;
                                 if (instances[i].hide_hosts) {
                                     if (!regexp_hosts.test(host.host_name)) {
                                         add_host = true;
@@ -113,17 +114,14 @@ var bg = {
                                         'services': {}
                                     };
                                 }
-
-                                delete add_host;
-                                delete host;
                             }
 
-                            for (i_s = 0; i_s < e.services.length; i_s++) {
-                                var service = e.services[i_s];
+                            for (let i_s = 0; i_s < e.services.length; i_s++) {
+                                let service = e.services[i_s];
 
                                 if (bg.data_hosts[i + '_' + service.host_name]) {
                                     // Check service if regexp
-                                    var add_service = false;
+                                    let add_service = false;
                                     if (instances[i].hide_services) {
                                         if (!regexp_services.test(service.service_description)) {
                                             add_service = true;
@@ -140,13 +138,10 @@ var bg = {
                                             'state_type': service.state_type,
                                             'down': service.in_scheduled_downtime,
                                             'ack': service.has_been_acknowledged,
-                                            'notify': host.notifications_enabled
+                                            'notify': service.notifications_enabled
                                         };
                                     }
                                 }
-
-                                delete service;
-                                delete add_service;
                             }
                         }
 
@@ -154,9 +149,6 @@ var bg = {
                         instances[i].error = e.error;
                         instances[i].status_last = e.text;
                     }
-
-                    delete regexp_hosts;
-                    delete regexp_services;
                 }
 
                 icinga_set_instances(instances);
@@ -181,8 +173,7 @@ var bg = {
         icinga_get_settings(function (settings) {
             settings = settings.settings;
 
-            var real_settings = default_settings;
-
+            let real_settings = default_settings;
             if (settings == null) {
                 settings = default_settings;
             } else {
@@ -192,7 +183,7 @@ var bg = {
                 settings = default_settings;
             }
 
-            var interval = (settings.refresh === undefined) ? 30000 : settings.refresh * 1000;
+            let interval = (settings.refresh === undefined) ? 30000 : settings.refresh * 1000;
             bg.timer = setTimeout(function () {
                 bg.refreshData();
             }, interval);

@@ -91,6 +91,27 @@
 							<input type="text" class="form-control" id="settings-ack-author">
 						</div>
 					</div>
+					<div class="form-group">
+						<label for="settings-alarm-file" class="col-form-label">Play Alarm Sound (<a href="https://github.com/bashgeek/icinga-multi-status/wiki/Alarm-Sounds" target="_blank">click here for examples</a>)</label>
+						<select class="form-control" id="settings-alarm-file">
+							<option value="">- do not play sound -</option>
+							<option value="dingding">Ding Ding</option>
+							<option value="horn">Horn</option>
+							<option value="laser">Laser</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="settings-alarm-repeat" class="col-form-label">Repeat Alarm Sound</label>
+						<select class="form-control" id="settings-alarm-repeat">
+							<option value="">- play only once when problem noticed -</option>
+							<option value="1">Every minute</option>
+							<option value="5">Every 5 minutes</option>
+							<option value="15">Every 15 minutes</option>
+							<option value="30">Every 30 minutes</option>
+							<option value="60">Every 60 minutes</option>
+							<option value="always">On every refresh</option>
+						</select>
+					</div>
 
 					<div class="form-group mt-4" style="margin-bottom:0">
 						<div class="col-sm-offset-2 col-sm-10">
@@ -183,8 +204,9 @@
 									<label for="instance-hide-services" class="col-form-label">Hide and ignore services (regexp):</label>
 									<input type="text" class="form-control" id="instance-hide-services" placeholder="example: (imap|ssh)">
 								</div>
-								<div class="checkbox">
-									<label><input type="checkbox" id="instance-hide-ack"> Ignore acknowleged host & service problems</label>
+
+								<div class="checkbox mt-4">
+									<label><input type="checkbox" id="instance-hide-ack"> Ignore acknowledged host & service problems</label>
 								</div>
 								<div class="checkbox">
 									<label><input type="checkbox" id="instance-hide-down"> Ignore hosts & services with downtimes</label>
@@ -197,7 +219,7 @@
 								</div>
 							</form>
 
-							<div class="alert" id="instance-alert" style="margin-bottom:0"></div>
+							<div class="alert" id="instance-alert" style="margin-top: 20px;"></div>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>

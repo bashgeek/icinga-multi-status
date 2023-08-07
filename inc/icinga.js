@@ -1,7 +1,11 @@
+let alarm_last_played_time = 0;
+let alarm_played_last_refresh = false;
+let notf_store = [];
+
 function icinga_check()
 {
     // Errors
-    var error_counts = {instance: 0, warnings: 0, downs: 0, unknown: 0};
+    let error_counts = {instance: 0, warnings: 0, downs: 0, unknown: 0};
 
     // Check for instance errors
     icinga_get_instances(function (instances) {
@@ -13,7 +17,7 @@ function icinga_check()
 
         if (instances.length) {
             for (i = 0; i < instances.length; i++) {
-                var e = instances[i];
+                let e = instances[i];
                 if (e.active) {
                     if (e.error) {
                         error_counts.instance += 1;
@@ -22,18 +26,20 @@ function icinga_check()
             }
         }
 
+        let should_play_alarm = false;
         if (Object.keys(bg.data_hosts).length) {
             // Go through hosts
             $.each(Object.keys(bg.data_hosts), function (h_i, h) {
-                var host = bg.data_hosts[h];
-                var instance = instances[host.instance];
+                let host = bg.data_hosts[h];
+                let instance = instances[host.instance];
 
                 // something is wrong with host != UP && != PENDING
                 // Possible DOWN UNREACHABLE UP
-                if (host.status == 'DOWN' || host.status == 'UNREACHABLE') {
-                    // Just if no downtime or acknowleged based on instance settings
-                    if (!(host.down && instance.hide_down) && !(host.ack && instance.hide_ack) && !(host.state_type == 'SOFT' && instance.hide_soft)) {
+                if (host.status === 'DOWN' || host.status === 'UNREACHABLE') {
+                    // Just if no downtime or acknowledged based on instance settings
+                    if (!(host.down && instance.hide_down) && !(host.ack && instance.hide_ack) && !(host.state_type === 'SOFT' && instance.hide_soft)) {
                         icinga_notification(host.instance + '_host_' + host.name, 'Host Problem', host.name + ' (' + host.status + ' - ' + host.state_type + ')', instance.title);
+                        should_play_alarm = true;
 
                         error_counts.downs += 1;
                     } else {
@@ -45,19 +51,20 @@ function icinga_check()
 
                 // check services on host
                 $.each(Object.keys(host.services), function (s_i, s) {
-                    var service = host.services[s];
+                    let service = host.services[s];
 
                     // Possible OK WARNING UNKNOWN CRITICAL
                     // Something is wrong with that status
-                    if ((service.status == 'WARNING' || service.status == 'CRITICAL') && (service.state_type == 'HARD' || !instance.hide_soft)) {
-                        // Just if no downtime or acknowleged based on instance settings
+                    if ((service.status === 'WARNING' || service.status === 'CRITICAL') && (service.state_type === 'HARD' || !instance.hide_soft)) {
+                        // Just if no downtime or acknowledged based on instance settings
                         if (!(service.down && instance.hide_down) && !(service.ack && instance.hide_ack)) {
                             // Notification for this service only if the host is not down, warning just when not ignored
-                            if (host.status == 'UP' && (service.status != 'WARNING' || (service.status == 'WARNING' && !instance.notf_nowarn))) {
+                            if (host.status === 'UP' && (service.status !== 'WARNING' || (service.status === 'WARNING' && !instance.notf_nowarn))) {
                                 icinga_notification(host.instance + '_service_' + host.name + '_' + service.name, 'Service Problem', host.name + ': ' + service.name + ' (' + service.status + ' - ' + service.state_type + ')', instance.title);
+                                should_play_alarm = true;
                             }
 
-                            if (service.status == 'WARNING') {
+                            if (service.status === 'WARNING') {
                                 error_counts.warnings += 1;
                             } else {
                                 error_counts.downs += 1;
@@ -66,7 +73,7 @@ function icinga_check()
                             icinga_notification(host.instance + '_service_' + host.name + '_' + service.name, 'clear');
                         }
                     } else {
-                        if (service.status == 'UNKNOWN') {
+                        if (service.status === 'UNKNOWN') {
                             // Unknown is always worth a count
                             error_counts.unknown += 1;
                         } else {
@@ -91,26 +98,82 @@ function icinga_check()
                 }
             }
         }
+
+        // Alarm
+        if (should_play_alarm === true) {
+            icinga_alarm_play();
+        } else {
+            icinga_alarm_clear();
+        }
     });
 }
 
-var notf_store = [];
+function icinga_alarm_play()
+{
+    icinga_get_settings(function (settings) {
+        settings = settings.settings;
+        let real_settings = default_settings;
+        if (settings == null) {
+            settings = default_settings;
+        } else {
+            $.each(settings, function (k, v) {
+                real_settings[k] = v;
+            });
+            settings = default_settings;
+        }
+
+        if (settings.alarm_file === "") {
+            return;
+        }
+
+        let play = false;
+        switch (settings.alarm_repeat) {
+            case '':
+                // once
+                if (alarm_played_last_refresh === false) {
+                    play = true;
+                }
+                break;
+            case 'always':
+                play = true;
+                break;
+            default:
+                if (alarm_last_played_time === 0 || alarm_last_played_time <= Math.floor(Date.now()/1000) - (parseInt(settings.alarm_repeat) * 60)) {
+                    play = true;
+                }
+                break;
+        }
+
+        if (play) {
+            let sound = new Audio(chrome.runtime.getURL('sounds/'+settings.alarm_file+'.mp3'));
+            sound.play();
+
+            alarm_played_last_refresh = true;
+            alarm_last_played_time = Math.floor(Date.now() / 1000);
+        }
+    });
+}
+function icinga_alarm_clear()
+{
+    alarm_played_last_refresh = false;
+    alarm_last_played_time = 0;
+}
 
 function icinga_notification(id, title, message, context)
 {
     if (chrome.notifications && chrome.notifications.getPermissionLevel) {
         chrome.notifications.getPermissionLevel(function (e) {
-            if (e == 'granted') {
-                if (title == 'clear') {
+            if (e === 'granted') {
+                if (title === 'clear') {
                     // Clear it
                     chrome.notifications.clear(id, function (id) {
                     });
                     notf_store = $.grep(notf_store, function (v) {
-                        return v != id;
+                        return v !== id;
                     });
                 } else {
                     // Send it
-                    if ($.inArray(id, notf_store) == -1) {
+                    if ($.inArray(id, notf_store) === -1) {
                         notf_store.push(id);
                         chrome.notifications.create(id, {
                             'priority': 2,
@@ -128,26 +191,28 @@ function icinga_notification(id, title, message, context)
     }
 }
 
-function icinga_badge(text, color)
+function icinga_badge(text, color_type)
 {
-    switch (color) {
+    let color;
+
+    switch (color_type) {
         case 'reload':
-            var color = [34, 175, 215, 128];
+            color = [34, 175, 215, 128];
             break;
         case 'error':
-            var color = [166, 35, 215, 255];
+            color = [166, 35, 215, 255];
             break;
         case 'ok':
-            var color = [0, 204, 51, 255];
+            color = [0, 204, 51, 255];
             break;
         case 'unknown':
-            var color = [191, 68, 178, 255];
+            color = [191, 68, 178, 255];
             break;
         case 'warning':
-            var color = [255, 165, 0, 255];
+            color = [255, 165, 0, 255];
             break;
         case 'down':
-            var color = [255, 51, 0, 255];
+            color = [255, 51, 0, 255];
             break;
     }
 
@@ -157,20 +222,21 @@ function icinga_badge(text, color)
 
 function icinga_fetch(icinga_type, url, username, password, type, instance)
 {
-    var url = url.replace(/\/$/, '');
+    url = url.replace(/\/$/, '');
 
+    let gurl;
     switch (icinga_type) {
         default:
-            var gurl = url + '/cgi-bin/status.cgi?style=hostservicedetail&jsonoutput';
+            gurl = url + '/cgi-bin/status.cgi?style=hostservicedetail&jsonoutput';
             break;
         case 'icinga2_api':
-            var gurl = url + '/v1/status/IcingaApplication';
+            gurl = url + '/v1/status/IcingaApplication';
             break;
     }
 
     icinga_get_settings(function (settings) {
         settings = settings.settings;
-        var real_settings = default_settings;
+        let real_settings = default_settings;
 
         if (settings == null) {
             settings = default_settings;
@@ -181,7 +247,7 @@ function icinga_fetch(icinga_type, url, username, password, type, instance)
             settings = default_settings;
         }
 
-        var interval = Math.round(((settings.refresh == undefined) ? 30000 : settings.refresh * 1000) / 2);
+        let interval = Math.round(((settings.refresh === undefined) ? 30000 : settings.refresh * 1000) / 2);
 
         $.ajax({
             username: username,
@@ -201,36 +267,38 @@ function icinga_fetch(icinga_type, url, username, password, type, instance)
                 }
             },
             complete: function (res, status) {
+                let error, text, icinga_data_host, icinga_data_service, icinga_version;
+
                 switch (icinga_type) {
                     default:
                         switch (res.status) {
                             default:
-                                var error = 'Unknown Error - Was not able to connect to your Icinga instance. Maybe you are using a self-signed SSL certificate that your browser is not trusting (yet)?';
+                                error = 'Unknown Error - Was not able to connect to your Icinga instance. Maybe you are using a self-signed SSL certificate that your browser is not trusting (yet)?';
                                 break;
                             case 403:
-                                var error = 'Error 403 - Forbidden';
+                                error = 'Error 403 - Forbidden';
                                 break;
                             case 404:
-                                var error = 'Error 404 - Bad URL';
+                                error = 'Error 404 - Bad URL';
                                 break;
                             case 401:
-                                var error = 'Error 401 - Username/Password wrong';
+                                error = 'Error 401 - Username/Password wrong';
                                 break;
                             case 200:
                                 if ((status === "success" || status === "notmodified")) {
-                                    var json = jQuery.parseJSON(res.responseText);
+                                    let json = jQuery.parseJSON(res.responseText);
 
                                     // Get Icinga Version
                                     if (!json.cgi_json_version) {
-                                        var error = 'Invalid Format from Icinga';
+                                        error = 'Invalid Format from Icinga';
                                     } else {
-                                        var icinga_version = json.icinga_status.program_version;
-                                        var icinga_data_service = json.status.service_status;
-                                        var icinga_data_host = json.status.host_status;
-                                        var text = 'OK - ' + icinga_data_host.length + ' hosts, ' + icinga_data_service.length + ' services (Icinga ' + icinga_version + ')';
+                                        icinga_version = json.icinga_status.program_version;
+                                        icinga_data_service = json.status.service_status;
+                                        icinga_data_host = json.status.host_status;
+                                        text = 'OK - ' + icinga_data_host.length + ' hosts, ' + icinga_data_service.length + ' services (Icinga ' + icinga_version + ')';
                                     }
                                 } else {
-                                    var error = status;
+                                    error = status;
                                 }
                                 break;
                         }
@@ -254,35 +322,31 @@ function icinga_fetch(icinga_type, url, username, password, type, instance)
                                 });
                                 break;
                         }
-
-                        delete icinga_data_service;
-                        delete icinga_data_host;
-                        delete res;
-                        delete text;
-                        delete error;
                         break;
                     case 'icinga2_api':
+                        let no_return = false;
+
                         switch (res.status) {
                             default:
-                                var error = 'unknown error';
+                                error = 'unknown error (HTTP status '+res.status+')';
                                 break;
                             case 403:
-                                var error = 'Error 403 - Forbidden';
+                                error = 'Error 403 - Forbidden';
                                 break;
                             case 404:
-                                var error = 'Error 404 - Bad URL';
+                                error = 'Error 404 - Bad URL';
                                 break;
                             case 401:
-                                var error = 'Error 401 - Username/Password wrong';
+                                error = 'Error 401 - Username/Password wrong';
                                 break;
                             case 200:
                                 if ((status === "success" || status === "notmodified")) {
-                                    var json = jQuery.parseJSON(res.responseText);
-                                    var icinga_version = json.results[0].status.icingaapplication.app.version;
+                                    let json = jQuery.parseJSON(res.responseText);
+                                    icinga_version = json.results[0].status.icingaapplication.app.version;
                                     if (!icinga_version) {
-                                        var error = 'Invalid Format from Icinga';
+                                        error = 'Invalid Format from Icinga';
                                     } else {
-                                        var no_return = true;
+                                        no_return = true;
 
                                         $.when(
                                             $.ajax({
@@ -300,32 +364,33 @@ function icinga_fetch(icinga_type, url, username, password, type, instance)
                                                 url: url + '/v1/objects/services?attrs=display_name&attrs=state&attrs=downtime_depth&attrs=host_name&attrs=state_type&attrs=acknowledgement&attrs=enable_notifications&attrs=name'
                                             })
                                         ).then(function (hosts, services) {
-                                            var icinga_data_host = [];
+                                            icinga_data_host = [];
                                             $.each(hosts[0].results, function (i, e) {
                                                 icinga_data_host.push({
                                                     host_name: e.name,
-                                                    status: (e.attrs.state == 1) ? 'DOWN' : 'UP',
-                                                    state_type: (e.attrs.state_type == 1) ? 'HARD' : 'SOFT',
-                                                    in_scheduled_downtime: (e.attrs.downtime_depth > 0) ? true : false,
+                                                    status: (e.attrs.state === 1) ? 'DOWN' : 'UP',
+                                                    state_type: (e.attrs.state_type === 1) ? 'HARD' : 'SOFT',
+                                                    in_scheduled_downtime: (e.attrs.downtime_depth > 0),
                                                     has_been_acknowledged: e.attrs.acknowledgement,
                                                     notifications_enabled: e.attrs.enable_notifications,
                                                 });
                                             });
 
-                                            var icinga_data_service = [];
+                                            icinga_data_service = [];
                                             $.each(services[0].results, function (i, e) {
+                                                let state;
                                                 switch (e.attrs.state) {
                                                     case 0:
-                                                        var state = 'OK';
+                                                        state = 'OK';
                                                         break;
                                                     case 1:
-                                                        var state = 'WARNING';
+                                                        state = 'WARNING';
                                                         break;
                                                     case 2:
-                                                        var state = 'CRITICAL';
+                                                        state = 'CRITICAL';
                                                         break;
                                                     case 3:
-                                                        var state = 'UNKNOWN';
+                                                        state = 'UNKNOWN';
                                                         break;
                                                 }
                                                 icinga_data_service.push({
@@ -334,14 +399,14 @@ function icinga_fetch(icinga_type, url, username, password, type, instance)
                                                     service_display_name: e.attrs.display_name,
                                                     service_name: e.attrs.name,
                                                     status: state,
-                                                    state_type: (e.attrs.state_type == 1) ? 'HARD' : 'SOFT',
-                                                    in_scheduled_downtime: (e.attrs.downtime_depth > 0) ? true : false,
+                                                    state_type: (e.attrs.state_type === 1) ? 'HARD' : 'SOFT',
+                                                    in_scheduled_downtime: (e.attrs.downtime_depth > 0),
                                                     has_been_acknowledged: e.attrs.acknowledgement,
                                                     notifications_enabled: e.attrs.enable_notifications,
                                                 });
                                             });
 
-                                            var text = 'OK - ' + icinga_data_host.length + ' hosts, ' + icinga_data_service.length + ' services (Icinga ' + icinga_version + ')';
+                                            text = 'OK - ' + icinga_data_host.length + ' hosts, ' + icinga_data_service.length + ' services (Icinga ' + icinga_version + ')';
 
                                             switch (type) {
                                                 case 'instance-check':
@@ -365,16 +430,10 @@ function icinga_fetch(icinga_type, url, username, password, type, instance)
                                                     });
                                                     break;
                                             }
-
-                                            delete icinga_data_service;
-                                            delete icinga_data_host;
-                                            delete res;
-                                            delete text;
-                                            delete error;
                                         });
                                     }
                                 } else {
-                                    var error = status;
+                                    error = status;
                                 }
                                 break;
                         }
@@ -415,7 +474,6 @@ function icinga_get_instances(callback)
     // Migrate old instances
     try {
         if (localStorage.getItem('instances') !== null) {
-            console.log('Found old instances, migrating', localStorage.getItem('instances'))
             chrome.storage.local.set({'instances': JSON.parse(localStorage.getItem('instances'))});
             localStorage.setItem('instances_old', localStorage.getItem('instances'));
             localStorage.removeItem('instances');
@@ -428,9 +486,9 @@ function icinga_get_instances(callback)
 
 function icinga_set_instances(instances)
 {
-    var real_instances = [];
+    let real_instances = [];
     for (i = 0; i < instances.length; i++) {
-        var e = instances[i];
+        let e = instances[i];
         if (e != null) {
             real_instances.push(e);
         }
@@ -439,12 +497,14 @@ function icinga_set_instances(instances)
     chrome.storage.local.set({'instances': real_instances});
 }
 
-default_settings = {
+const default_settings = {
     'refresh': 60,
     'ack_expire': 0,
     'ack_persistent': 0,
     'ack_sticky': 0,
     'ack_author': 'icinga-multi-status',
+    'alarm_file': '',
+    'alarm_repeat': '',
 };
 
 function icinga_get_settings(callback)
@@ -452,7 +512,6 @@ function icinga_get_settings(callback)
     // Migrate old settings
     try {
         if (localStorage.getItem('settings') !== null) {
-            console.log('Found old settings, migrating', localStorage.getItem('settings'))
             chrome.storage.local.set({'settings': JSON.parse(localStorage.getItem('settings'))});
             localStorage.setItem('settings_old', localStorage.getItem('settings'));
             localStorage.removeItem('settings');
@@ -497,15 +556,17 @@ function icinga_recheck(type, instance_i, host_name, service_name = '')
             data: JSON.stringify(payload),
             headers: {'Accept': 'application/json'},
             complete: function (res) {
+                let downs = $('#popup-tab-overview-downs');
+
                 if (res.status === 200) {
-                    $('#popup-tab-overview-downs').append('<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                    downs.append('<div class="alert alert-success alert-dismissible fade show" role="alert">' +
                         '  Rescheduled check for ' + payload_for +
                         '  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
                         '</div>');
                     return;
                 }
 
-                $('#popup-tab-overview-downs').append('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+                downs.append('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
                     '  <strong>Error Rescheduling Check</strong> <span class="alert-error-info"></span>' +
                     '  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
                     '</div>');
@@ -526,21 +587,22 @@ function icinga_acknowledge(type, instance_i, host_name, service_name = '')
 
         icinga_get_settings((settings) => {
             let defaults = [];
-            defaults['ack_expire'] = (instance.ack_expire == -1) ? (settings.ack_expire || default_settings.ack_expire) : instance.ack_expire;
-            defaults['ack_persistent'] = (instance.ack_persistent == -1) ? (settings.ack_persistent || default_settings.ack_persistent) : instance.ack_persistent;
-            defaults['ack_sticky'] = (instance.ack_sticky == -1) ? (settings.ack_sticky || default_settings.ack_sticky) : instance.ack_sticky;
-            defaults['ack_author'] = (instance.ack_author == "") ? (settings.ack_author || default_settings.ack_author) : instance.ack_author;
+            defaults['ack_expire'] = (instance.ack_expire === -1) ? (settings.ack_expire || default_settings.ack_expire) : instance.ack_expire;
+            defaults['ack_persistent'] = (instance.ack_persistent === -1) ? (settings.ack_persistent || default_settings.ack_persistent) : instance.ack_persistent;
+            defaults['ack_sticky'] = (instance.ack_sticky === -1) ? (settings.ack_sticky || default_settings.ack_sticky) : instance.ack_sticky;
+            defaults['ack_author'] = (instance.ack_author === "") ? (settings.ack_author || default_settings.ack_author) : instance.ack_author;
 
+            let ack_services = $('#ack-services');
             let payload_for;
             switch (type) {
                 case 'host':
                     payload_for = host_name;
-                    $('#ack-services').prop('checked', false);
-                    $('#ack-services').parents('.checkbox').show();
+                    ack_services.prop('checked', false);
+                    ack_services.parents('.checkbox').show();
                     break;
                 case 'service':
                     payload_for = host_name + '[' + service_name + ']';
-                    $('#ack-services').parents('.checkbox').hide();
+                    ack_services.parents('.checkbox').hide();
                     break;
             }
 
@@ -621,8 +683,10 @@ function icinga_acknowledge(type, instance_i, host_name, service_name = '')
                         data: JSON.stringify(p),
                         headers: {'Accept': 'application/json'},
                         complete: function (res) {
+                            let ack_alert = $('#ack-alert');
+
                             if (res.status === 200) {
-                                $('#ack-alert').show().append('<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+                                ack_alert.show().append('<div class="alert alert-success alert-dismissible fade show" role="alert">' +
                                     '  Problem acknowledged for ' + payload_for +
                                     '  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
                                     '</div>');
@@ -632,7 +696,7 @@ function icinga_acknowledge(type, instance_i, host_name, service_name = '')
                                 return;
                             }
 
-                            $('#ack-alert').show().append('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+                            ack_alert.show().append('<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
                                 '  <strong>Error Problem Acknowledgement</strong> <span class="alert-error-info"></span>' +
                                 '  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
                                 '</div>');
