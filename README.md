@@ -46,7 +46,7 @@ $ service icinga2 restart
 
 ## Credits
 
-- Daniel Schmitz, https://bashgeek.net, [@bashgeek](https://twitter.com/bashgeek)
+- Daniel Schmitz, [mastodon.social/@bashgeek](https://mastodon.social/@bashgeek)
 - Heavily inspired by [IcingaChromedStatus](https://github.com/kepi/IcingaChromedStatus)
 
 ## License
