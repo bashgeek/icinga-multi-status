@@ -10,7 +10,8 @@ Get it from the [Mozilla Firefox Add-ons](https://addons.mozilla.org/en-US/firef
 
 - Monitoring of multiple Icinga Instances (Version 1 and 2) using it's JSON data interface and/or API
 - Ability to hide/ignore certain host or service patterns and hosts/services with downtimes
-- Configurable refresh time
+- Configurable refresh time for each instance
+- Configurable alarm sounds
 - Ability to temporarily disable instances without deleting them
 - Status-Icon in Toolbar, showing indicator for problems or number of hosts if everything is okay
 - Overview Tab showing status of your Icinga instances as well as it's current host or service problems
@@ -19,7 +20,7 @@ Get it from the [Mozilla Firefox Add-ons](https://addons.mozilla.org/en-US/firef
 - Hosts Tab showing you all hosts of all Instances with a quick filter to search for a host
 - Services Tab showing you all services of all hosts of all Instances with a quick filter to search for a service
 - Instant browser/OS notifications about new problems, if enabled
-- Interface completely build on Bootstrap v5.3
+- Interface completely build on Bootstrap v5
 
 ## Support
 
