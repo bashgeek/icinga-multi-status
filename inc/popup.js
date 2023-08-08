@@ -280,11 +280,11 @@ function popup_nav(to)
 
         case 'overview':
             return_func = function (e) {
-                $('#popup-tab-overview-table').find('tbody').empty();
-                $('#popup-tab-overview-downs').empty();
-                $('#popup-tab-overview .alert').each(function () {
-                    $(this).hide();
-                });
+                let ov_downs = $('#popup-tab-overview-downs');
+                ov_downs.empty();
+
+                $('#popup-tab-overview-table tbody').empty();
+                $('#popup-tab-overview .alert').hide();
 
                 if (e.state === 'ok') {
                     icinga_get_instances(function (instances) {
@@ -493,7 +493,6 @@ function popup_nav(to)
 
                                 // Error table
                                 if (instance_lines.length > 0) {
-                                    let ov_downs = $('#popup-tab-overview-downs');
                                     ov_downs.append('<h5 class="instance-title">' + instance.title + '</h5>');
 
                                     let table = $('<table class="table table-sm table-striped table-hover icinga-hosts-services">');
@@ -527,12 +526,24 @@ function popup_nav(to)
                         // Update alert according to the worst status
                         if (instances.length === 0) {
                             $('#popup-tab-overview-alert-new').show();
+                            $('.animation-wrapper').hide();
                         } else {
                             $('#popup-tab-overview-alert-' + worst_status).show();
+                            if (worst_status === 0) {
+                                $('.animation-wrapper').show();
+                            } else {
+                                $('.animation-wrapper').hide();
+                            }
                         }
                     });
                 } else {
                     $('#popup-tab-overview').html('An error occurred - could not connect with background task.');
+                }
+
+                if (ov_downs.children().length === 0) {
+                    ov_downs.hide();
+                } else {
+                    ov_downs.show();
                 }
             };
 
