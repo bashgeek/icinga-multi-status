@@ -9,8 +9,16 @@
 		<style>body { min-width: 1000px; min-height: 1000px; }</style>
 	</head>
 	<body>
+		<nav class="navbar navbar-default" role="navigation" style="margin-bottom: 40px;">
+			<div class="container">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#" style="font-size: 2rem;"><img src="img/icon_38.png" alt="Icinga Multi Status" class="pull-left" style="margin-right: 20px; height: 38px;"> Icinga Multi Status</a>
+				</div>
+			</div>
+		</nav>
+
 		<div class="container">
-			<h3>Icinga Instances</h3>
+			<h3>Instances</h3>
 
 			<table class="table table-hover table-sm" id="instances-table">
 				<thead>
@@ -114,8 +122,9 @@
 					</div>
 
 					<div class="form-group mt-4" style="margin-bottom:0">
-						<div class="col-sm-offset-2 col-sm-10">
-							<button class="btn btn-info" id="settings-submit">Save Settings</button>
+						<div class="col-sm-offset-2 col-sm-10 d-flex align-items-center gap-3">
+							<button class="btn btn-primary" id="settings-submit">Save Settings</button>
+							<div class="text-success" id="settings-submit-confirm" style="display: none;">Settings saved!</div>
 						</div>
 					</div>
 				</div>

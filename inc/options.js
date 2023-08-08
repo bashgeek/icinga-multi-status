@@ -405,6 +405,7 @@ function settings_save()
 
     setTimeout(() => {
         settings_reload();
+        $('#settings-submit-confirm').fadeIn().delay(2000).fadeOut();
     }, 100);
 }
 

@@ -1,8 +1,8 @@
 {
   "name": "Icinga Multi Status",
   "short_name": "Icinga Multi Status",
-  "version": "0.9.0",
-  "description": "Icinga Multi Status helps you monitoring all your Icinga instances with comfortable alert badges and notifications.",
+  "version": "0.9.1",
+  "description": "Icinga Multi Status helps you to monitor your (multiple or single) Icinga instances with comfortable alert badges and notifications about incidents right within your web browser.",
   "author": "Daniel Schmitz, bashgeek.net",
 
   "background": {
@@ -14,7 +14,7 @@
 
   "options_ui": {
     "page": "options.html",
-    "chrome_style": false
+    "open_in_tab": true
   },
 
   "icons": {
