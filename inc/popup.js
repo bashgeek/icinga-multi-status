@@ -535,15 +535,15 @@ function popup_nav(to)
                                 $('.animation-wrapper').hide();
                             }
                         }
+
+                        if (ov_downs.children().length === 0) {
+                            ov_downs.hide();
+                        } else {
+                            ov_downs.show();
+                        }
                     });
                 } else {
                     $('#popup-tab-overview').html('An error occurred - could not connect with background task.');
-                }
-
-                if (ov_downs.children().length === 0) {
-                    ov_downs.hide();
-                } else {
-                    ov_downs.show();
                 }
             };
 
