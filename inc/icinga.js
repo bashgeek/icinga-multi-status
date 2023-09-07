@@ -399,6 +399,7 @@ function icinga_fetch(icinga_type, url, username, password, type, instance)
                                                 });
                                             });
 
+
                                             text = 'OK - ' + icinga_data_host.length + ' hosts, ' + icinga_data_service.length + ' services (Icinga ' + icinga_version + ')';
 
                                             switch (type) {
