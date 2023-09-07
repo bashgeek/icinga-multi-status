@@ -247,7 +247,7 @@ function instance_save_return(e)
             }
 
             let instance_id = $('#instance-id').val();
-            if (instance_id !== -1) {
+            if (instance_id !== "-1") {
                 // Save
                 instances[instance_id] = {
                     'active': instances[instance_id].active,
