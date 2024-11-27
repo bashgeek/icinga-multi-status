@@ -20,7 +20,7 @@ Get it from the [Mozilla Firefox Add-ons](https://addons.mozilla.org/en-US/firef
 - Hosts Tab showing you all hosts of all Instances with a quick filter to search for a host
 - Services Tab showing you all services of all hosts of all Instances with a quick filter to search for a service
 - Instant browser/OS notifications about new problems, if enabled
-- Interface completely build on Bootstrap v5
+- Interface completely build on TailwindCSS
 
 ## Support
 
