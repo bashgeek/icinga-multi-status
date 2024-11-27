@@ -6,6 +6,13 @@
   "description": "Icinga Multi Status helps you monitor your Icinga instances with alert badges and notifications about incidents.",
   "author": "Daniel Schmitz, bashgeek.net",
 
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{206cd281-e06c-4cba-97fd-ef24aec41091}",
+      "strict_min_version": "58.0"
+    }
+  },
+
   "background": {
     "service_worker": "inc/service_worker.js",
     "scripts": ["inc/icinga.js","inc/data.js","inc/background_script.js"]

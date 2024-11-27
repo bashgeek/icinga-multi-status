@@ -44,6 +44,10 @@ $ service icinga2 restart
 - If you want to use the Reschedule functionality, we additionally need: ```actions/reschedule-check```
 - If you run into any problems, please stick to the official [Icinga 2 API documentation](https://www.icinga.com/docs/icinga2/latest/doc/12-icinga2-api/)
 
+## How to generate assets
+- Install NodeJS 20 and [Bun](https://bun.sh/)
+- `bun install`
+- `bun run build`
 
 ## Credits
 
