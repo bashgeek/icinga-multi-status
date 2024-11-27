@@ -1,13 +1,14 @@
 {
+  "manifest_version": 3,
   "name": "Icinga Multi Status",
   "short_name": "Icinga Multi Status",
-  "version": "0.9.4",
+  "version": "1.0.0",
   "description": "Icinga Multi Status helps you monitor your Icinga instances with alert badges and notifications about incidents.",
   "author": "Daniel Schmitz, bashgeek.net",
 
   "background": {
-    "page": "background.html",
-    "persistent": true
+    "service_worker": "inc/service_worker.js",
+    "scripts": ["inc/icinga.js","inc/data.js","inc/background_script.js"]
   },
 
   "options_ui": {
@@ -16,20 +17,68 @@
   },
 
   "icons": {
-    "48": "img/icon_48.png",
-    "128": "img/icon_128.png",
-    "160": "img/icon_160.png"
+    "16": "img/icon_black_16.png",
+    "32": "img/icon_black_32.png",
+    "64": "img/icon_black_64.png",
+    "128": "img/icon_black_128.png",
+    "256": "img/icon_black_256.png",
+    "512": "img/icon_black_512.png"
   },
 
-  "browser_action": {
+  "action": {
     "default_icon": {
-      "19": "img/icon.png",
-      "38": "img/icon_38.png"
+      "16": "img/icon_black_16.png",
+      "32": "img/icon_black_32.png",
+      "64": "img/icon_black_64.png",
+      "128": "img/icon_black_128.png",
+      "256": "img/icon_black_256.png",
+      "512": "img/icon_black_512.png"
     },
+    "theme_icons": [
+      {
+        "light": "img/icon_white_16.png",
+        "dark": "img/icon_black_16.png",
+        "size": 16
+      },
+      {
+        "light": "img/icon_white_32.png",
+        "dark": "img/icon_black_32.png",
+        "size": 32
+      },
+      {
+        "light": "img/icon_white_64.png",
+        "dark": "img/icon_black_64.png",
+        "size": 64
+      },
+      {
+        "light": "img/icon_white_128.png",
+        "dark": "img/icon_black_128.png",
+        "size": 128
+      },
+      {
+        "light": "img/icon_white_256.png",
+        "dark": "img/icon_black_256.png",
+        "size": 256
+      },
+      {
+        "light": "img/icon_white_512.png",
+        "dark": "img/icon_black_512.png",
+        "size": 512
+      }
+    ],
     "default_title": "Icinga Multi Status",
     "default_popup": "popup.html"
   },
 
-  "permissions": [ "storage", "http://*/", "https://*/", "notifications" ],
-  "manifest_version": 2
+  "permissions": [
+    "storage",
+    "notifications",
+    "unlimitedStorage",
+    "alarms",
+    "offscreen"
+  ],
+  "host_permissions": [
+    "http://*/",
+    "https://*/"
+  ]
 }

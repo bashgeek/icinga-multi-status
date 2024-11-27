@@ -1,207 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>Icinga Multi Status - Help</title>
-		<link href="inc/bootstrap.min.css" rel="stylesheet">
-		<script src="inc/jquery-3.7.1.min.js"></script>
-		<script src="inc/bootstrap.bundle.min.js"></script>
-	</head>
-	<body>
-		<nav class="navbar navbar-default" role="navigation" style="margin-bottom: 40px;">
-			<div class="container">
-				<div class="navbar-header">
-					<a class="navbar-brand" href="#" style="font-size: 2rem;"><img src="img/icon_38.png" alt="Icinga Multi Status" class="pull-left" style="margin-right: 20px; height: 38px;"> Icinga Multi Status</a>
-				</div>
-			</div>
-		</nav>
+<head>
+	<meta charset="utf-8">
+	<title>Icinga Multi Status - Help</title>
+	<link href="dist/style.css" rel="stylesheet">
+	<script src="inc/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<div class="container mx-auto space-y-6">
+	<div class="navbar gap-6">
+		<img src="img/icon_black_32.png" alt="Icinga Multi Status" class="dark:hidden">
+		<img src="img/icon_white_32.png" alt="Icinga Multi Status" class="hidden dark:block">
+		<h1 class="text-2xl font-bold">Icinga Multi Status</h1>
+	</div>
 
-		<div class="container">
-			<h1>Help</h1>
+	<h1 class="font-semibold text-xl">Help</h1>
 
-			<h2>Global Settings</h2>
-			<p>Some settings act as a global default and can be overridden by specifying them again in the instance settings.</p>
-			<table class="table table-bordered table-striped">
-				<thead>
-				<tr>
-					<th width="400">Setting</th>
-					<th>Description</th>
-				</tr>
-				</thead>
-				<tbody>
-				<tr>
-					<td><b>Refresh Rate</b></td>
-					<td>The interval in which all active Icinga instances will get queried and the plugin data updated.</td>
-				</tr>
-				<tr>
-					<td><b>Default Acknowledge Expiry</b></td>
-					<td>If you use the Acknowledgment functionality, this will define the default expiration for it.</td>
-				</tr>
-				<tr>
-					<td><b>Default Acknowledge Persistent</b></td>
-					<td>If you use the Acknowledgment functionality, this will define the default persistent setting for your acknowledgment. Persistent means, the comment for your acknowledgment will remain after the host/service recovers or the acknowledgment expires.</td>
-				</tr>
-				<tr>
-					<td><b>Default Acknowledge Sticky</b></td>
-					<td>If you use the Acknowledgment functionality, this will define the default sticky setting for your acknowledgment. Sticky means, the acknowledgment will be set until the service or host fully recovers.</td>
-				</tr>
-				<tr>
-					<td><b>Default Acknowledge Author</b></td>
-					<td>If you use the Acknowledgment functionality, this will define the default author name for your acknowledgment. Can be anything, most likely your name recognized by your co-workers. The comment will be posted with this username.</td>
-				</tr>
-				<tr>
-					<td><b>Play Alarm Sound</b></td>
-					<td>Whether you want an alarm sound to be played, if any issues are seen. You can select from a few selected alarms. You can <a href="https://github.com/bashgeek/icinga-multi-status/wiki/Alarm-Sounds" target="_blank">click here to listen to all of them</a>.</td>
-				</tr>
-				<tr>
-					<td><b>Repeat Alarm Sound</b></td>
-					<td>Defines how often you want to repeat the alarm sound.</td>
-				</tr>
-				</tbody>
-			</table>
+	<h2 class="text-lg font-semibold">Global Settings</h2>
+	<p>Some settings act as a global default and can be overridden by specifying them again in the instance settings.</p>
 
-			<h2>Instance Settings</h2>
-			<table class="table table-bordered table-striped">
-				<thead>
-					<tr>
-						<th width="400">Setting</th>
-						<th>Description</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td><b>Icinga Data URL</b></td>
-						<td>The absolute URL to your Icinga setup or API. Both HTTPS and HTTP URLs work. Trailing slash is optional.<br><br><i>Example: https://myicingaserver.com/icinga/ or https://myicingaserver.com:5665/</i></td>
-					</tr>
-					<tr>
-						<td><b>Icingaweb 2 URL</b></td>
-						<td>The absolute URL to your Icingaweb2 instance while you use the Icinga 2 API and therefore this is optional. Enables correct linking of hosts and services. Trailing slash is optional.<br><br><i>Example: https://myicingaserver.com/icingaweb2/</i></td>
-					</tr>
-					<tr>
-						<td><b>Instance Title</b></td>
-						<td>A short but recognizable title for your Icinga instance used by this extension.<br><br><i>Example: My Icinga Instance</i></td>
-					</tr>
-					<tr>
-						<td><b>Username</b></td>
-						<td>If your Icinga instance requires an authentication, you can place the username here. If you use the Icinga 2 API type, put your API user here.<br><br><i>Example: icingaadmin</i></td>
-					</tr>
-					<tr>
-						<td><b>Password</b></td>
-						<td>If your Icinga instance requires an authentication, you can place the password to the above username here. If you use the Icinga 2 API type, put your API password here.<br><br><i>Example: icingaadmin</i></td>
-					</tr>
-					<tr>
-						<td><b>Default Acknowledge Expiry</b></td>
-						<td>If you use the Acknowledgment functionality, this will define the default expiration for your acknowledgment.</td>
-					</tr>
-					<tr>
-						<td><b>Default Acknowledge Persistent</b></td>
-						<td>If you use the Acknowledgment functionality, this will define the default persistent setting for your acknowledgment. Persistent means, the comment for your acknowledgment will remain after the host/service recovers or the acknowledgment expires.</td>
-					</tr>
-					<tr>
-						<td><b>Default Acknowledge Sticky</b></td>
-						<td>If you use the Acknowledgment functionality, this will define the default sticky setting for your acknowledgment. Sticky means, the acknowledgment will be set until the service or host fully recovers.</td>
-					</tr>
-					<tr>
-						<td><b>Default Acknowledge Author</b></td>
-						<td>If you use the Acknowledgment functionality, this will define the default author name for your acknowledgment. Can be anything, most likely your name recognized by your co-workers. The comment will be posted with this username.</td>
-					</tr>
-					<tr>
-						<td><b>Hide and ignore hosts</b></td>
-						<td>Regular Expression to hide/ignore specific hosts from showing up in the monitoring. You won't receive notifications or alerts of matching hosts. They're also not showing up in the overview lists.<br><br><i>Example: web[0-9]+</i></td>
-					</tr>
-					<tr>
-						<td><b>Hide and ignore services</b></td>
-						<td>Regular Expression to hide/ignore specific services from showing up in the monitoring. You won't receive notifications or alerts of matching services. They're also not showing up in the overview lists.<br><br><i>Example: (imap|ssh)</i></td>
-					</tr>
-					<tr>
-						<td><b>Ignore acknowledged host & service problems</b></td>
-						<td>If you acknowledge a host or service problem in Icinga, you won't get notified or alerted here if enabled.</td>
-					</tr>
-					<tr>
-						<td><b>Ignore hosts & services with a downtime</b></td>
-						<td>If a scheduled downtime is active for a host or service in Icinga, you won't get notified or alerted here if enabled.</td>
-					</tr>
-					<tr>
-						<td><b>Ignore hosts & services with problems in SOFT state</b></td>
-						<td>Only respects problems in HARD state if enabled.</td>
-					</tr>
-					<tr>
-						<td><b>No notifications for warnings</b></td>
-						<td>If enabled, you won't get any notifications for service warnings.</td>
-					</tr>
-				</tbody>
-			</table>
+	<table class="table table-zebra">
+		<thead>
+		<tr>
+			<th width="400">Setting</th>
+			<th>Description</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr>
+			<td><b>Refresh Rate</b></td>
+			<td>The interval in which all active Icinga instances will get queried and the plugin data updated.</td>
+		</tr>
+		<tr>
+			<td><b>Default Acknowledge Expiry</b></td>
+			<td>If you use the Acknowledgment functionality, this will define the default expiration for it.</td>
+		</tr>
+		<tr>
+			<td><b>Default Acknowledge Persistent</b></td>
+			<td>If you use the Acknowledgment functionality, this will define the default persistent setting for your acknowledgment. Persistent means, the comment for your acknowledgment will remain after the host/service recovers or the acknowledgment expires.</td>
+		</tr>
+		<tr>
+			<td><b>Default Acknowledge Sticky</b></td>
+			<td>If you use the Acknowledgment functionality, this will define the default sticky setting for your acknowledgment. Sticky means, the acknowledgment will be set until the service or host fully recovers.</td>
+		</tr>
+		<tr>
+			<td><b>Default Acknowledge Author</b></td>
+			<td>If you use the Acknowledgment functionality, this will define the default author name for your acknowledgment. Can be anything, most likely your name recognized by your co-workers. The comment will be posted with this username.</td>
+		</tr>
+		<tr>
+			<td><b>Play Alarm Sound</b></td>
+			<td>Whether you want an alarm sound to be played, if any issues are seen. You can select from a few selected alarms. You can <a href="https://github.com/bashgeek/icinga-multi-status/wiki/Alarm-Sounds" target="_blank">click here to listen to all of them</a>.</td>
+		</tr>
+		<tr>
+			<td><b>Repeat Alarm Sound</b></td>
+			<td>Defines how often you want to repeat the alarm sound.</td>
+		</tr>
+		</tbody>
+	</table>
 
-			<h2>How-to for using the Icinga 2 API</h2>
-			<ul>
-				<li>
-					Please make sure you enabled and configured the new API in your Icinga 2 installation by either setting it up manually or use the CLI command for the automatic setup, which also creates a root-user for the API with a random password.
-					<pre># Run the automatic setup
+	<h2 class="text-lg font-semibold">Instance Settings</h2>
+	<table class="table table-zebra">
+		<thead>
+			<tr>
+				<th>Setting</th>
+				<th>Description</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><b>Icinga Data URL</b></td>
+				<td>The absolute URL to your Icinga setup or API. Both HTTPS and HTTP URLs work. Trailing slash is optional.<br><br><i>Example: https://myicingaserver.com/icinga/ or https://myicingaserver.com:5665/</i></td>
+			</tr>
+			<tr>
+				<td><b>Icingaweb 2 URL</b></td>
+				<td>The absolute URL to your Icingaweb2 instance while you use the Icinga 2 API and therefore this is optional. Enables correct linking of hosts and services. Trailing slash is optional.<br><br><i>Example: https://myicingaserver.com/icingaweb2/</i></td>
+			</tr>
+			<tr>
+				<td><b>Instance Title</b></td>
+				<td>A short but recognizable title for your Icinga instance used by this extension.<br><br><i>Example: My Icinga Instance</i></td>
+			</tr>
+			<tr>
+				<td><b>Username</b></td>
+				<td>If your Icinga instance requires an authentication, you can place the username here. If you use the Icinga 2 API type, put your API user here.<br><br><i>Example: icingaadmin</i></td>
+			</tr>
+			<tr>
+				<td><b>Password</b></td>
+				<td>If your Icinga instance requires an authentication, you can place the password to the above username here. If you use the Icinga 2 API type, put your API password here.<br><br><i>Example: icingaadmin</i></td>
+			</tr>
+			<tr>
+				<td><b>Default Acknowledge Expiry</b></td>
+				<td>If you use the Acknowledgment functionality, this will define the default expiration for your acknowledgment.</td>
+			</tr>
+			<tr>
+				<td><b>Default Acknowledge Persistent</b></td>
+				<td>If you use the Acknowledgment functionality, this will define the default persistent setting for your acknowledgment. Persistent means, the comment for your acknowledgment will remain after the host/service recovers or the acknowledgment expires.</td>
+			</tr>
+			<tr>
+				<td><b>Default Acknowledge Sticky</b></td>
+				<td>If you use the Acknowledgment functionality, this will define the default sticky setting for your acknowledgment. Sticky means, the acknowledgment will be set until the service or host fully recovers.</td>
+			</tr>
+			<tr>
+				<td><b>Default Acknowledge Author</b></td>
+				<td>If you use the Acknowledgment functionality, this will define the default author name for your acknowledgment. Can be anything, most likely your name recognized by your co-workers. The comment will be posted with this username.</td>
+			</tr>
+			<tr>
+				<td><b>Hide and ignore hosts</b></td>
+				<td>Regular Expression to hide/ignore specific hosts from showing up in the monitoring. You won't receive notifications or alerts of matching hosts. They're also not showing up in the overview lists.<br><br><i>Example: web[0-9]+</i></td>
+			</tr>
+			<tr>
+				<td><b>Hide and ignore services</b></td>
+				<td>Regular Expression to hide/ignore specific services from showing up in the monitoring. You won't receive notifications or alerts of matching services. They're also not showing up in the overview lists.<br><br><i>Example: (imap|ssh)</i></td>
+			</tr>
+			<tr>
+				<td><b>Ignore acknowledged host & service problems</b></td>
+				<td>If you acknowledge a host or service problem in Icinga, you won't get notified or alerted here if enabled.</td>
+			</tr>
+			<tr>
+				<td><b>Ignore hosts & services with a downtime</b></td>
+				<td>If a scheduled downtime is active for a host or service in Icinga, you won't get notified or alerted here if enabled.</td>
+			</tr>
+			<tr>
+				<td><b>Ignore hosts & services with problems in SOFT state</b></td>
+				<td>Only respects problems in HARD state if enabled.</td>
+			</tr>
+			<tr>
+				<td><b>No notifications for warnings</b></td>
+				<td>If enabled, you won't get any notifications for service warnings.</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h2 class="text-lg font-semibold">How-to for using the Icinga 2 API</h2>
+		<ul class="list-disc ml-8">
+			<li>
+				Please make sure you enabled and configured the new API in your Icinga 2 installation by either setting it up manually or use the CLI command for the automatic setup, which also creates a root-user for the API with a random password.
+				<pre># Run the automatic setup
 $ icinga2 api setup
 
 # Restart the icinga2 service
 $ service icinga2 restart</pre>
-				</li>
-				<li>You will find the automatically generated API user here: /etc/icinga2/conf.d/api-users.conf</li>
-				<li>The default port of the Icinga 2 API is 5665, so the URL to go with would be like: https://myicingaserver.com:5665/</li>
-				<li>If you use a self-signed certificate (like the one automatically created in the first step) you have to add it to your browser/OS trusted store before it'll work in the plugin. This can easily be done be visiting the API URL in a browser tab and accept the certificate.</li>
-				<li>Currently we require the following permissions: objects/query/host, objects/query/service, status/query</li>
-				<li>If you want to use the Acknowledgement functionality, we additionally need: actions/acknowledge-problem</li>
-				<li>If you want to use the Rescheduling functionality, we additionally need: actions/reschedule-check</li>
-				<li>If you run into any problems, please stick to the official <a href="https://www.icinga.com/docs/icinga2/latest/doc/12-icinga2-api/" target="_blank">Icinga 2 API documentation</a></li>
-			</ul>
+			</li>
+			<li>You will find the automatically generated API user here: /etc/icinga2/conf.d/api-users.conf</li>
+			<li>The default port of the Icinga 2 API is 5665, so the URL to go with would be like: https://myicingaserver.com:5665/</li>
+			<li>If you use a self-signed certificate (like the one automatically created in the first step) you have to add it to your browser/OS trusted store before it'll work in the plugin. This can easily be done be visiting the API URL in a browser tab and accept the certificate.</li>
+			<li>Currently we require the following permissions: objects/query/host, objects/query/service, status/query</li>
+			<li>If you want to use the Acknowledgement functionality, we additionally need: actions/acknowledge-problem</li>
+			<li>If you want to use the Rescheduling functionality, we additionally need: actions/reschedule-check</li>
+			<li>If you run into any problems, please stick to the official <a href="https://www.icinga.com/docs/icinga2/latest/doc/12-icinga2-api/" target="_blank">Icinga 2 API documentation</a></li>
+		</ul>
 
-			<h2>Extension Badges</h2>
-			<table class="table table-bordered table-striped">
-				<thead>
-					<tr>
-						<th width="300">Badge Layout</th>
-						<th>Description</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td style="color: #fff; background: rgba(34,175,215,0.5);">"..." on mild blue background</td>
-						<td>Icinga Multi Status is refreshing its data by querying your Icinga instances.</td>
-					</tr>
-					<tr>
-						<td style="color: #fff; background: rgba(166,35,215,1);">Digit on purple background</td>
-						<td>Amount of Icinga instances having problems (Can't connect to Icinga instance)</td>
-					</tr>
-					<tr>
-						<td style="color: #fff; background: rgba(191,68,178,1);">Digit on pink background</td>
-						<td>Amount of services having UNKNOWN status</td>
-					</tr>
-					<tr>
-						<td style="color: #fff; background: rgba(255,165,0,1);">Digit on orange background</td>
-						<td>Amount of services having WARNING status</td>
-					</tr>
-					<tr>
-						<td style="color: #fff; background: rgba(255,51,0,1);">Digit on red background</td>
-						<td>Amount of hosts having DOWN/UNREACHABLE status and services having CRITICAL status</td>
-					</tr>
-					<tr>
-						<td style="color: #fff; background: rgba(0,204,51,1);">Digit on green background</td>
-						<td>Amount of hosts having UP status (also means everything ok)</td>
-					</tr>
-				</tbody>
-			</table>
+		<h2 class="text-lg font-semibold">Extension Badges</h2>
+		<table class="table table-zebra">
+			<thead>
+				<tr>
+					<th>Badge Layout</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td style="color: #fff; background: rgba(34,175,215,0.5);">"..." on mild blue background</td>
+					<td>Icinga Multi Status is refreshing its data by querying your Icinga instances.</td>
+				</tr>
+				<tr>
+					<td style="color: #fff; background: rgba(166,35,215,1);">Digit on purple background</td>
+					<td>Amount of Icinga instances having problems (Can't connect to Icinga instance)</td>
+				</tr>
+				<tr>
+					<td style="color: #fff; background: rgba(191,68,178,1);">Digit on pink background</td>
+					<td>Amount of services having UNKNOWN status</td>
+				</tr>
+				<tr>
+					<td style="color: #fff; background: rgba(255,165,0,1);">Digit on orange background</td>
+					<td>Amount of services having WARNING status</td>
+				</tr>
+				<tr>
+					<td style="color: #fff; background: rgba(255,51,0,1);">Digit on red background</td>
+					<td>Amount of hosts having DOWN/UNREACHABLE status and services having CRITICAL status</td>
+				</tr>
+				<tr>
+					<td style="color: #fff; background: rgba(0,204,51,1);">Digit on green background</td>
+					<td>Amount of hosts having UP status (also means everything ok)</td>
+				</tr>
+			</tbody>
+		</table>
 
-			<h2>FAQ</h2>
-			<ul>
-				<li>
-					<b>How to disable notifications?</b><br>
-					You can disable the notifications completely by disabling Icinga Multi Status in your browser/OS notification settings.
-				</li>
-				<li>
-					<b>What Icinga Version is required?</b><br>
-					We support the Icinga Classic UI (Icinga v1 and v2) and the new API of Icinga 2. Please find setup instructions on <a href="https://github.com/bashgeek/icinga-multi-status">GitHub</a>.
-				</li>
-				<li>
-					<b>I cannot see or use the "Acknowledgement" functionality?</b>
-					Due to feature restrictions, this only works with the Icinga 2 API backend.
-				</li>
-			</ul>
-		</div>
-	</body>
+		<h2 class="text-lg font-semibold">FAQ</h2>
+		<ul class="list-disc ml-8">
+			<li>
+				<b>How to disable notifications?</b><br>
+				You can disable the notifications completely by disabling Icinga Multi Status in your browser/OS notification settings.
+			</li>
+			<li>
+				<b>What Icinga Version is required?</b><br>
+				We support the Icinga Classic UI (Icinga v1 and v2) and the new API of Icinga 2. Please find setup instructions on <a href="https://github.com/bashgeek/icinga-multi-status">GitHub</a>.
+			</li>
+			<li>
+				<b>I cannot see or use the "Acknowledgement" functionality?</b><br>
+				Due to feature restrictions, this only works with the Icinga 2 API backend.
+			</li>
+		</ul>
+</div>
+</body>
 </html>
