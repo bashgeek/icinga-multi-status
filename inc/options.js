@@ -4,10 +4,10 @@ function instance_modal(instance)
     $('#instance-submit').prop('disabled', false);
 
     let modal = $('#modal_instance');
-    modal.find('.form-group').removeClass('has-error');
+    // modal.find('.form-group').removeClass('has-error');
 
     if (instance === -1) {
-        modal.find('.modal-title').text('Add new instance');
+        modal.find('#modal_instance_title').text('Add new instance');
         $('#instance-id').val(-1);
 
         $('#instance-url').val('');
@@ -36,7 +36,7 @@ function instance_modal(instance)
             }
 
             let e = instances[instance];
-            modal.find('.modal-title').text('Edit instance');
+            modal.find('#modal_instance_title').text('Edit instance');
             $('#instance-id').val(instance);
             $('#instance-url').val(e.url);
             $('#instance-url-web').val(e.url_web);
@@ -57,8 +57,7 @@ function instance_modal(instance)
         });
     }
 
-    let _modal = new bootstrap.Modal('#modal_instance');
-    _modal.show();
+    document.getElementById('modal_instance').showModal();
 }
 
 function instance_modal_delete(instance)
@@ -76,8 +75,7 @@ function instance_modal_delete(instance)
         $('#instance-delete-id').val(instance);
         $('#instance-delete-title').html(e.title);
 
-        let _modal = new bootstrap.Modal('#modal_instance_delete');
-        _modal.show();
+        document.getElementById('modal_instance_delete').showModal();
     });
 }
 
@@ -99,7 +97,7 @@ function instance_delete()
         $('#instance-delete-alert').removeClass().addClass('alert alert-success').html('Removed instance!').show();
         instance_table_reload();
         setTimeout(function () {
-            bootstrap.Modal.getInstance('#modal_instance_delete').hide();
+            document.getElementById('modal_instance_delete').close();
         }, 2000);
     });
 }
@@ -225,7 +223,7 @@ function instance_save()
     if (errors.length) {
         _submit.prop('disabled', false);
 
-        $('#instance-alert').removeClass().addClass('alert alert-danger').html('<b>Errors:</b><br>' + errors.join('<br>')).show();
+        $('#instance-alert').removeClass().addClass('alert alert-error').html('<b>Errors:</b><br>' + errors.join('<br>')).show();
     } else {
         $('#instance-alert').removeClass().addClass('alert alert-info').html('Checking...').show();
 
@@ -237,7 +235,7 @@ function instance_save_return(e)
 {
     if (e.error) {
         $('#instance-submit').prop('disabled', false);
-        $('#instance-alert').removeClass().addClass('alert alert-danger').html('<b>Icinga Error:</b><br>' + e.text).show();
+        $('#instance-alert').removeClass().addClass('alert alert-error').html('<b>Icinga Error:</b><br>' + e.text).show();
     } else {
         icinga_get_instances(function (instances) {
             instances = instances.instances;
@@ -300,7 +298,7 @@ function instance_save_return(e)
             instance_table_reload();
 
             setTimeout(function () {
-                bootstrap.Modal.getInstance('#modal_instance').hide();
+                document.getElementById('modal_instance').close();
             }, 2000);
         });
     }
@@ -324,11 +322,11 @@ function instance_table_reload()
             for (i = 0; i < instances.length; i++) {
                 var e = instances[i];
                 tab.find('tbody').append(
-                    '<tr class="' + ((!e.active) ? 'warning' : ((e.error) ? 'danger' : '')) + '">'
+                    '<tr class="hover ' + ((!e.active) ? 'warning' : ((e.error) ? 'error' : '')) + '">'
                     + '<td>' + e.title + '</td>'
                     + '<td>' + e.status_last + '</td>'
-                    + '<td><input type="checkbox" id="instance-table-active-' + i + '" ' + ((e.active) ? 'checked' : '') + '></td>'
-                    + '<td><div class="btn-group" role="group" aria-label=""><button type="button" class="btn btn-primary btn-sm" id="instance-table-edit-' + i + '">Edit</button> <button type="button" class="btn btn-danger btn-sm" id="instance-table-delete-' + i + '">Delete</button></div></td>'
+                    + '<td><input type="checkbox" class="toggle" id="instance-table-active-' + i + '" ' + ((e.active) ? 'checked' : '') + '></td>'
+                    + '<td><div class="btn-group" role="group" aria-label=""><button type="button" class="btn btn-primary btn-sm" id="instance-table-edit-' + i + '">Edit</button> <button type="button" class="btn btn-error btn-sm" id="instance-table-delete-' + i + '">Delete</button></div></td>'
                     + '</tr>'
                 );
 

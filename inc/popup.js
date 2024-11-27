@@ -32,22 +32,22 @@ $(document).ready(function () {
     });
 });
 
-const table_classes = {
-    'UP': 'table-success',
-    'DOWN': 'table-danger',
-    'UNREACHABLE': 'table-info',
-    'OK': 'table-success',
-    'WARNING': 'table-warning',
-    'UNKNOWN': 'table-info',
-    'CRITICAL': 'table-danger'
+const badge_classes = {
+    'UP': 'badge-success',
+    'DOWN': 'badge-error',
+    'UNREACHABLE': 'badge-info',
+    'OK': 'badge-success',
+    'WARNING': 'badge-warning',
+    'UNKNOWN': 'badge-info',
+    'CRITICAL': 'badge-error'
 };
 
 function popup_nav(to)
 {
-    $('#popup-nav li a').each(function () {
-        $(this).removeClass('active');
+    $('#popup-nav a').each(function () {
+        $(this).removeClass('tab-active');
     });
-    $('#popup-nav-' + to).addClass('active');
+    $('#popup-nav-' + to).addClass('tab-active');
 
     $('.popup-tab').each(function () {
         $(this).hide();
@@ -92,7 +92,7 @@ function popup_nav(to)
                                                 }
                                                 break;
                                         }
-                                        let host_line = '<tr><td>' + host_name + '</td><td></td><td class="' + table_classes[host.status] + '">' + host.status + '</td></tr>';
+                                        let host_line = '<tr class="hover"><td>' + host_name + '</td><td></td><td>' + "<span class='badge "+badge_classes[host.status]+"'>"+host.status+"</span>" + '</td></tr>';
                                         let service_line = '';
 
                                         // Go through all services
@@ -124,10 +124,10 @@ function popup_nav(to)
                                                         }
                                                         break;
                                                 }
-                                                service_line += '<tr><td></td><td>' + service_name + '</td><td class="' + table_classes[service.status] + '">'
-                                                    + service.status
-                                                    + (service.ack ? ' <span title="Has been acknowledged"><svg style="width:24px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>' : '')
-                                                    + (service.down ? ' <span title="Has scheduled downtime"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:24px;" ><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>' : '')
+                                                service_line += '<tr class="hover"><td></td><td>' + service_name + '</td><td class="flex gap-2">'
+                                                    + "<span class='badge "+badge_classes[service.status]+"'>"+service.status+"</span>"
+                                                    + (service.ack ? ' <span title="Has been acknowledged"><svg style="width:20px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>' : '')
+                                                    + (service.down ? ' <span title="Has scheduled downtime"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:20px;" ><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>' : '')
                                                     + '</td></tr>';
                                             }
                                         });
@@ -229,10 +229,10 @@ function popup_nav(to)
                                                     }
                                                     break;
                                             }
-                                            let host_line = '<tr><td>' + host_name + '</td><td class="' + table_classes[host.status] + '">'
-                                                + host.status
-                                                + (host.ack ? ' <span title="Has been acknowledged"><svg style="width:24px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>' : '')
-                                                + (host.down ? ' <span title="Has scheduled downtime"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:24px;" ><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>' : '')
+                                            let host_line = '<tr class="hover"><td>' + host_name + '</td><td class="flex gap-2">'
+                                                + "<span class='badge "+badge_classes[host.status]+"'>"+host.status+"</span>"
+                                                + (host.ack ? ' <span title="Has been acknowledged"><svg style="width:20px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>' : '')
+                                                + (host.down ? ' <span title="Has scheduled downtime"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:20px;" ><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>' : '')
                                                 + '</td></tr>';
                                             instance_line += host_line;
                                         }
@@ -243,7 +243,7 @@ function popup_nav(to)
                                 if (instance_line) {
                                     $('#popup-tab-hosts-tables').append(''
                                         + '<h5 class="instance-title">' + instance.title + '</h5>'
-                                        + '<table class="table table-sm table-striped table-hover icinga-hosts">'
+                                        + '<table class="table table-sm icinga-hosts">'
                                         + '<thead>'
                                         + '<tr>'
                                         + '<th>Host</th>'
@@ -327,29 +327,29 @@ function popup_nav(to)
                                         }
 
                                         // Host HTML Line
-                                        let host_line = $('<tr>');
+                                        let host_line = $('<tr class="hover">');
                                         let service_lines = [];
                                         let host_options = null;
                                         switch (instance.icinga_type) {
                                             default:
-                                                host_line.append($('<td class="align-middle">').html('<a href="' + instance.url.replace(/\/$/, '') + '/cgi-bin/extinfo.cgi?type=1&host=' + host.name + '" target="_blank">' + host.name + '</a>'));
+                                                host_line.append($('<td>').html('<a href="' + instance.url.replace(/\/$/, '') + '/cgi-bin/extinfo.cgi?type=1&host=' + host.name + '" target="_blank">' + host.name + '</a>'));
                                                 break;
                                             case 'icinga2_api':
-                                                host_line.append($('<td class="align-middle">').html(
+                                                host_line.append($('<td>').html(
                                                     instance.url_web
                                                         ? '<a href="' + instance.url_web.replace(/\/$/, '') + '/monitoring/host/show?host=' + host.name + '" target="_blank">' + host.name + '</a>'
                                                         : host.name
                                                 ));
-                                                host_options = $('<td class="align-middle">').append($('<div class="btn-group" role="group" aria-label="Actions">')
+                                                host_options = $('<td>').append($('<div class="join" role="group" aria-label="Actions">')
                                                     .append(
-                                                        $('<button class="btn btn-outline-dark py-0 px-1">').html('<svg style="width:24px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>')
+                                                        $('<button class="join-item btn btn-outline btn-xs">').html('<svg style="width:20px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>')
                                                                                                             .attr('title', 'Acknowledge issue')
                                                                                                             .on('click', function () {
                                                                                                                 icinga_acknowledge('host', instance_i, host.name);
                                                                                                             })
                                                     )
                                                     .append(
-                                                        $('<button class="btn btn-outline-dark py-0 px-1">').html('<svg style="width:24px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>')
+                                                        $('<button class="join-item btn btn-outline btn-xs">').html('<svg style="width:20px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>')
                                                                                                             .attr('title', 'Reschedule check')
                                                                                                             .on('click', function () {
                                                                                                                 icinga_recheck('host', instance_i, host.name);
@@ -359,11 +359,11 @@ function popup_nav(to)
                                                 break;
                                         }
                                         host_line.append($('<td>'));
-                                        host_line.append($('<td class="align-middle">').addClass(table_classes[host.status]).html(
-                                            host.status
+                                        host_line.append($('<td class="flex gap-2">').html(
+                                            "<span class='badge "+badge_classes[host.status]+"'>"+host.status+"</span>"
                                             + ((host.state_type === 'SOFT') ? ' (S)' : '')
-                                            + (host.ack ? ' <span title="Has been acknowledged"><svg style="width:24px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>' : '')
-                                            + (host.down ? ' <span title="Has scheduled downtime"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:24px;" ><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>' : '')
+                                            + (host.ack ? ' <span title="Has been acknowledged"><svg style="width:20px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>' : '')
+                                            + (host.down ? ' <span title="Has scheduled downtime"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:20px;" ><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>' : '')
                                         ));
                                         if (host_options !== null) {
                                             host_line.append(host_options);
@@ -392,29 +392,29 @@ function popup_nav(to)
 
                                             // Service HTML Line
                                             if (service.status === 'WARNING' || service.status === 'CRITICAL') {
-                                                let service_line = $('<tr>');
+                                                let service_line = $('<tr class="hover">');
                                                 service_line.append($('<td>'));
                                                 let service_options = null;
                                                 switch (instance.icinga_type) {
                                                     default:
-                                                        service_line.append($('<td class="align-middle">').html('<a href="' + instance.url.replace(/\/$/, '') + '/cgi-bin/extinfo.cgi?type=2&host=' + host.name + '&service=' + service.name + '" target="_blank">' + service.name + '</a>'));
+                                                        service_line.append($('<td>').html('<a href="' + instance.url.replace(/\/$/, '') + '/cgi-bin/extinfo.cgi?type=2&host=' + host.name + '&service=' + service.name + '" target="_blank">' + service.name + '</a>'));
                                                         break;
                                                     case 'icinga2_api':
-                                                        service_line.append($('<td class="align-middle">').html(
+                                                        service_line.append($('<td>').html(
                                                             instance.url_web
                                                                 ? '<a href="' + instance.url_web.replace(/\/$/, '') + '/monitoring/service/show?host=' + host.name + '&service=' + service.sname + '" target="_blank">' + service.name + '</a>'
                                                                 : service.name
                                                         ));
-                                                        service_options = $('<td class="align-middle">').append($('<div class="btn-group" role="group" aria-label="Actions">')
+                                                        service_options = $('<td>').append($('<div class="join" role="group" aria-label="Actions">')
                                                             .append(
-                                                                $('<button class="btn btn-outline-dark py-0 px-1">').html('<svg style="width:24px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>')
+                                                                $('<button class="btn btn-outline btn-xs join-item">').html('<svg style="width:20px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>')
                                                                                                                     .attr('title', 'Acknowledge issue')
                                                                                                                     .on('click', function () {
                                                                                                                         icinga_acknowledge('service', instance_i, host.name, service.sname);
                                                                                                                     })
                                                             )
                                                             .append(
-                                                                $('<button class="btn btn-outline-dark py-0 px-1">').html('<svg style="width:24px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>')
+                                                                $('<button class="btn btn-outline btn-xs join-item">').html('<svg style="width:20px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>')
                                                                                                                     .attr('title', 'Reschedule check')
                                                                                                                     .on('click', function () {
                                                                                                                         icinga_recheck('service', instance_i, host.name, service.sname);
@@ -423,11 +423,11 @@ function popup_nav(to)
                                                         );
                                                         break;
                                                 }
-                                                service_line.append($('<td class="align-middle">').addClass(table_classes[service.status]).html(
-                                                    service.status
+                                                service_line.append($('<td class="flex gap-2">').html(
+                                                    "<span class='badge "+badge_classes[service.status]+"'>"+service.status+"</span>"
                                                     + ((service.state_type === 'SOFT') ? ' (S)' : '')
-                                                    + (service.ack ? ' <span title="Has been acknowledged"><svg style="width:24px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>' : '')
-                                                    + (service.down ? ' <span title="Has scheduled downtime"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:24px;" ><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>' : '')
+                                                    + (service.ack ? ' <span title="Has been acknowledged"><svg style="width:20px;" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg></span>' : '')
+                                                    + (service.down ? ' <span title="Has scheduled downtime"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:20px;" ><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></span>' : '')
                                                 ));
                                                 if (service_options !== null) {
                                                     service_line.append(service_options);
@@ -451,32 +451,32 @@ function popup_nav(to)
                                 // Build hosts column
                                 let host_column = '';
                                 if (counter_hosts.up) {
-                                    host_column += '<span class="badge bg-success" title="UP">' + counter_hosts.up + '</span> ';
+                                    host_column += '<span class="badge badge-success" title="UP">' + counter_hosts.up + '</span> ';
                                 }
                                 if (counter_hosts.down) {
-                                    host_column += '<span class="badge bg-danger" title="DOWN">' + counter_hosts.down + '</span> ';
+                                    host_column += '<span class="badge badge-error" title="DOWN">' + counter_hosts.down + '</span> ';
                                 }
                                 if (counter_hosts.unr) {
-                                    host_column += '<span class="badge bg-primary" title="UNREACHABLE">' + counter_hosts.unr + '</span> ';
+                                    host_column += '<span class="badge badge-info" title="UNREACHABLE">' + counter_hosts.unr + '</span> ';
                                 }
 
                                 // Build services column
                                 let service_column = '';
                                 if (counter_services.ok) {
-                                    service_column += '<span class="badge bg-success" title="OK">' + counter_services.ok + '</span> ';
+                                    service_column += '<span class="badge badge-success" title="OK">' + counter_services.ok + '</span> ';
                                 }
                                 if (counter_services.warn) {
-                                    service_column += '<span class="badge bg-warning" title="WARNING">' + counter_services.warn + '</span> ';
+                                    service_column += '<span class="badge badge-warning" title="WARNING">' + counter_services.warn + '</span> ';
                                 }
                                 if (counter_services.crit) {
-                                    service_column += '<span class="badge bg-danger" title="CRITICAL">' + counter_services.crit + '</span> ';
+                                    service_column += '<span class="badge badge-error" title="CRITICAL">' + counter_services.crit + '</span> ';
                                 }
                                 if (counter_services.unkn) {
-                                    service_column += '<span class="badge bg-default" title="UNKNOWN">' + counter_services.unkn + '</span> ';
+                                    service_column += '<span class="badge badge-info" title="UNKNOWN">' + counter_services.unkn + '</span> ';
                                 }
 
                                 // Insert into table
-                                $('#popup-tab-overview-table').find('tbody').append('<tr>'
+                                $('#popup-tab-overview-table').find('tbody').append('<tr class="hover">'
                                     + '<td><a href="' + ((instance.icinga_type === 'icinga2_api') ? instance.url_web : instance.url) + '" target="_blank">' + instance.title + '</a></td>'
                                     + '<td>' + host_column + '</td>'
                                     + '<td>' + service_column + '</td>'
@@ -512,7 +512,7 @@ function popup_nav(to)
                             } else {
                                 if (instance.active && instance.error) {
                                     // Insert into table
-                                    $('#popup-tab-overview-table').find('tbody').append('<tr>'
+                                    $('#popup-tab-overview-table').find('tbody').append('<tr class="hover">'
                                         + '<td><a href="' + ((instance.icinga_type === 'icinga2_api') ? instance.url_web : instance.url) + '" target="_blank">' + instance.title + '</a></td>'
                                         + '<td colspan="2">' + instance.status_last + '</td>'
                                         + '</tr>');
@@ -548,7 +548,9 @@ function popup_nav(to)
             };
 
             if (typeof chrome !== 'undefined') {
+                console.log('sending message')
                 chrome.runtime.sendMessage({request: 'data'}, function (e) {
+                    console.log('callback');
                     return_func(e);
                 });
             } else {
