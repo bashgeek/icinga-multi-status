@@ -548,9 +548,7 @@ function popup_nav(to)
             };
 
             if (typeof chrome !== 'undefined') {
-                console.log('sending message')
                 chrome.runtime.sendMessage({request: 'data'}, function (e) {
-                    console.log('callback');
                     return_func(e);
                 });
             } else {
