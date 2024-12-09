@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Icinga Multi Status",
   "short_name": "Icinga Multi Status",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Icinga Multi Status helps you monitor your Icinga instances with alert badges and notifications about incidents.",
   "author": "Daniel Schmitz, bashgeek.net",
 

@@ -55,7 +55,6 @@ function icinga_check()
 
                 // check services on host
                 Object.keys(host.services).forEach(function(s, s_i){
-                    // $.each(Object.keys(host.services), function (s_i, s) {
                     let service = host.services[s];
 
                     // Possible OK WARNING UNKNOWN CRITICAL
