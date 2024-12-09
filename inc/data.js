@@ -4,7 +4,6 @@ const icingaData = {
     checks: [],
 
     init: function(){
-        this.listener();
     },
 
     refresh: function(){
@@ -139,6 +138,7 @@ const icingaData = {
                 icinga_set_instances(instances);
 
                 icingaData.data_raw = [];
+                icingaData.setHosts();
                 icinga_check();
             });
         } else {
@@ -153,31 +153,11 @@ const icingaData = {
         icingaData.data_raw[e.instance] = e;
     },
 
-    listener: function(){
-        if (typeof chrome !== 'undefined') {
-            chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-                switch (request.request) {
-                    case 'data':
-                        sendResponse({'state': 'ok', 'hosts': icingaData.data_hosts});
-                        break;
+    setHosts: function(){
+        chrome.storage.local.set({'hosts': icingaData.data_hosts});
+    },
 
-                    default:
-                        sendResponse({state: false, error: 'Unknown request'});
-                        break;
-                }
-            });
-        } else {
-            browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-                switch (request.request) {
-                    case 'data':
-                        sendResponse({'state': 'ok', 'hosts': icingaData.data_hosts});
-                        break;
-
-                    default:
-                        sendResponse({state: false, error: 'Unknown request'});
-                        break;
-                }
-            });
-        }
+    getHosts: function(callback){
+        chrome.storage.local.get('hosts', callback);
     },
 }

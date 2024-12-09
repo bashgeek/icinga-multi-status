@@ -27,10 +27,14 @@ function icinga_check()
         }
 
         let should_play_alarm = false;
-        if (Object.keys(icingaData.data_hosts).length) {
+        icingaData.getHosts(function(data){
+            if (Object.keys(data.hosts).length === 0) {
+                return;
+            }
+
             // Go through hosts
-            Object.keys(icingaData.data_hosts).forEach(function(h, h_i){
-                let host = icingaData.data_hosts[h];
+            Object.keys(data.hosts).forEach(function(h, h_i){
+                let host = data.hosts[h];
                 let instance = instances[host.instance];
 
                 // something is wrong with host != UP && != PENDING
@@ -51,7 +55,7 @@ function icinga_check()
 
                 // check services on host
                 Object.keys(host.services).forEach(function(s, s_i){
-                // $.each(Object.keys(host.services), function (s_i, s) {
+                    // $.each(Object.keys(host.services), function (s_i, s) {
                     let service = host.services[s];
 
                     // Possible OK WARNING UNKNOWN CRITICAL
@@ -83,29 +87,29 @@ function icinga_check()
                     }
                 });
             });
-        }
 
-        // Badge
-        if (error_counts.instance > 0) {
-            icinga_badge('' + error_counts.instance, 'error');
-        } else {
-            if (error_counts.downs > 0) {
-                icinga_badge('' + error_counts.downs, 'down');
+            // Badge
+            if (error_counts.instance > 0) {
+                icinga_badge('' + error_counts.instance, 'error');
             } else {
-                if (error_counts.warnings > 0) {
-                    icinga_badge('' + error_counts.warnings, 'warning');
+                if (error_counts.downs > 0) {
+                    icinga_badge('' + error_counts.downs, 'down');
                 } else {
-                    icinga_badge('' + Object.keys(icingaData.data_hosts).length, 'ok');
+                    if (error_counts.warnings > 0) {
+                        icinga_badge('' + error_counts.warnings, 'warning');
+                    } else {
+                        icinga_badge('' + Object.keys(data.hosts).length, 'ok');
+                    }
                 }
             }
-        }
 
-        // Alarm
-        if (should_play_alarm === true) {
-            icinga_alarm_play();
-        } else {
-            icinga_alarm_clear();
-        }
+            // Alarm
+            if (should_play_alarm === true) {
+                icinga_alarm_play();
+            } else {
+                icinga_alarm_clear();
+            }
+        });
     });
 }
 
@@ -258,7 +262,7 @@ function icinga_fetch(icinga_type, url, username, password, type, instance)
             settings = real_settings;
         }
 
-        fetch(gurl, { headers: new Headers({ 'Authorization': 'Basic '+btoa(username+':'+password) }) })
+        fetch(gurl, { headers: new Headers({ 'Authorization': 'Basic '+btoa(username+':'+password)}) })
         .then(async function (res) {
             let error, text, icinga_data_host, icinga_data_service, icinga_version;
             const json = await res.json();

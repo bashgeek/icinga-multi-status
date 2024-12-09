@@ -60,8 +60,7 @@ function popup_nav(to)
             return_func = function (e) {
                 $('#popup-tab-services-tables').empty();
 
-                if (e.state === 'ok') {
-                    icinga_get_instances(function (instances) {
+                icinga_get_instances(function (instances) {
                         instances = instances.instances;
 
                         if (instances == null) {
@@ -161,22 +160,6 @@ function popup_nav(to)
                             }
                         }
                     });
-                } else {
-                    $('#popup-tab-services-tables').html('An error occurred - could not connect with background task.');
-                }
-            }
-
-            if (typeof chrome !== 'undefined') {
-                chrome.runtime.sendMessage({request: 'data'}, function (e) {
-                    return_func(e);
-                });
-            } else {
-                let sending = browser.runtime.sendMessage({request: 'data'});
-                sending.then(function (e) {
-                    return_func(e);
-                }, function () {
-                    $('#popup-tab-services-tables').html('An error occurred - could not connect with background task.');
-                });
             }
             break;
 
@@ -184,8 +167,7 @@ function popup_nav(to)
             return_func = function (e) {
                 $('#popup-tab-hosts-tables').empty();
 
-                if (e.state === 'ok') {
-                    icinga_get_instances(function (instances) {
+                icinga_get_instances(function (instances) {
                         instances = instances.instances;
 
                         if (instances == null) {
@@ -259,23 +241,7 @@ function popup_nav(to)
                             }
                         }
                     });
-                } else {
-                    $('#popup-tab-hosts-tables').html('An error occurred - could not connect with background task.');
-                }
             };
-
-            if (typeof chrome !== 'undefined') {
-                chrome.runtime.sendMessage({request: 'data'}, function (e) {
-                    return_func(e);
-                });
-            } else {
-                let sending = browser.runtime.sendMessage({request: 'data'});
-                sending.then(function (e) {
-                    return_func(e);
-                }, function () {
-                    $('#popup-tab-hosts-tables').html('An error occurred - could not connect with background task.');
-                });
-            }
             break;
 
         case 'overview':
@@ -286,8 +252,7 @@ function popup_nav(to)
                 $('#popup-tab-overview-table tbody').empty();
                 $('#popup-tab-overview .alert').hide();
 
-                if (e.state === 'ok') {
-                    icinga_get_instances(function (instances) {
+                icinga_get_instances(function (instances) {
                         instances = instances.instances;
 
                         if (instances == null) {
@@ -541,24 +506,14 @@ function popup_nav(to)
                         } else {
                             ov_downs.show();
                         }
-                    });
-                } else {
-                    $('#popup-tab-overview').html('An error occurred - could not connect with background task.');
-                }
+                });
             };
-
-            if (typeof chrome !== 'undefined') {
-                chrome.runtime.sendMessage({request: 'data'}, function (e) {
-                    return_func(e);
-                });
-            } else {
-                let sending = browser.runtime.sendMessage({request: 'data'});
-                sending.then(function (e) {
-                    return_func(e);
-                }, function () {
-                    $('#popup-tab-overview').html('An error occurred - could not connect with background task.');
-                });
-            }
             break;
+    }
+
+    if (typeof return_func === 'function') {
+        icingaData.getHosts(function(data){
+            return_func(data);
+        });
     }
 }

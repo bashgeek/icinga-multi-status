@@ -235,7 +235,7 @@ function instance_save_return(e)
 {
     if (e.error) {
         $('#instance-submit').prop('disabled', false);
-        $('#instance-alert').removeClass().addClass('alert alert-error').html('<b>Icinga Error:</b><br>' + e.text).show();
+        $('#instance-alert').removeClass().addClass('alert alert-error').html('<b>Icinga Error:</b><br>' + e.text + '<br>Hint: Please make sure you gave the addon all required permissions to "access data for all websites", otherwise it cannot reach your Icinga instance.').show();
     } else {
         icinga_get_instances(function (instances) {
             instances = instances.instances;
