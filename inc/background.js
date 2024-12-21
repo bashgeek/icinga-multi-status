@@ -1,17 +1,25 @@
 const bg = {
     init: function () {
         icingaData.init();
-        bg.refresh();
 
         if (typeof chrome !== 'undefined') {
-            chrome.alarms.onAlarm.addListener(() => {
-                bg.refresh();
-            });
+            chrome.alarms.onAlarm.removeListener(bg.refreshAlarm);
+            chrome.alarms.onAlarm.addListener(bg.refreshAlarm);
         } else {
-            browser.alarms.onAlarm.addListener(() => {
-                bg.refresh();
-            });
+            browser.alarms.onAlarm.removeListener(bg.refreshAlarm);
+            browser.alarms.onAlarm.addListener(bg.refreshAlarm);
         }
+
+        bg.refresh();
+    },
+
+    // Refresh method for alarm
+    refreshAlarm: function (alarm) {
+        if (alarm.name !== 'icinga-refresh') {
+            return;
+        }
+
+        bg.refresh();
     },
 
     // Refresh data for all icinga instances
@@ -38,9 +46,21 @@ const bg = {
             let interval_in_seconds = (settings.refresh === undefined) ? 30 : settings.refresh;
             let interval_in_minutes = interval_in_seconds / 60;
             if (typeof chrome !== 'undefined') {
-                chrome.alarms.create('icinga-refresh', {delayInMinutes: interval_in_minutes});
+                chrome.alarms.get('icinga-refresh', alarm => {
+                    if (alarm) {
+                        return;
+                    }
+
+                    chrome.alarms.create('icinga-refresh', {delayInMinutes: interval_in_minutes});
+                });
             } else {
-                browser.alarms.create('icinga-refresh', {delayInMinutes: interval_in_minutes});
+                browser.alarms.get('icinga-refresh', alarm => {
+                    if (alarm) {
+                        return;
+                    }
+
+                    browser.alarms.create('icinga-refresh', {delayInMinutes: interval_in_minutes});
+                });
             }
         });
     },

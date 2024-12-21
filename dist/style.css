@@ -107,7 +107,7 @@
 }
 
 /*
-! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -2231,8 +2231,7 @@ input.tab:checked + .tab-content,
 
 .progress::-moz-progress-bar {
   border-radius: var(--rounded-box, 1rem);
-  --tw-bg-opacity: 1;
-  background-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-bg-opacity)));
+  background-color: currentColor;
 }
 
 .progress:indeterminate {
@@ -2256,8 +2255,7 @@ input.tab:checked + .tab-content,
 
 .progress::-webkit-progress-value {
   border-radius: var(--rounded-box, 1rem);
-  --tw-bg-opacity: 1;
-  background-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-bg-opacity)));
+  background-color: currentColor;
 }
 
 .progress:indeterminate::-moz-progress-bar {
