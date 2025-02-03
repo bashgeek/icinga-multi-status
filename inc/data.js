@@ -154,10 +154,14 @@ const icingaData = {
     },
 
     setHosts: function(){
-        chrome.storage.local.set({'hosts': icingaData.data_hosts});
+        chrome.storage.local.set({'hosts': icingaData.data_hosts, 'last_update': new Date().toLocaleString()});
     },
 
     getHosts: function(callback){
         chrome.storage.local.get('hosts', callback);
+    },
+
+    getLastUpdate: function(callback){
+        chrome.storage.local.get('last_update', callback);
     },
 }

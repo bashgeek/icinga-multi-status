@@ -57,7 +57,7 @@ function popup_nav(to)
     let return_func;
     switch (to) {
         case 'services':
-            return_func = function (e) {
+            return_func = function (e, last_update) {
                 $('#popup-tab-services-tables').empty();
 
                 icinga_get_instances(function (instances) {
@@ -164,7 +164,7 @@ function popup_nav(to)
             break;
 
         case 'hosts':
-            return_func = function (e) {
+            return_func = function (e, last_update) {
                 $('#popup-tab-hosts-tables').empty();
 
                 icinga_get_instances(function (instances) {
@@ -245,7 +245,9 @@ function popup_nav(to)
             break;
 
         case 'overview':
-            return_func = function (e) {
+            return_func = function (e, last_update) {
+                console.log(e, last_update)
+
                 let ov_downs = $('#popup-tab-overview-downs');
                 ov_downs.empty();
 
@@ -507,13 +509,17 @@ function popup_nav(to)
                             ov_downs.show();
                         }
                 });
+
+                $('#popup-tab-overview-lastupdate').html("Last update: "+last_update.last_update);
             };
             break;
     }
 
     if (typeof return_func === 'function') {
-        icingaData.getHosts(function(data){
-            return_func(data);
+        icingaData.getLastUpdate(function(last_update){
+            icingaData.getHosts(function(data){
+                return_func(data, last_update);
+            });
         });
     }
 }

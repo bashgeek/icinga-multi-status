@@ -34,4 +34,3 @@ isExtensionStartup().then(isStartup => {
         setHasAlreadyStarted();
     }
 });
-

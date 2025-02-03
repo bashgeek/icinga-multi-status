@@ -24,7 +24,9 @@ const bg = {
 
     // Refresh data for all icinga instances
     refresh: function () {
+        stopHeartbeat();
         icingaData.refresh();
+        startHeartbeat();
         bg.restartTimer();
     },
 
@@ -65,3 +67,38 @@ const bg = {
         });
     },
 };
+
+
+let heartbeatInterval;
+async function runHeartbeat() {
+    await chrome.storage.local.set({ 'last-heartbeat': new Date().getTime() });
+}
+async function startHeartbeat() {
+    // Run the heartbeat once at service worker startup.
+    runHeartbeat().then(() => {
+        // Then again every 20 seconds.
+        heartbeatInterval = setInterval(runHeartbeat, 20 * 1000);
+    });
+}
+async function stopHeartbeat() {
+    clearInterval(heartbeatInterval);
+}
+async function getLastHeartbeat() {
+    return (await chrome.storage.local.get('last-heartbeat'))['last-heartbeat'];
+}
+
+if (typeof chrome !== 'undefined') {
+    chrome.alarms.create("keep-loaded-alarm-0", {periodInMinutes: 1});
+    setTimeout(() => chrome.alarms.create("keep-loaded-alarm-1", {periodInMinutes: 1}), 20000);
+    setTimeout(() => chrome.alarms.create("keep-loaded-alarm-2", {periodInMinutes: 1}), 40000);
+    chrome.alarms.onAlarm.addListener(() => {
+        console.log("keeping extension alive - log for debug");
+    });
+} else {
+    browser.alarms.create("keep-loaded-alarm-0", {periodInMinutes: 1});
+    setTimeout(() => browser.alarms.create("keep-loaded-alarm-1", {periodInMinutes: 1}), 20000);
+    setTimeout(() => browser.alarms.create("keep-loaded-alarm-2", {periodInMinutes: 1}), 40000);
+    browser.alarms.onAlarm.addListener(() => {
+        console.log("keeping extension alive - log for debug");
+    });
+}
