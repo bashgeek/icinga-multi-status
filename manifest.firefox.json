@@ -14,7 +14,7 @@
   },
 
   "background": {
-    "service_worker": "inc/service_worker.js"
+    "scripts": ["inc/icinga.js","inc/data.js","inc/background.js","inc/background_script.js"]
   },
 
   "options_ui": {
@@ -80,8 +80,7 @@
     "storage",
     "notifications",
     "unlimitedStorage",
-    "alarms",
-    "offscreen"
+    "alarms"
   ],
   "host_permissions": [
     "http://*/",
