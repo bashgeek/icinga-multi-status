@@ -1,3 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
+
+@source '**.{js,css,html}';
+@source 'inc/**.{js,css}';
+
+/*@layer base {*/
+/*  *,*/
+/*  ::after,*/
+/*  ::before,*/
+/*  ::backdrop,*/
+/*  ::file-selector-button {*/
+/*    border-color: var(--color-gray-200, currentColor);*/
+/*  }*/
+/*}*/
