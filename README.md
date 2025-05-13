@@ -1,5 +1,7 @@
 # Icinga Multi Status for web browsers
 
+![unnamed](https://github.com/user-attachments/assets/9ffd3408-e18c-4432-9438-37b30b776775)
+
 Icinga Multi Status helps you to monitor your (multiple or single) Icinga instances with comfortable alert badges and notifications about incidents right within your web browser.
 
 Get it from the [Chrome Web Store](https://chrome.google.com/webstore/detail/icinga-multi-status/khabbhcojgkibdeipanmiphceeoiijal)
